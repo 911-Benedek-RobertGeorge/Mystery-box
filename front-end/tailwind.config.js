@@ -4,6 +4,43 @@ export default {
     darkMode: 'class',
     theme: {
         extend: {
+            colors: {
+                background: {
+                    DEFAULT: '#1d3435', // Primary background color
+                    dark: '#162728', // Darker shade
+                    light: '#244244', // Lighter shade
+                },
+                primary: {
+                    DEFAULT: '#4F46E5', // Vibrant accent
+                    light: '#6366F1', // Slightly lighter
+                    dark: '#3730A3', // Slightly darker
+                },
+                secondary: {
+                    DEFAULT: '#F59E0B', // Warm secondary color
+                    light: '#FBBF24',
+                    dark: '#B45309',
+                },
+                accent: {
+                    DEFAULT: '#22D3EE', // Cyan for highlights
+                    light: '#5EEAD4', // Softer cyan
+                    dark: '#0E7490', // Deeper cyan
+                },
+                text: {
+                    primary: '#E5E7EB', // Light gray text
+                    secondary: '#9CA3AF', // Muted gray text
+                    muted: '#6B7280', // More opacity
+                },
+                border: {
+                    DEFAULT: '#334E4F', // Border color for elements
+                    light: '#4D6D6E', // Slightly lighter
+                },
+                muted: 'rgba(255, 255, 255, 0.5)', // Semi-transparent white
+            },
+            cursor: {
+                default: 'url(./assets/elements/cursor.webp), default',
+
+                pointer: 'url(/images/cursor.png), pointer',
+            },
             animation: {
                 first: 'moveVertical 30s ease infinite',
                 second: 'moveInCircle 20s reverse infinite',
