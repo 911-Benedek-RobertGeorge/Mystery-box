@@ -1,12 +1,13 @@
-import React from 'react';
+import React from 'react'
+import { BackgroundGradientAnimation } from '../../components/ui/BackgroundGradientAnimation'
 
 const Home: React.FC = () => {
+    ///TODO https://ui.aceternity.com/components/wavy-background
     return (
-        <div className='bg-slate-400 h-screen w-full'>
-            <h1>Welcome to the Home Page</h1>
-            <p>This is the home page of the application.</p>
+        <div className="flex bg-black w-screen h-screen">
+            <BackgroundGradientAnimation />
         </div>
-    );
-};
+    )
+}
 
-export default Home;
+export default Home
