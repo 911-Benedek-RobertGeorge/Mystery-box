@@ -5,8 +5,8 @@
 .cursor-custom {
     cursor: url('./assets/elements/cursor.webp'), auto;
 }
-*,
+/* *,
 *:before,
 *:after {
     @apply cursor-default;
-}
+} */

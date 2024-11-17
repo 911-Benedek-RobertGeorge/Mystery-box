@@ -10,6 +10,7 @@ function App() {
             <SolContextProvider>
                 <div className="relative w-full flex items-center justify-center cursor-custom ">
                     <Navbar />
+
                     <Routes>
                         <Route path={`/`} element={<Home />} />
                         <Route path={`/boxes`} element={<MysteryBoxes />} />

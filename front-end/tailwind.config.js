@@ -4,10 +4,21 @@ export default {
     darkMode: 'class',
     theme: {
         extend: {
+            animation: {
+                'spin-slow': 'spin 3s linear infinite',
+                wiggle: 'wiggle 1s ease-in-out infinite',
+                'ping-slow': 'ping 3s linear infinite', // Slow down ping animation (default is 1s)
+            },
+            keyframes: {
+                wiggle: {
+                    '0%, 100%': { transform: 'rotate(-3deg)' },
+                    '50%': { transform: 'rotate(3deg)' },
+                },
+            },
             colors: {
                 background: {
                     DEFAULT: '#1d3435', // Primary background color
-                    dark: '#162728', // Darker shade
+                    dark: '#011717', // Darker shade
                     light: '#244244', // Lighter shade
                 },
                 primary: {
@@ -34,7 +45,7 @@ export default {
                     DEFAULT: '#334E4F', // Border color for elements
                     light: '#4D6D6E', // Slightly lighter
                 },
-                muted: 'rgba(255, 255, 255, 0.5)', // Semi-transparent white
+                muted: '#171919', // Semi-transparent white
             },
             cursor: {
                 default: 'url(./assets/elements/cursor.webp), default',
