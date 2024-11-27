@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .cursor-custom {
-    cursor: url('./assets/elements/cursor.webp'), auto;
+    cursor: url('./assets/elements/cursor.png'), auto;
 }
 /* *,
 *:before,

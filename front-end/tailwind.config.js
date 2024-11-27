@@ -62,7 +62,13 @@ export default {
             boxShadow: {
                 'box-glow': '0 0 30px 15px rgba(0, 255, 255, 0.5)',
                 'question-glow': '0 0 20px 10px rgba(0, 255, 255, 0.8)',
+                cone: '0px -200px 200px 50px rgba(0, 255, 255, 0.6)',
             },
+            backgroundImage: {
+                'conic-gradient':
+                    'conic-gradient(from 180deg at 50% 50%, rgba(0, 255, 255, 0.2), rgba(0, 0, 0, 0))',
+            },
+
             keyframes: {
                 moveHorizontal: {
                     '0%': {
