@@ -71,6 +71,15 @@ const Home: React.FC = () => {
                         <div className="z-[102] w-[50rem]">
                             {' '}
                             <img
+                                key={4}
+                                src={key}
+                                className="floating-object w-32 h-32 z-[40] top-64 absolute transition-transform duration-200 ease-out"
+                                style={{
+                                    top: `${Math.random() * 80 + 10}%`,
+                                    left: `${Math.random() * 80 + 10}%`,
+                                }}
+                            />{' '}
+                            <img
                                 key={1}
                                 src={dogeCoin}
                                 className="floating-object w-32 h-32 z-[40] top-64 absolute transition-transform duration-200 ease-out"
