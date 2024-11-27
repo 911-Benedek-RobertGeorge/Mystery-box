@@ -9,7 +9,7 @@ function App() {
         <Router>
             <SolContextProvider>
                 <div className="relative w-full flex items-center justify-center cursor-custom ">
-                    <Navbar />
+                    {/* <Navbar /> */}
 
                     <Routes>
                         <Route path={`/`} element={<Home />} />

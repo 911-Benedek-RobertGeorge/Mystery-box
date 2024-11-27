@@ -7,7 +7,7 @@ export default {
             animation: {
                 'spin-slow': 'spin 3s linear infinite',
                 wiggle: 'wiggle 1s ease-in-out infinite',
-                'ping-slow': 'ping 3s linear infinite', // Slow down ping animation (default is 1s)
+                'ping-slow': 'ping 3s linear infinite',
             },
             keyframes: {
                 wiggle: {
@@ -32,7 +32,7 @@ export default {
                     dark: '#B45309',
                 },
                 accent: {
-                    DEFAULT: '#22D3EE', // Cyan for highlights
+                    DEFAULT: '#0CC4D3', // Cyan for highlights
                     light: '#5EEAD4', // Softer cyan
                     dark: '#0E7490', // Deeper cyan
                 },
@@ -48,9 +48,9 @@ export default {
                 muted: '#171919', // Semi-transparent white
             },
             cursor: {
-                default: 'url(./assets/elements/cursor.webp), default',
+                default: 'url(./assets/elements/cursor.png), default',
 
-                pointer: 'url(/images/cursor.png), pointer',
+                // pointer: 'url(/images/cursor.png), pointer',
             },
             animation: {
                 first: 'moveVertical 30s ease infinite',
@@ -58,6 +58,10 @@ export default {
                 third: 'moveInCircle 40s linear infinite',
                 fourth: 'moveHorizontal 40s ease infinite',
                 fifth: 'moveInCircle 20s ease infinite',
+            },
+            boxShadow: {
+                'box-glow': '0 0 30px 15px rgba(0, 255, 255, 0.5)',
+                'question-glow': '0 0 20px 10px rgba(0, 255, 255, 0.8)',
             },
             keyframes: {
                 moveHorizontal: {
