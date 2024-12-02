@@ -6,10 +6,11 @@ import MysteryBoxes from './pages/MisteryBoxes/MysteryBoxes'
 
 function App() {
     return (
+        ///TODO ADD A NEW PAGE FOR My Mysteries - analythics of ROI
         <Router>
             <SolContextProvider>
                 <div className="relative w-full flex items-center justify-center cursor-custom ">
-                    {/* <Navbar /> */}
+                    <Navbar />
 
                     <Routes>
                         <Route path={`/`} element={<Home />} />

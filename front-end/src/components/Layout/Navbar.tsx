@@ -1,5 +1,9 @@
 import React, { useState } from 'react'
-import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
+import {
+    WalletConnectButton,
+    WalletModalButton,
+    WalletMultiButton,
+} from '@solana/wallet-adapter-react-ui'
 import { cn } from '../../libs/utils'
 import { HoveredLink, Menu, MenuItem, ProductItem } from '../ui/NavbarMenu'
 import logo from '../../assets/elements/logo.png'
@@ -9,12 +13,12 @@ function Navbar({ className }: { className?: string }) {
     return (
         <div
             className={cn(
-                'fixed flex top-10 inset-x-0 p-10 px-24 mx-auto justify-between z-[101] ',
+                'fixed flex top-10 inset-x-0 md:p-10 md:px-24 mx-auto justify-between z-[101]',
                 className
             )}
         >
             <img
-                className=" flex justify-center items-ceter w-24 h-24 "
+                className=" flex justify-center items-ceter w-24 h-24 hover:scale-110 transition-transform duration-300 "
                 src={logo}
             ></img>
             <Menu setActive={setActive}>
@@ -60,16 +64,17 @@ function Navbar({ className }: { className?: string }) {
                         /> */}
                     </div>
                 </MenuItem>
-                {/* <MenuItem setActive={setActive} active={active} item="Pricing">
+                <MenuItem setActive={setActive} active={active} item="Pricing">
                     <div className="flex flex-col space-y-4 text-sm">
                         <HoveredLink href="/hobby">Hobby</HoveredLink>
                         <HoveredLink href="/individual">Individual</HoveredLink>
                         <HoveredLink href="/team">Team</HoveredLink>
                         <HoveredLink href="/enterprise">Enterprise</HoveredLink>
                     </div>
-                </MenuItem> */}
+                </MenuItem>
+                <WalletModalButton className="" />
+                <WalletMultiButton className="" />
             </Menu>
-            <WalletMultiButton />
         </div>
     )
 }

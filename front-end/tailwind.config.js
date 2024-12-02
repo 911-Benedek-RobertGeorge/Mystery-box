@@ -8,11 +8,17 @@ export default {
                 'spin-slow': 'spin 3s linear infinite',
                 wiggle: 'wiggle 1s ease-in-out infinite',
                 'ping-slow': 'ping 3s linear infinite',
+                glossy: 'glossy 6s ease infinite',
             },
             keyframes: {
                 wiggle: {
                     '0%, 100%': { transform: 'rotate(-3deg)' },
                     '50%': { transform: 'rotate(3deg)' },
+                },
+                glossy: {
+                    '0%': { backgroundPosition: '0% 50%' },
+                    '50%': { backgroundPosition: '100% 50%' },
+                    '100%': { backgroundPosition: '0% 50%' },
                 },
             },
             colors: {
@@ -35,6 +41,7 @@ export default {
                     DEFAULT: '#0CC4D3', // Cyan for highlights
                     light: '#5EEAD4', // Softer cyan
                     dark: '#0E7490', // Deeper cyan
+                    secondary: '#e32ef6', // pink
                 },
                 text: {
                     primary: '#E5E7EB', // Light gray text
