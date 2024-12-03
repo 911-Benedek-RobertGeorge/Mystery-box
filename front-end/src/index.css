@@ -1,4 +1,28 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
- 
+
+.cursor-custom {
+    cursor: url('./assets/elements/cursor.png'), auto;
+}
+/* *,
+*:before,
+*:after {
+    @apply cursor-default;
+} */
+@keyframes glossy {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.animate-glossy {
+    background-size: 200% 200%;
+    animation: glossy 3s ease infinite;
+}
