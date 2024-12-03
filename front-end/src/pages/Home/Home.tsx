@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { BackgroundGradientAnimation } from '../../components/ui/BackgroundGradientAnimation'
 import SectionContainer from './components/SectionContainer'
 import geometricVector from '../../assets/shapes/geometric-vector-shape.webp'
@@ -14,10 +14,14 @@ import key from '../../assets/boxes/key.png'
 import chillGuy from '../../assets/coins/chill-guy.png'
 import bonk from '../../assets/coins/bonk.png'
 import cyanBox from '../../assets/boxes/cyan_box-Photoroom.png'
+import riskyBox from '../../assets/boxes/risky-box.png'
 import heartImage from '../../assets/elements/heart.png'
-import fluidTape from '../../assets/elements/fluid-tape.jpg'
+import fluidTape from '../../assets/elements/fluid_tape.png'
+import waveTape from '../../assets/elements/wave_tape.png'
+
 const Home: React.FC = () => {
     const containerRef = useRef<HTMLDivElement | null>(null)
+    const [scrollPosition, setScrollPosition] = useState(0)
 
     useEffect(() => {
         const container = containerRef.current
@@ -56,8 +60,22 @@ const Home: React.FC = () => {
         }
     }, [])
 
+    useEffect(() => {
+        const handleScroll = () => {
+            // Update scroll position on scroll
+            setScrollPosition(window.scrollY)
+            console.log(window.scrollY / 3)
+        }
+
+        window.addEventListener('scroll', handleScroll)
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll)
+        }
+    }, [])
     ///TODO https://ui.aceternity.com/components/wavy-background
     ///TODO ADD MEMES AND SET DURATION BIGGER
+
     return (
         <div className="flex flex-col  w-screen  select-none bg-background-dark ">
             <BackgroundGradientAnimation
@@ -66,7 +84,7 @@ const Home: React.FC = () => {
                 gradientBackgroundEnd="rgb(19, 39, 40)"
                 size="80%"
             >
-                <SectionContainer>
+                <SectionContainer key={1}>
                     <div
                         ref={containerRef}
                         className="z-10 scale-75 md:scale-100 flex flex-col justify-center items-center w-full h-[90%] "
@@ -181,7 +199,7 @@ const Home: React.FC = () => {
             </BackgroundGradientAnimation>
             <img
                 src={vectorShape}
-                className="w-screen top-[29rem] rotate-6 h-[900px] absolute z-[50]  "
+                className="w-screen top-[29rem] md:rotate-6 h-[900px] absolute z-[50]  "
                 style={{ transformStyle: 'preserve-3d' }}
             ></img>{' '}
             <div className="flex flex-col justify-center items-center w-full">
@@ -192,9 +210,23 @@ const Home: React.FC = () => {
                     <p className="text-center text-gray-300">
                         Select a box to reveal your meme fortune!
                     </p>
+                </div>{' '}
+                {/* <div className="absolute -mt-[30%] -hue-rotate-30 -rotate-12 w-96 animate-fourth">
+                    <img src={fluidTape} />
+                </div> */}
+                <div
+                    className="absolute -rotate-12 w-96 z-[102]"
+                    style={{
+                        transform: `translateX(${Math.min(-600 + scrollPosition, 300)}px) translateY(${Math.min(-600 + scrollPosition / 3, -300)}px)`,
+                        filter: `hue-rotate(${Math.max(-80, 10 - scrollPosition / 10)}deg)`,
+                        transition:
+                            'transform 0.2s ease-out, filter 0.2s ease-out',
+                    }}
+                >
+                    <img src={fluidTape} alt="Fluid Tape" />
                 </div>
                 <div className="flex flex-col justify-center items-center w-full">
-                    <div className="-ml-[50%] z-[100]">
+                    <div className="md:-ml-[50%] z-[100]">
                         <img
                             src={cyanBox}
                             className="w-96"
@@ -217,10 +249,18 @@ const Home: React.FC = () => {
                             </ul>
                         </div>
                     </div>
-                    <div className="absolute  w-96">
-                        <img src={fluidTape} />
+                    <div
+                        className="absolute  w-80 "
+                        style={{
+                            transform: `translateX(${Math.max(1300 - scrollPosition)}px) translateY(${Math.min(-1200 + scrollPosition)}px)`,
+                            filter: `hue-rotate(${Math.min(-80, Math.max(200 - scrollPosition / 3.3, -250))}deg)`,
+                            transition:
+                                'transform 0.2s ease-out, filter 0.2s ease-out',
+                        }}
+                    >
+                        <img src={waveTape} alt="Fluid Tape" />
                     </div>
-                    <div className="-mt-64 ml-[50%] z-[100]">
+                    <div className="md:-mt-64 md:ml-[50%] z-[100]">
                         <img
                             src={cyanBox}
                             className="w-96"
@@ -243,8 +283,58 @@ const Home: React.FC = () => {
                             </ul>
                         </div>
                     </div>
+
+                    {/* <div className="flex justify-center items-center h-screen bg-[#0d1117]">
+                        <div className="relative group">
+                             <img
+                                src={riskyBox}
+                                alt="Mystery Box"
+                                className="rounded-lg shadow-xl transition-all duration-300 group-hover:scale-105 group-hover:blur-sm"
+                            />
+                             <div className="absolute inset-0 rounded-lg bg-gradient-to-b from-transparent via-[#f39c12] to-[#e74c3c] opacity-20 blur-lg"></div>
+                             <div className="absolute bottom-4 left-4">
+                                <h3 className="text-teal-400 text-xl font-bold">
+                                    Degen Level
+                                </h3>
+                                <p className="text-white">Absolute Madlad</p>
+                            </div>
+                        </div>
+                    </div> */}
+                    <div className="relative md:-ml-[50%] z-[10]">
+                        {/* <img
+                            src={riskyBox}
+                            className="w-96"
+                            style={{
+                                transformStyle: 'preserve-3d',
+                            }}
+                        />{' '} */}
+                        <img
+                            src={riskyBox}
+                            alt="Mystery Box"
+                            className="w-96 rounded-lg shadow-xl transition-all duration-300 group-hover:scale-105 group-hover:blur-sm"
+                        />
+                        {/* Glow Effect */}
+                        <div className="absolute inset-0 rounded-lg bg-gradient-to-b from-transparent via-[#f39c12] to-[#e74c3c] opacity-20 blur-xl"></div>
+                        <div className="flex flex-col justify-center items-start ml-8">
+                            <h2 className="text-2xl font-bold text-accent">
+                                Degen Level
+                            </h2>
+                            <p className="text-lg text-gray-300">
+                                Absolute Madlad
+                            </p>
+                            <h2 className="text-2xl font-bold text-accent mt-4">
+                                Pump for fun coins
+                            </h2>
+                            <ul className="list-disc list-inside text-lg text-gray-300">
+                                <li>Mad</li>
+                                <li>Shiba Inu</li>
+                                <li>PepeCoin</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </div>{' '}
+            <div className="flex w-screen h-screen"></div>
         </div>
     )
 }
