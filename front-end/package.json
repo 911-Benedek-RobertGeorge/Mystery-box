@@ -6,7 +6,7 @@
     "scripts": {
         "start": "vite dev",
         "dev": "vite",
-        "build": "tsc --noEmmit && vite build",
+        "build": "tsc --noEmit && vite build",
         "preview": "vite preview",
         "lint": "eslint \"src/**/*.{js,jsx,ts,tsx}\"",
         "lint:fix": "eslint --fix \"src/**/*.{js,jsx,ts,tsx}\"",
