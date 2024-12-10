@@ -5,6 +5,8 @@ import App from './App.tsx'
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
-        <App />
+        <div className="relative w-full flex items-center justify-center cursor-custom scrollbar-none overflow-y-hidden ">
+            <App />
+        </div>
     </StrictMode>
 )

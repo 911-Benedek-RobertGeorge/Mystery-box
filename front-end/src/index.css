@@ -2,13 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+.app {
+    cursor: url('assets/elements/cursor.png'), auto;
+}
 .cursor-custom {
-    cursor: url('./assets/elements/cursor.png'), auto;
+    cursor: url('assets/elements/cursor.png'), auto;
 }
 /* *,
-*:before,
-*:after {
-    @apply cursor-default;
+ ///TODO check why curosr is not working
 } */
 @keyframes glossy {
     0% {
@@ -25,4 +26,22 @@
 .animate-glossy {
     background-size: 200% 200%;
     animation: glossy 3s ease infinite;
+}
+
+@layer base {
+    ::-webkit-scrollbar {
+        @apply w-3;
+    }
+
+    ::-webkit-scrollbar-track {
+        @apply bg-background-light;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        @apply bg-background-dark rounded-lg shadow-inner shadow-cyan-600;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        @apply bg-stone-950;
+    }
 }

@@ -55,7 +55,7 @@ export default {
                 muted: '#171919', // Semi-transparent white
             },
             cursor: {
-                default: 'url(./assets/elements/cursor.png), default',
+                default: 'url(assets/elements/cursor.png), default',
 
                 // pointer: 'url(/images/cursor.png), pointer',
             },
@@ -113,5 +113,8 @@ export default {
             },
         },
     },
-    plugins: [],
+    plugins: [
+        require('tailwind-scrollbar'),
+        // require('tailwind-scrollbar-hide'),
+    ],
 }
