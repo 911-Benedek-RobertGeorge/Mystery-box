@@ -23,6 +23,7 @@ import { MEMES } from '../../libs/constants'
 import MemeImagesFloating from './components/MemeImagesFloating'
 import { MemeImage } from '../../libs/interfaces'
 import solanaImage from '../../assets/elements/solana.png'
+
 import {
     Connection,
     PublicKey,
@@ -164,10 +165,10 @@ const Home: React.FC = () => {
                 <SectionContainer key={1}>
                     <div
                         ref={containerRef}
-                        className="z-10 scale-75 md:scale-100 flex flex-col justify-center items-center w-full h-[90%] "
+                        className="z-10  flex flex-col justify-center items-center w-full h-full "
                     >
-                        <div className="w-full left-0  text-center">
-                            <div className=" text-3xl md:text-6xl w-full flex flex-col  ">
+                        <div className="opacity-0 md:opacity-100 w-full left-0 text-center">
+                            <div className=" text-2xl md:text-6xl w-full flex flex-col">
                                 <h1 className="z-[103] md:-ml-[60%] leading-tight font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-accent via-purple-500 to-accent-secondary animate-glossy ">
                                     Fancy some
                                 </h1>{' '}
@@ -187,7 +188,7 @@ const Home: React.FC = () => {
                             src={solanaImage}
                         /> */}
                         <MemeImagesFloating memesImage={memesImage ?? []} />
-                        <div className="-top-12 relative z-[102] flex flex-col justify-center items-center">
+                        <div className=" scale-75 md:scale-90 -top-32 relative z-[102] flex flex-col justify-center items-center">
                             <img
                                 src={questionMark}
                                 className="w-[250px] z-[50] absolute -top-48 floating-object transition-transform duration-200 ease-out "
@@ -229,7 +230,7 @@ const Home: React.FC = () => {
                                 style={{ transformStyle: 'preserve-3d' }}
                             ></img>
                         </div>{' '}
-                        <div className="w-full md:-ml-[60%] -mt-64 text-center">
+                        <div className=" opacity-0 md:opacity-100 w-full md:-ml-[60%] -mt-64 text-center">
                             <div className=" text-xl md:text-3xl w-full flex flex-col">
                                 <h3 className="md:ml-64    leading-tight font-extrabold  text-cyan-400 ">
                                     Buy MeMestery boxes
@@ -247,7 +248,7 @@ const Home: React.FC = () => {
             </BackgroundGradientAnimation>
             <img
                 src={vectorShape}
-                className="w-screen top-[29rem] md:rotate-6 h-[900px] absolute z-[50]  "
+                className="w-screen top-[23.5rem] rotate-12 md:rotate-6 h-[900px] absolute z-[50]  "
                 style={{ transformStyle: 'preserve-3d' }}
             ></img>{' '}
             <div className="flex flex-col justify-center items-center w-full">
@@ -265,7 +266,7 @@ const Home: React.FC = () => {
                 >
                     <img src={fluidTape} alt="Fluid Tape" />
                 </div>
-                <div className="flex flex-col justify-center items-center w-full">
+                <div className="flex flex-col justify-center items-center w-full space-y-32 md:space-y-0">
                     <div className="relative md:-ml-[50%] z-[100]">
                         <img
                             src={cyanBox}
@@ -313,7 +314,7 @@ const Home: React.FC = () => {
                         </div>
                     </div>
                     <div
-                        className="absolute  w-80 "
+                        className="absolute w-80 "
                         style={{
                             transform: `translateX(${Math.max(1300 - scrollPosition)}px) translateY(${Math.min(-1200 + scrollPosition)}px)`,
                             filter: `hue-rotate(${Math.min(-80, Math.max(200 - scrollPosition / 3.3, -250))}deg)`,
@@ -351,7 +352,7 @@ const Home: React.FC = () => {
                             </ul>
                             <div className="flex justify-center w-full mt-6">
                                 <button className="px-6 py-3 bg-gradient-to-r from-green-400 to-green-600 text-white font-bold rounded-full shadow-lg hover:from-green-500 hover:to-green-700 transition duration-300 transform hover:scale-105">
-                                    Open Your Legendary Box!
+                                    Coming soon...
                                 </button>
                             </div>
                         </div>
@@ -373,7 +374,7 @@ const Home: React.FC = () => {
                             </div>
                         </div>
                     </div> */}
-                    <div className="relative md:-ml-[50%] z-[10]">
+                    <div className="relative md:-ml-[40%] z-[10] md:-top-[20%]">
                         <img
                             src={riskyBox}
                             alt="Mystery Box"
@@ -396,7 +397,7 @@ const Home: React.FC = () => {
                             </ul>
                             <div className="flex justify-center w-full mt-6">
                                 <button className="px-6 py-3 bg-gradient-to-r from-red-600 to-stone-900 text-white font-bold rounded-full shadow-lg hover:from-yellow-500 hover:to-yellow-700 transition duration-300 transform hover:scale-105">
-                                    Unleash the Madness!
+                                    Coming soon...
                                 </button>
                             </div>
                         </div>
@@ -404,7 +405,7 @@ const Home: React.FC = () => {
                 </div>
             </div>{' '}
             <div className="flex flex-col w-screen h-full">
-                <image className="w-full h-full" href={geometricVector}>
+                {/* <image className="w-full h-full" href={}>
                     <rect width="800" height="800" fill="url(#grad1)" />
                     <circle
                         cx="400"
@@ -424,7 +425,7 @@ const Home: React.FC = () => {
                         r="100"
                         fill="rgba(255, 255, 255, 0.02)"
                     />
-                </image>
+                </image> */}
                 <div className="flex flex-col  relative justify-center items-center w-full h-full text-white p-8">
                     <h2 className="text-4xl font-bold mb-4">How It Works</h2>
                     <p className="text-lg text-center max-w-2xl mb-4">
