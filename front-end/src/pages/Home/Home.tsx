@@ -17,7 +17,7 @@ import cyanBox from '../../assets/boxes/cyan_box-Photoroom.png'
 import riskyBox from '../../assets/boxes/risky-box.png'
 import heartImage from '../../assets/elements/heart.png'
 import fluidTape from '../../assets/elements/fluid_tape.png'
-import waveTape from '../../assets/elements/wave_tape.png'
+import waveTape from '../../assets/shapes/wave_tape.png'
 import { use } from 'framer-motion/client'
 import { MEMES } from '../../libs/constants'
 import MemeImagesFloating from './components/MemeImagesFloating'
@@ -25,7 +25,8 @@ import { MemeImage } from '../../libs/interfaces'
 import solanaImage from '../../assets/elements/solana.png'
 import lines from '../../assets/shapes/lines.png'
 import ribbons from '../../assets/shapes/ribbons.png'
-
+import leafes from '../../assets/shapes/leafess.png'
+import smile from '../../assets/shapes/smile.png'
 import {
     Connection,
     PublicKey,
@@ -410,7 +411,7 @@ const Home: React.FC = () => {
                 <div className="flex flex-col -mt-96 relative justify-center items-center w-full md:w-1/2 h-96  ml-auto text-white p-8">
                     <div className="absolute inset-0 w-full h-screen z-0   ">
                         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background-dark to-accent-dark opacity-30 blur-3xl"></div>
-                        <div className="absolute inset-0 opacity-40  ">
+                        <div className="absolute inset-0 opacity-40  top-96">
                             <img
                                 className="  z-[111] -hue-rotate-90 transition-all duration-1000  ease-out"
                                 src={ribbons}
@@ -431,31 +432,37 @@ const Home: React.FC = () => {
                 </div>
 
                 <div className="flex flex-col mt-64 relative justify-center items-center w-full h-full text-white p-8">
-                    <h2 className="text-4xl font-bold mb-4">How It Works</h2>
-                    <p className="text-lg text-center max-w-2xl mb-4">
-                        Each mystery box contains a random selection of meme
-                        coins and artifacts. The contents of the box are
-                        determined by chance, offering a mix of common, rare,
-                        and legendary items. Here's how you can get started:
-                    </p>
-                    <ul className="list-disc list-inside text-lg text-center max-w-2xl">
-                        <li>Purchase a mystery box from our store.</li>
-                        <li>Open the box to reveal its contents.</li>
-                        <li>
-                            Discover and collect unique meme coins and
-                            artifacts.
-                        </li>
-                        <li>
-                            Track your collection and see your ROI (Return on
-                            Investment).
-                        </li>
-                    </ul>
-                    <p className="text-lg text-center max-w-2xl mt-4">
-                        The thrill of opening a mystery box lies in the surprise
-                        and excitement of what you might find. Will you uncover
-                        a legendary meme artifact or a rare meme coin? There's
-                        only one way to find out!
-                    </p>{' '}
+                    <div className="z-[110] flex flex-col justify-center items-center w-full h-full  text-white p-8">
+                        {' '}
+                        <h2 className="text-4xl font-bold mb-4">
+                            How It Works
+                        </h2>
+                        <p className="text-lg text-center max-w-2xl mb-4">
+                            Each mystery box contains a random selection of meme
+                            coins and artifacts. The contents of the box are
+                            determined by chance, offering a mix of common,
+                            rare, and legendary items. Here's how you can get
+                            started:
+                        </p>
+                        <ul className="list-disc list-inside text-lg text-center max-w-2xl">
+                            <li>Purchase a mystery box from our store.</li>
+                            <li>Open the box to reveal its contents.</li>
+                            <li>
+                                Discover and collect unique meme coins and
+                                artifacts.
+                            </li>
+                            <li>
+                                Track your collection and see your ROI (Return
+                                on Investment).
+                            </li>
+                        </ul>
+                        <p className="text-lg text-center max-w-2xl mt-4">
+                            The thrill of opening a mystery box lies in the
+                            surprise and excitement of what you might find. Will
+                            you uncover a legendary meme artifact or a rare meme
+                            coin? There's only one way to find out!
+                        </p>{' '}
+                    </div>
                     <div className="absolute inset-0 w-full h-screen z-0 blur-3xl">
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-accent to-background-light opacity-50 animate-gradient-x"></div>
                         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-50"></div>
@@ -464,18 +471,65 @@ const Home: React.FC = () => {
                 </div>
 
                 <SectionContainer key={2}>
-                    <div className="flex flex-col justify-center items-center w-full h-full  text-white p-8">
-                        <h2 className="text-4xl font-bold mb-4">About Us</h2>
-                        <p className="text-lg text-center max-w-2xl">
-                            Welcome to MemeFortunes, where the world of memes
-                            meets the thrill of discovery! Our platform offers
-                            you the chance to uncover hidden treasures and
-                            legendary meme artifacts through our unique mystery
-                            boxes. Whether you're a seasoned meme connoisseur or
-                            just starting your journey, we have something for
-                            everyone. Join us and dive into the exciting world
-                            of meme fortunes today!
-                        </p>
+                    <div className="flex flex-col justify-center items-center w-full h-full  text-stone-300 ">
+                        <div className="relative z-[110] flex flex-col  w-full h-full    ">
+                            {' '}
+                            <img
+                                src={leafes}
+                                className="absolute h-[600px] left-0 -top-[300px]"
+                            />{' '}
+                            <img
+                                src={leafes}
+                                className="absolute rotate-90 -ml-8 h-[600px] left-0 -top-64 opacity-40"
+                            />
+                        </div>
+                        <div className="flex flex-col justify-center items-center  ">
+                            <h2 className="text-4xl font-bold mb-4">
+                                About Us
+                            </h2>
+                            <p className="text-lg text-center max-w-2xl mb-4">
+                                Welcome to{' '}
+                                <span className="text-accent font-bold">
+                                    MemeBox
+                                </span>
+                                ! We are two passionate developers who met
+                                during a Solana Foundation bootcamp. Inspired by
+                                the power of blockchain and our love for memes,
+                                we decided to create a platform that combines
+                                both.
+                            </p>
+                            <p className="md:ml-96 text-lg text-center max-w-2xl mb-4">
+                                Our{' '}
+                                <span className="text-accent font-bold">
+                                    mission
+                                </span>{' '}
+                                is to bring joy and excitement to the crypto
+                                community through our unique mystery boxes
+                                filled with meme treasures. Join us on this
+                                thrilling journey and discover the hidden gems
+                                of the meme world!
+                            </p>
+                            <p className="md:-ml-64 text-lg text-center max-w-2xl mb-4">
+                                <span className="text-accent-secondary font-bold">
+                                    Why MemeBox?
+                                </span>{' '}
+                                We believe in the power of memes to connect
+                                people and create shared experiences. Our
+                                mystery boxes are designed to surprise and
+                                delight, offering a mix of common, rare, and
+                                legendary meme coins.
+                            </p>
+                            <p className="text-lg text-center max-w-2xl mb-4">
+                                <span className="text-purple-500 font-bold">
+                                    Get Started
+                                </span>{' '}
+                                by purchasing a mystery box today and uncover
+                                the treasures that await. Whether you're a
+                                seasoned crypto enthusiast or new to the world
+                                of blockchain, MemeBox has something for
+                                everyone.
+                            </p>
+                        </div>
                     </div>
                 </SectionContainer>
             </div>

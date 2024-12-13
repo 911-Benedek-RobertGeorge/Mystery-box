@@ -22,11 +22,12 @@ function Navbar({ className }: { className?: string }) {
                 className
             )}
         >
-            <img
-                className=" flex justify-center items-center w-24 h-24 hover:scale-110 transition-transform duration-300 "
-                src={logo}
-            ></img>
-
+            <Link to="/">
+                <img
+                    className=" flex justify-center items-center w-24 h-24 hover:scale-110 transition-transform duration-300 "
+                    src={logo}
+                ></img>
+            </Link>
             <div
                 className={`transform-all duration-500 transition ease-in-out h-16 items-center relative rounded-full border border-r-accent border-l-accent border-transparent bg-muted shadow-input flex justify-center space-x-8 px-8 shadow-inner shadow-accent-dark scale-75 md:scale-100 `}
             >
