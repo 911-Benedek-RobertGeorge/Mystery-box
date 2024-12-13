@@ -23,6 +23,8 @@ import { MEMES } from '../../libs/constants'
 import MemeImagesFloating from './components/MemeImagesFloating'
 import { MemeImage } from '../../libs/interfaces'
 import solanaImage from '../../assets/elements/solana.png'
+import lines from '../../assets/shapes/lines.png'
+import ribbons from '../../assets/shapes/ribbons.png'
 
 import {
     Connection,
@@ -405,28 +407,30 @@ const Home: React.FC = () => {
                 </div>
             </div>{' '}
             <div className="flex flex-col w-screen h-full">
-                {/* <image className="w-full h-full" href={}>
-                    <rect width="800" height="800" fill="url(#grad1)" />
-                    <circle
-                        cx="400"
-                        cy="400"
-                        r="300"
-                        fill="rgba(255, 255, 255, 0.1)"
-                    />
-                    <circle
-                        cx="400"
-                        cy="400"
-                        r="200"
-                        fill="rgba(255, 255, 255, 0.05)"
-                    />
-                    <circle
-                        cx="400"
-                        cy="400"
-                        r="100"
-                        fill="rgba(255, 255, 255, 0.02)"
-                    />
-                </image> */}
-                <div className="flex flex-col  relative justify-center items-center w-full h-full text-white p-8">
+                <div className="flex flex-col -mt-96 relative justify-center items-center w-full md:w-1/2 h-96  ml-auto text-white p-8">
+                    <div className="absolute inset-0 w-full h-screen z-0   ">
+                        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background-dark to-accent-dark opacity-30 blur-3xl"></div>
+                        <div className="absolute inset-0 opacity-40  ">
+                            <img
+                                className="  z-[111] -hue-rotate-90 transition-all duration-1000  ease-out"
+                                src={ribbons}
+                                style={{
+                                    transform: `translateY(${-1000 + scrollPosition * 0.4}px)`,
+                                    rotate: `${180 - scrollPosition * 0.2}deg`,
+                                }}
+                            />
+                        </div>{' '}
+                        <img
+                            className="z-[110] absolut transition-all duration-1000 ease-out"
+                            src={key}
+                            style={{
+                                transform: `translateX(${Math.max(0, -2650 + scrollPosition)}px) translateY(${-2050 + scrollPosition}px) `, //translateX(${((-1 * (scrollPosition  / 5) % 2) * scrollPosition) % 1200}px)
+                            }}
+                        />
+                    </div>
+                </div>
+
+                <div className="flex flex-col mt-64 relative justify-center items-center w-full h-full text-white p-8">
                     <h2 className="text-4xl font-bold mb-4">How It Works</h2>
                     <p className="text-lg text-center max-w-2xl mb-4">
                         Each mystery box contains a random selection of meme
@@ -452,8 +456,8 @@ const Home: React.FC = () => {
                         a legendary meme artifact or a rare meme coin? There's
                         only one way to find out!
                     </p>{' '}
-                    <div className="absolute inset-0 w-full h-full z-0">
-                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 opacity-50 animate-gradient-x"></div>
+                    <div className="absolute inset-0 w-full h-screen z-0 blur-3xl">
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-accent to-background-light opacity-50 animate-gradient-x"></div>
                         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-50"></div>
                         <div className="absolute inset-0 bg-stars-pattern opacity-20"></div>
                     </div>
