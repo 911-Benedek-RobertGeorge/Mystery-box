@@ -80,7 +80,7 @@ function Navbar({ className }: { className?: string }) {
                                     >
                                         How to buy
                                     </Link>
-                                    {/* 
+
                                     <WalletMultiButton
                                         style={{
                                             padding: '0',
@@ -89,7 +89,7 @@ function Navbar({ className }: { className?: string }) {
                                                 ? '#0E7490'
                                                 : '#24B9C0',
                                         }}
-                                    /> */}
+                                    />
                                 </div>
                             )}
                         </div>
@@ -106,13 +106,13 @@ function Navbar({ className }: { className?: string }) {
                             >
                                 How to buy
                             </Link>
-                            {/* <WalletMultiButton
+                            <WalletMultiButton
                                 style={{
                                     padding: '0',
                                     backgroundColor: 'transparent',
                                     color: connected ? '#0E7490' : '#24B9C0',
                                 }}
-                            /> */}
+                            />
                         </div>
                     </>
                 )}

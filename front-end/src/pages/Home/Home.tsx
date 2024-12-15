@@ -19,7 +19,7 @@ import heartImage from '../../assets/elements/heart.png'
 import fluidTape from '../../assets/elements/fluid_tape.png'
 import waveTape from '../../assets/shapes/wave_tape.png'
 import { use } from 'framer-motion/client'
-import { MEMES } from '../../libs/constants'
+import { MEMES, SOLANA_EXPLORER_URL } from '../../libs/constants'
 import MemeImagesFloating from './components/MemeImagesFloating'
 import { MemeImage } from '../../libs/interfaces'
 import solanaImage from '../../assets/elements/solana.png'
@@ -28,20 +28,23 @@ import ribbons from '../../assets/shapes/ribbons.png'
 import leafes from '../../assets/shapes/leafess.png'
 import smile from '../../assets/shapes/smile.png'
 import {
-    Connection,
-    PublicKey,
+    Commitment,
     Transaction,
-    clusterApiUrl,
+    TransactionConfirmationStrategy,
 } from '@solana/web3.js'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
-import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
+import HistorySection from './components/HistorySection'
+import { useNetworkConfiguration } from '../../context/Solana/SolNetworkConfigurationProvider'
+import { toast } from 'react-hot-toast'
 
 const Home: React.FC = () => {
     const containerRef = useRef<HTMLDivElement | null>(null)
     const [scrollPosition, setScrollPosition] = useState(0)
     const [memesImage, setMemesImage] = useState<MemeImage[]>()
     const { connection } = useConnection()
-    const { sendTransaction } = useWallet()
+    const { sendTransaction, publicKey } = useWallet()
+    const [hasPendingTransaction, setHasPendingTransaction] = useState(false)
+    const { networkConfiguration } = useNetworkConfiguration()
 
     // get the trending memeCoins from the API
     useEffect(() => {
@@ -115,18 +118,18 @@ const Home: React.FC = () => {
     }, [])
 
     // TODO Implement buyMysteryBox function to actual buy something
-    const buyMysteryBox = async () => {
+    const buyMysteryBox = async (boxTypeId: string) => {
         try {
             const response = await fetch(
-                'https://api.example.com/buy-mystery-box',
+                `${import.meta.env.VITE_ENV_BACKEND_URL}/api/boxes/${boxTypeId}/wallet/${publicKey?.toBase58()}/open`,
                 {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({
-                        userId: 'your-user-id', // Replace with actual user ID
-                    }),
+                    // body: JSON.stringify({
+                    //     boxId: 'your-user-id', // Replace with actual user ID
+                    // }),
                 }
             )
 
@@ -143,13 +146,11 @@ const Home: React.FC = () => {
             const transactionObject = Transaction.from(
                 Buffer.from(transaction, 'base64')
             )
-            const signature = await sendTransaction(
-                transactionObject,
-                connection
-            )
 
-            await connection.confirmTransaction(signature, 'processed')
-            console.log('Transaction confirmed with signature:', signature)
+            await sendAndConfirmTransaction({
+                transaction: transactionObject,
+                customErrorMessage: 'Failed to buy mystery box',
+            })
         } catch (error) {
             console.error('Error buying mystery box:', error)
         }
@@ -157,6 +158,96 @@ const Home: React.FC = () => {
     ///TODO https://ui.aceternity.com/components/wavy-background
     ///TODO ADD MEMES AND SET DURATION BIGGER
     /// TODO ADD https://sketchfab.com/3d-models/quantum-cube-02971982b92347d4b6ddbe1c0d6487c5 AS LOADING AND OR OPENING A CHEST ANIMATION
+
+    async function sendAndConfirmTransaction({
+        transaction,
+        customErrorMessage = 'Transaction failed',
+        explorerLinkMessage = 'View transaction on Solana Explorer',
+    }: {
+        transaction: Transaction
+        customErrorMessage?: string
+        explorerLinkMessage?: string
+    }) {
+        try {
+            if (!publicKey) {
+                throw new Error('Wallet not connected')
+            }
+            const latestBlockhash = await connection.getLatestBlockhash()
+            transaction.recentBlockhash = latestBlockhash.blockhash
+            transaction.feePayer = publicKey
+            setHasPendingTransaction(true)
+            const txSignature = await sendTransaction(transaction, connection, {
+                skipPreflight: true,
+                preflightCommitment: 'finalized',
+            })
+
+            const strategy: TransactionConfirmationStrategy = {
+                signature: txSignature,
+                blockhash: latestBlockhash.blockhash,
+                lastValidBlockHeight: latestBlockhash.lastValidBlockHeight,
+            }
+            const confirmationPromise = connection.confirmTransaction(
+                strategy,
+                'finalized' as Commitment
+            )
+
+            toast.promise(
+                confirmationPromise.then((response) => {
+                    if (response.value.err) {
+                        console.error('Transaction failed:', response.value)
+                        throw new Error(customErrorMessage)
+                    }
+                }),
+                {
+                    success: {
+                        title: 'Transaction Confirmed',
+                        description: (
+                            <a
+                                href={`${SOLANA_EXPLORER_URL}/tx/${txSignature}?cluster=${networkConfiguration}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                style={{ textDecoration: 'underline' }}
+                            >
+                                View on Solana explorer{' '}
+                            </a>
+                        ),
+                        duration: 12000,
+                        isClosable: true,
+                    },
+                    error: {
+                        title: customErrorMessage,
+                        description: (
+                            <a
+                                href={`${SOLANA_EXPLORER_URL}/tx/${txSignature}?cluster=${networkConfiguration}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                style={{ textDecoration: 'underline' }}
+                            >
+                                View on Solana explorer{' '}
+                            </a>
+                        ),
+                        duration: 12000,
+                        isClosable: true,
+                    },
+                    loading: 'Processing Transaction',
+                }
+            )
+            const result = await confirmationPromise
+            setHasPendingTransaction(false)
+
+            if (result.value.err) {
+                return false
+            }
+
+            return txSignature
+        } catch (error) {
+            // Show error toast
+            setHasPendingTransaction(false)
+            toast.info('User rejected the request')
+
+            throw error
+        }
+    }
 
     return (
         <div className="flex flex-col  w-screen max-w-screen select-none bg-background-dark overflow-hidden">
@@ -166,13 +257,6 @@ const Home: React.FC = () => {
                 gradientBackgroundEnd="rgb(19, 39, 40)"
                 size="100%"
             >
-                <WalletMultiButton
-                    style={{
-                        padding: '0',
-                        backgroundColor: 'transparent',
-                        // color: connected ? '#0E7490' : '#24B9C0',
-                    }}
-                />
                 <SectionContainer key={1}>
                     <div
                         ref={containerRef}
@@ -277,6 +361,8 @@ const Home: React.FC = () => {
                 >
                     <img src={fluidTape} alt="Fluid Tape" />
                 </div>
+
+                {/* BOXES SECTIONS */}
                 <div className="flex flex-col justify-center items-center w-full space-y-32 md:space-y-0">
                     <div className="relative md:-ml-[50%] z-[100]">
                         <img
@@ -286,22 +372,6 @@ const Home: React.FC = () => {
                         ></img>
                         <div className="absolute inset-0 rounded-lg bg-gradient-to-b from-transparent via-accent to-[#06aefc] opacity-20 blur-xl"></div>
 
-                        <div className="flex flex-col justify-center items-start ml-8">
-                            <h2 className="text-2xl font-bold text-accent">
-                                Adventurer Level
-                            </h2>
-                            <p className="text-lg text-gray-300">
-                                Intermediate
-                            </p>
-                            <h2 className="text-2xl font-bold text-accent mt-4">
-                                Well Known Memecoins
-                            </h2>
-                            <ul className="list-disc list-inside text-lg text-gray-300">
-                                <li>DogeCoin</li>
-                                <li>Shiba Inu</li>
-                                <li>PepeCoin</li>
-                            </ul>
-                        </div>
                         <div className="flex flex-col justify-center items-start ml-8 mt-4 text-gray-300">
                             <h2 className="text-2xl font-bold text-cyan-500">
                                 Meme Master Level
@@ -318,8 +388,13 @@ const Home: React.FC = () => {
                                 <li>Legendary Pepe</li>
                             </ul>
                             <div className="flex justify-center w-full mt-6">
-                                <button className="px-6 py-3 bg-gradient-to-b from-cyan-500 to-cyan-900/30 text-white font-bold rounded-full shadow-lg hover:from-cyan-500 hover:to-cyan-700 transition duration-300 transform hover:scale-105 hover:animate-none animate-pulse">
-                                    Claim Your Meme Master Box!
+                                <button
+                                    onClick={() => {
+                                        buyMysteryBox('1234')
+                                    }} /// TODO change here with the actual box id
+                                    className="px-6 py-3 bg-gradient-to-b from-cyan-500 to-cyan-900/30 text-white font-bold rounded-full shadow-lg hover:from-cyan-500 hover:to-cyan-700 transition duration-300 transform hover:scale-105 hover:animate-none animate-pulse"
+                                >
+                                    Buy Mistery Meme Box
                                 </button>
                             </div>
                         </div>
@@ -335,7 +410,7 @@ const Home: React.FC = () => {
                     >
                         <img src={waveTape} alt="Fluid Tape" />
                     </div>
-                    <div className="relative md:-mt-64 md:ml-[50%] z-[100]">
+                    <div className="relative md:-top-[400px] md:ml-[50%] z-[100]">
                         <img
                             src={cyanBox}
                             className="w-96 -hue-rotate-60 "
@@ -385,7 +460,7 @@ const Home: React.FC = () => {
                             </div>
                         </div>
                     </div> */}
-                    <div className="relative md:-ml-[40%] z-[10] md:-top-[20%]">
+                    {/* <div className="relative md:-ml-[20%] z-[10] md:-top-[500px]">
                         <img
                             src={riskyBox}
                             alt="Mystery Box"
@@ -412,9 +487,10 @@ const Home: React.FC = () => {
                                 </button>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>{' '}
+            <HistorySection />
             <div className="flex flex-col w-screen h-full">
                 <div className="flex flex-col -mt-96 relative justify-center items-center w-full md:w-1/2 h-96  ml-auto text-white p-8">
                     <div className="absolute inset-0 w-full h-screen z-0   ">
