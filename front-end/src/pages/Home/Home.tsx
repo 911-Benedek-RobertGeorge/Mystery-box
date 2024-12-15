@@ -34,6 +34,7 @@ import {
     clusterApiUrl,
 } from '@solana/web3.js'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
+import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 
 const Home: React.FC = () => {
     const containerRef = useRef<HTMLDivElement | null>(null)
@@ -165,6 +166,13 @@ const Home: React.FC = () => {
                 gradientBackgroundEnd="rgb(19, 39, 40)"
                 size="100%"
             >
+                <WalletMultiButton
+                    style={{
+                        padding: '0',
+                        backgroundColor: 'transparent',
+                        // color: connected ? '#0E7490' : '#24B9C0',
+                    }}
+                />
                 <SectionContainer key={1}>
                     <div
                         ref={containerRef}
