@@ -31,14 +31,17 @@ function App() {
     return (
         <Router>
             <SolContextProvider>
-                <Navbar />
-                <Toaster />
+                {' '}
+                <div className="max-w-screen overflow-hidden">
+                    <Navbar />
+                    <Toaster />
 
-                <Routes>
-                    <Route path={`/`} element={<Home />} />
-                    <Route path={`/boxes`} element={<MysteryBoxes />} />
-                    <Route path={`/my-boxes`} element={<MysteryBoxes />} />
-                </Routes>
+                    <Routes>
+                        <Route path={`/`} element={<Home />} />
+                        <Route path={`/boxes`} element={<MysteryBoxes />} />
+                        <Route path={`/my-boxes`} element={<MysteryBoxes />} />
+                    </Routes>
+                </div>
             </SolContextProvider>
         </Router>
     )

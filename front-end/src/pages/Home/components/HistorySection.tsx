@@ -94,12 +94,17 @@ const HistorySection: React.FC = () => {
         (state: { solana: { price: number } }) => state.solana.price
     )
     return (
-        <div className="w-screen h-screen   flex flex-col justify-center items-center">
+        <div className="z-[111] w-screen h-screen flex flex-col justify-center items-center p-10 md:p-64">
             {/* <div className="mb-3 flex w-full max-w-screen-xl transform cursor-pointer flex-col justify-between rounded-md bg-white bg-opacity-75 p-6 text-slate-800 transition duration-500 ease-in-out hover:-translate-y-1 hover:shadow-lg dark:bg-slate-700 dark:bg-opacity-25 dark:text-slate-300 lg:flex-row lg:p-4"> */}
+            <div className="flex justify-start items-start w-full ">
+                <span className="text-3xl font-bold text-accent p-2 mb-4 ">
+                    Latest Boxes sold
+                </span>
+            </div>
             {historyData.map((box) => {
                 return (
-                    <div className="mb-3 flex w-full max-w-screen-xl transform cursor-pointer flex-col justify-between rounded-md bg-background-light bg-opacity-75 p-6 text-accent transition duration-500 ease-in-out hover:-translate-y-1 hover:shadow-lg dark:bg-slate-700 dark:bg-opacity-25 dark:text-slate-300 lg:flex-row lg:p-4">
-                        <div className="flex w-full flex-row lg:w-3/12">
+                    <div className="mb-3 flex w-full max-w-screen transform cursor-pointer flex-col justify-between rounded-md bg-background-light bg-opacity-75 p-6 text-accent transition duration-500 ease-in-out hover:-translate-y-1 hover:shadow-2xl hover:shadow-accent-dark md:flex-row md:p-4">
+                        <div className="flex w-full flex-row md:w-3/12">
                             <div className="relative flex flex-col">
                                 <div className="flex h-12 w-12 flex-shrink-0 flex-col justify-center rounded-full bg-slate-200 bg-opacity-50 dark:bg-slate-600">
                                     <img
@@ -123,13 +128,13 @@ const HistorySection: React.FC = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="z-50 hidden w-1/6 self-center lg:block">
+                        <div className="z-50  w-1/6 self-center block">
                             <div className="flex flex-row justify-center">
                                 <div
                                     x-data="{ tooltip: false }"
                                     // onMouseOver={() => (tooltip = true)}
                                     // onMouseLeave={() => (tooltip = false)}
-                                    className="relative z-0 -mr-4 inline-flex transition duration-300 ease-in-out hover:-mr-1"
+                                    className="relative z-0 -mr-4 inline-flex flex-row transition duration-300 ease-in-out hover:-mr-1"
                                     x-cloak
                                 >
                                     {box.boxContent.map((content) => {
@@ -144,7 +149,7 @@ const HistorySection: React.FC = () => {
 
                                     {/* TOOLTIP HERE */}
                                     <div
-                                        className="relative z-50 overflow-visible pt-2"
+                                        className=" hidden relative z-50 overflow-visible pt-2"
                                         x-cloak
                                         x-show="tooltip"
                                         x-transition:enter="transition ease-out duration-150"

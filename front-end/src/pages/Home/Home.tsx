@@ -10,6 +10,12 @@ import simpleBox from '../../assets/elements/logo1.png'
 import stand from '../../assets/shapes/stand.png'
 import questionMark from '../../assets/elements/question_mark.png'
 import dogeCoin from '../../assets/coins/doge.png'
+import boom from '../../assets/coins/boom.png'
+import mow from '../../assets/coins/mow.png'
+import pnut from '../../assets/coins/pnut.png'
+import popcat from '../../assets/coins/popcat.png'
+import wif from '../../assets/coins/wif.png'
+
 import key from '../../assets/boxes/key.png'
 import chillGuy from '../../assets/coins/chill-guy.png'
 import bonk from '../../assets/coins/bonk.png'
@@ -37,6 +43,8 @@ import HistorySection from './components/HistorySection'
 import { useNetworkConfiguration } from '../../context/Solana/SolNetworkConfigurationProvider'
 import { toast } from 'react-hot-toast'
 
+const memeCoinImages = [dogeCoin, chillGuy, bonk, boom, mow, pnut, popcat, wif]
+
 const Home: React.FC = () => {
     const containerRef = useRef<HTMLDivElement | null>(null)
     const [scrollPosition, setScrollPosition] = useState(0)
@@ -56,9 +64,9 @@ const Home: React.FC = () => {
         //     .catch((error) => {
         //         console.error('Error:', error)
         //     })
-        const memeImages = MEMES.map((meme) => {
+        const memeImages = memeCoinImages.map((meme) => {
             return {
-                src: meme.token.image,
+                src: meme,
                 top: `${Math.random() * 50 + 10}%`,
                 left: `${Math.random() * 80 + 10}%`,
             }
@@ -161,8 +169,6 @@ const Home: React.FC = () => {
 
     async function sendAndConfirmTransaction({
         transaction,
-        customErrorMessage = 'Transaction failed',
-        explorerLinkMessage = 'View transaction on Solana Explorer',
     }: {
         transaction: Transaction
         customErrorMessage?: string
@@ -191,47 +197,21 @@ const Home: React.FC = () => {
                 'finalized' as Commitment
             )
 
-            toast.promise(
-                confirmationPromise.then((response) => {
-                    if (response.value.err) {
-                        console.error('Transaction failed:', response.value)
-                        throw new Error(customErrorMessage)
-                    }
-                }),
-                {
-                    success: {
-                        title: 'Transaction Confirmed',
-                        description: (
-                            <a
-                                href={`${SOLANA_EXPLORER_URL}/tx/${txSignature}?cluster=${networkConfiguration}`}
-                                target="_blank"
-                                rel="noreferrer"
-                                style={{ textDecoration: 'underline' }}
-                            >
-                                View on Solana explorer{' '}
-                            </a>
-                        ),
-                        duration: 12000,
-                        isClosable: true,
-                    },
-                    error: {
-                        title: customErrorMessage,
-                        description: (
-                            <a
-                                href={`${SOLANA_EXPLORER_URL}/tx/${txSignature}?cluster=${networkConfiguration}`}
-                                target="_blank"
-                                rel="noreferrer"
-                                style={{ textDecoration: 'underline' }}
-                            >
-                                View on Solana explorer{' '}
-                            </a>
-                        ),
-                        duration: 12000,
-                        isClosable: true,
-                    },
-                    loading: 'Processing Transaction',
-                }
-            )
+            toast.promise(confirmationPromise, {
+                loading: 'Processing Transaction',
+                success: () => (
+                    <a
+                        href={`${SOLANA_EXPLORER_URL}/tx/${txSignature}?cluster=${networkConfiguration}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{ textDecoration: 'underline' }}
+                    >
+                        View on Solana explorer
+                    </a>
+                ),
+                error: (err) => `Transaction failed: ${err.message}`,
+            })
+
             const result = await confirmationPromise
             setHasPendingTransaction(false)
 
@@ -243,14 +223,14 @@ const Home: React.FC = () => {
         } catch (error) {
             // Show error toast
             setHasPendingTransaction(false)
-            toast.info('User rejected the request')
+            toast.error('User rejected the request')
 
             throw error
         }
     }
 
     return (
-        <div className="flex flex-col  w-screen max-w-screen select-none bg-background-dark overflow-hidden">
+        <div className="flex flex-col relative w-screen max-w-screen select-none bg-background-dark overflow-hidden">
             <BackgroundGradientAnimation
                 className="justify-center allign-center h-full!"
                 gradientBackgroundStart="rgb(0, 0, 0)"
@@ -264,10 +244,12 @@ const Home: React.FC = () => {
                     >
                         <div className="opacity-0 md:opacity-100 w-full left-0 text-center">
                             <div className=" text-2xl md:text-6xl w-full flex flex-col">
-                                <h1 className="z-[103] md:-ml-[60%] leading-tight font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-accent via-purple-500 to-accent-secondary animate-glossy ">
+                                <div className="z-[41] left-[10%] blur-lg w-1/5 h-20 bg-neutral-900    absolute"></div>
+                                <h1 className="z-[103] md:-ml-[60%] leading-tight text-transparent bg-clip-text bg-gradient-to-r from-accent via-accent-dark to-emerald-500 animate-glossy ">
                                     Fancy some
                                 </h1>{' '}
-                                <h1 className="z-[103] md:-ml-[40%] leading-tight font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-accent via-purple-500 to-accent-secondary animate-glossy ">
+                                <div className="z-[41] left-[18%] blur-xl w-1/4 h-20 top-40 bg-neutral-900    absolute"></div>
+                                <h1 className="z-[103] md:-ml-[40%] leading-tight text-transparent bg-clip-text bg-gradient-to-r  from-accent via-accent-dark to-emerald-500 animate-glossy ">
                                     memes fortunes
                                 </h1>{' '}
                             </div>
@@ -325,15 +307,15 @@ const Home: React.FC = () => {
                                 style={{ transformStyle: 'preserve-3d' }}
                             ></img>
                         </div>{' '}
-                        <div className=" opacity-0 md:opacity-100 w-full md:-ml-[60%] -mt-64 text-center">
-                            <div className=" text-xl md:text-3xl w-full flex flex-col">
-                                <h3 className="md:ml-64    leading-tight font-extrabold  text-cyan-400 ">
+                        <div className="opacity-0 md:opacity-100 w-full md:-ml-[60%] -mt-64 text-center">
+                            <div className=" text-xl md:text-3xl w-full flex flex-col leading-tight font-semibold  ">
+                                <h3 className="md:ml-64  text-accent ">
                                     Buy MeMestery boxes
                                 </h3>
-                                <h1 className=" mt-6 ml-48 leading-tight font-extrabold text-accent-light ">
+                                <h1 className=" mt-6 ml-48  text-purple-800  ">
                                     Uncover treasures
                                 </h1>{' '}
-                                <h1 className=" mt-8 ml-32 leading-tight font-extrabold text-[#FB83EB] ">
+                                <h1 className=" mt-8 ml-32   text-accent-secondary ">
                                     Track your ROI
                                 </h1>{' '}
                             </div>
@@ -363,7 +345,7 @@ const Home: React.FC = () => {
                 </div>
 
                 {/* BOXES SECTIONS */}
-                <div className="flex flex-col justify-center items-center w-full space-y-32 md:space-y-0">
+                <div className=" relative flex flex-col justify-center items-center w-full space-y-32 md:space-y-0">
                     <div className="relative md:-ml-[50%] z-[100]">
                         <img
                             src={cyanBox}
@@ -506,7 +488,7 @@ const Home: React.FC = () => {
                             />
                         </div>{' '}
                         <img
-                            className="z-[110] absolut transition-all duration-1000 ease-out"
+                            className="z-[110] absolut transition-all duration-1000 ease-out "
                             src={key}
                             style={{
                                 transform: `translateX(${Math.max(0, -2650 + scrollPosition)}px) translateY(${-2050 + scrollPosition}px) `, //translateX(${((-1 * (scrollPosition  / 5) % 2) * scrollPosition) % 1200}px)
@@ -556,7 +538,7 @@ const Home: React.FC = () => {
 
                 <SectionContainer key={2}>
                     <div className="flex flex-col justify-center items-center w-full h-full  text-stone-300 ">
-                        <div className="relative z-[110] flex flex-col  w-full h-full    ">
+                        <div className=" absolute z-[110] flex flex-col  w-full h-full    ">
                             {' '}
                             <img
                                 src={leafes}
@@ -567,8 +549,8 @@ const Home: React.FC = () => {
                                 className="absolute rotate-90 -ml-8 h-[600px] left-0 -top-64 opacity-40"
                             />
                         </div>
-                        <div className="flex flex-col justify-center items-center  ">
-                            <h2 className="text-4xl font-bold mb-4">
+                        <div className="flex flex-col justify-center items-center -top-[32]">
+                            <h2 className="text-4xl font-bold mb-16">
                                 About Us
                             </h2>
                             <p className="text-lg text-center max-w-2xl mb-4">
@@ -584,7 +566,7 @@ const Home: React.FC = () => {
                             </p>
                             <p className="md:ml-96 text-lg text-center max-w-2xl mb-4">
                                 Our{' '}
-                                <span className="text-accent font-bold">
+                                <span className="text-accent font-semibold">
                                     mission
                                 </span>{' '}
                                 is to bring joy and excitement to the crypto
@@ -593,8 +575,8 @@ const Home: React.FC = () => {
                                 thrilling journey and discover the hidden gems
                                 of the meme world!
                             </p>
-                            <p className="md:-ml-64 text-lg text-center max-w-2xl mb-4">
-                                <span className="text-accent-secondary font-bold">
+                            <p className=" text-lg text-center max-w-2xl mb-4">
+                                <span className="md:ml-96 text-accent-secondary font-semibold">
                                     Why MemeBox?
                                 </span>{' '}
                                 We believe in the power of memes to connect
@@ -603,8 +585,8 @@ const Home: React.FC = () => {
                                 delight, offering a mix of common, rare, and
                                 legendary meme coins.
                             </p>
-                            <p className="text-lg text-center max-w-2xl mb-4">
-                                <span className="text-purple-500 font-bold">
+                            <p className=" md:ml-96 text-lg text-center max-w-2xl mb-4">
+                                <span className="text-purple-500  md:ml-80 font-semibold">
                                     Get Started
                                 </span>{' '}
                                 by purchasing a mystery box today and uncover
