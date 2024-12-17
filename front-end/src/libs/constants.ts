@@ -1,3 +1,5 @@
+export const SOLANA_EXPLORER_URL = 'https://explorer.solana.com/'
+
 export const MEMES = [
     {
         token: {
