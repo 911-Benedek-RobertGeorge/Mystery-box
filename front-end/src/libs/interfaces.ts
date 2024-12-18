@@ -15,7 +15,7 @@ export interface MintWithTicker {
     ticker: string
 }
 
-export interface BoxType {
+export interface BoxType1 {
     name: string
     risk: RiskType
     maxBoxAmount: number // max number of boxes that can be bought
@@ -41,4 +41,12 @@ export interface Box {
     boxType: BoxType
     buyer?: string
     createdAt: Date
+}
+
+export type BoxType = {
+    _id: string
+    name: string
+    amountLamports: string
+    maxBoxAmount: number
+    availableBoxes: number
 }

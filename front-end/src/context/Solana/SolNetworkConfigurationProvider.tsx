@@ -16,20 +16,15 @@ export function useNetworkConfiguration(): NetworkConfigurationState {
 export const SolNetworkConfigurationProvider: FC<{ children: ReactNode }> = ({
     children,
 }) => {
-    const currentNetworkConfig =
-        import.meta.env.VITE_ENV_NETWORK === 'mainnet'
-            ? 'mainnet-beta'
-            : import.meta.env.VITE_ENV_NETWORK
-
     const [networkConfiguration, setNetworkConfiguration] = useLocalStorage(
         'network',
-        currentNetworkConfig
+        import.meta.env.VITE_ENV_NETWORK
     )
     return (
         <NetworkConfigurationContext.Provider
             value={{
                 networkConfiguration:
-                    networkConfiguration ?? currentNetworkConfig,
+                    networkConfiguration ?? import.meta.env.VITE_ENV_NETWORK,
                 setNetworkConfiguration,
             }}
         >

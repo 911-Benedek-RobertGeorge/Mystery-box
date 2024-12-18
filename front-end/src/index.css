@@ -25,7 +25,7 @@
 
 .animate-glossy {
     background-size: 200% 200%;
-    animation: glossy 3s ease infinite;
+    animation: glossy 6s ease infinite;
 }
 
 @layer base {
