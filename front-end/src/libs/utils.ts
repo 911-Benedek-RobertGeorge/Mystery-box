@@ -27,3 +27,12 @@ export function hasBackendSignedTransaction(
         return false
     })
 }
+
+export function shortenAddress(address: string, visibleChars: number): string {
+    if (address.length <= visibleChars) {
+        return address
+    }
+    const start = address.slice(0, visibleChars)
+    const end = address.slice(-visibleChars)
+    return `${start}...${end}`
+}

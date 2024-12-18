@@ -130,67 +130,65 @@ const Home: React.FC = () => {
     ///TODO ADD MEMES AND SET DURATION BIGGER
     /// TODO ADD https://sketchfab.com/3d-models/quantum-cube-02971982b92347d4b6ddbe1c0d6487c5 AS LOADING AND OR OPENING A CHEST ANIMATION
 
-    async function sendAndConfirmTransaction({
-        transaction,
-    }: {
-        transaction: Transaction
-        customErrorMessage?: string
-        explorerLinkMessage?: string
-    }) {
-        try {
-            if (!publicKey) {
-                throw new Error('Wallet not connected')
-            }
-            const latestBlockhash = await connection.getLatestBlockhash()
-            transaction.recentBlockhash = latestBlockhash.blockhash
-            transaction.feePayer = publicKey
-            setHasPendingTransaction(true)
-            const txSignature = await sendTransaction(transaction, connection, {
-                skipPreflight: true,
-                preflightCommitment: 'finalized',
-            })
+    // async function sendAndConfirmTransaction({
+    //     transaction,
+    // }: {
+    //     transaction: Transaction
+    // }) {
+    //     try {
+    //         if (!publicKey) {
+    //             throw new Error('Wallet not connected')
+    //         }
+    //         const latestBlockhash = await connection.getLatestBlockhash()
+    //         transaction.recentBlockhash = latestBlockhash.blockhash
+    //         transaction.feePayer = publicKey
+    //         setHasPendingTransaction(true)
+    //         const txSignature = await sendTransaction(transaction, connection, {
+    //             skipPreflight: true,
+    //             preflightCommitment: 'finalized',
+    //         })
 
-            const strategy: TransactionConfirmationStrategy = {
-                signature: txSignature,
-                blockhash: latestBlockhash.blockhash,
-                lastValidBlockHeight: latestBlockhash.lastValidBlockHeight,
-            }
-            const confirmationPromise = connection.confirmTransaction(
-                strategy,
-                'finalized' as Commitment
-            )
+    //         const strategy: TransactionConfirmationStrategy = {
+    //             signature: txSignature,
+    //             blockhash: latestBlockhash.blockhash,
+    //             lastValidBlockHeight: latestBlockhash.lastValidBlockHeight,
+    //         }
+    //         const confirmationPromise = connection.confirmTransaction(
+    //             strategy,
+    //             'finalized' as Commitment
+    //         )
 
-            toast.promise(confirmationPromise, {
-                loading: 'Processing Transaction',
-                success: () => (
-                    <a
-                        href={`${SOLANA_EXPLORER_URL}/tx/${txSignature}?cluster=${networkConfiguration}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        style={{ textDecoration: 'underline' }}
-                    >
-                        View on Solana explorer
-                    </a>
-                ),
-                error: (err) => `Transaction failed: ${err.message}`,
-            })
+    //         toast.promise(confirmationPromise, {
+    //             loading: 'Processing Transaction',
+    //             success: () => (
+    //                 <a
+    //                     href={`${SOLANA_EXPLORER_URL}/tx/${txSignature}?cluster=${networkConfiguration}`}
+    //                     target="_blank"
+    //                     rel="noreferrer"
+    //                     style={{ textDecoration: 'underline' }}
+    //                 >
+    //                     View on Solana explorer
+    //                 </a>
+    //             ),
+    //             error: (err) => `Transaction failed: ${err.message}`,
+    //         })
 
-            const result = await confirmationPromise
-            setHasPendingTransaction(false)
+    //         const result = await confirmationPromise
+    //         setHasPendingTransaction(false)
 
-            if (result.value.err) {
-                return false
-            }
+    //         if (result.value.err) {
+    //             return false
+    //         }
 
-            return txSignature
-        } catch (error) {
-            // Show error toast
-            setHasPendingTransaction(false)
-            toast.error('User rejected the request')
+    //         return txSignature
+    //     } catch (error) {
+    //         // Show error toast
+    //         setHasPendingTransaction(false)
+    //         toast.error('User rejected the request')
 
-            throw error
-        }
-    }
+    //         throw error
+    //     }
+    // }
 
     return (
         <div className="flex flex-col relative w-screen max-w-screen select-none bg-background-dark overflow-hidden">

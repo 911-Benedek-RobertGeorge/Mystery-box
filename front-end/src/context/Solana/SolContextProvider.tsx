@@ -23,8 +23,23 @@ const SolWalletContextProvider: FC<{ children: ReactNode }> = ({
     const { autoConnect } = useSolAutoConnect()
     const { networkConfiguration } = useNetworkConfiguration()
     const network = networkConfiguration as WalletAdapterNetwork
-    const endpoint = useMemo(() => clusterApiUrl(network), [network])
+    const endpoint = useMemo(
+        () =>
+            // import.meta.env.VITE_ENV_SOLANA_NETWORK_RPC
+            //     ? import.meta.env.VITE_ENV_SOLANA_NETWORK_RPC
+            //     : clusterApiUrl(network),
+
+            'https://solana-mainnet.g.alchemy.com/v2/nL4aWYneHAajUr9tLDp4asFLLGnAd45H',
+        [network]
+    )
     const wallets = useMemo(() => [], [network])
+    console.log(
+        networkConfiguration,
+        network,
+        clusterApiUrl(network),
+        endpoint,
+        import.meta.env.VITE_ENV_SOLANA_NETWORK_RPC
+    )
 
     const onError = useCallback((error: WalletError) => {
         console.error(error)

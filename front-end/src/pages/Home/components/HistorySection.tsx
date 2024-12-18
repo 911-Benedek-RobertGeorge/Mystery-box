@@ -2,6 +2,7 @@ import React from 'react'
 import logo from '../../../assets/elements/logo.png'
 import boom from '../../../assets/coins/boom.png'
 import { useSelector } from 'react-redux'
+import { shortenAddress } from '../../../libs/utils'
 interface HistoryItem {
     price: number
     currentPrice: number
@@ -127,7 +128,13 @@ const HistorySection: React.FC = () => {
                                     {box.boxType}
                                 </div>
                                 <div className="text-sm text-slate-500">
-                                    {box.owner ? box.owner : 'Owner 0x1234'}
+                                    {box.owner
+                                        ? box.owner
+                                        : 'Owner ' +
+                                          shortenAddress(
+                                              'DQRpQJFGm6PZ3SkVrfUVminezscma9Gbec2u7TchHZAB',
+                                              6
+                                          )}
                                 </div>
                             </div>
                         </div>
