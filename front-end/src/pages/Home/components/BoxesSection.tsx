@@ -8,6 +8,8 @@ import {
     Transaction,
     TransactionConfirmationStrategy,
 } from '@solana/web3.js'
+import { hasBackendSignedTransaction } from '../../../libs/utils'
+import { th } from 'framer-motion/client'
 
 const BoxesSection: React.FC = () => {
     const boxTypes: BoxType[] = useSelector(
@@ -36,15 +38,18 @@ const BoxesSection: React.FC = () => {
             console.log('Response:', response)
 
             const transactionEncoded = await response.json()
-            // Send the transaction object further
-            console.log('Transaction:', transaction)
-
-            // You can add further logic here to handle the transaction
+            console.log('Transaction:', transactionEncoded)
 
             const transactionObject = Transaction.from(
                 Buffer.from(transactionEncoded, 'base64')
             )
-            sign
+
+            if (!hasBackendSignedTransaction(transactionObject)) {
+                throw new Error(
+                    'Backend has not partial signed the transaction'
+                )
+            }
+
             // await sendAndConfirmTransaction({
             //     transaction: transactionObject,
             //     customErrorMessage: 'Failed to buy mystery box',
