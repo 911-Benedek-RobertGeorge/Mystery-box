@@ -7,6 +7,7 @@ import { Toaster } from 'react-hot-toast'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
 import { setSolanaPrice } from './context/store/SolanaSlice'
+import { setBoxTypes } from './context/store/BoxSlice'
 
 function App() {
     const dispatch = useDispatch()
@@ -25,6 +26,27 @@ function App() {
             }
         }
 
+        const fetchBoxTypes = async () => {
+            try {
+                const response = await fetch(
+                    `${import.meta.env.VITE_ENV_BACKEND_URL}/boxes/types`,
+                    {
+                        method: 'GET',
+                        body: null,
+                        headers: {
+                            'Content-type': 'application/json',
+                        },
+                    }
+                )
+                const data = await response.json()
+                dispatch(setBoxTypes(data))
+                console.log('Box types fetched: ', data)
+            } catch (error) {
+                console.error('Error fetching box types', error)
+            }
+        }
+
+        fetchBoxTypes()
         fetchSolanaPrice()
     }, [dispatch])
 

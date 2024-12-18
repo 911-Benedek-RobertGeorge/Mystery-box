@@ -101,9 +101,12 @@ const HistorySection: React.FC = () => {
                     Latest Boxes sold
                 </span>
             </div>
-            {historyData.map((box) => {
+            {historyData.map((box, index) => {
                 return (
-                    <div className="mb-3 flex w-full max-w-screen transform cursor-pointer flex-col justify-between rounded-md bg-background-light bg-opacity-75 p-6 text-accent transition duration-500 ease-in-out hover:-translate-y-1 hover:shadow-2xl hover:shadow-accent-dark md:flex-row md:p-4">
+                    <div
+                        key={index}
+                        className="mb-3 flex w-full max-w-screen transform cursor-pointer flex-col justify-between rounded-md bg-background-light bg-opacity-75 p-6 text-accent transition duration-500 ease-in-out hover:-translate-y-1 hover:shadow-2xl hover:shadow-accent-dark md:flex-row md:p-4"
+                    >
                         <div className="flex w-full flex-row md:w-3/12">
                             <div className="relative flex flex-col">
                                 <div className="flex h-12 w-12 flex-shrink-0 flex-col justify-center rounded-full bg-slate-200 bg-opacity-50 dark:bg-slate-600">
