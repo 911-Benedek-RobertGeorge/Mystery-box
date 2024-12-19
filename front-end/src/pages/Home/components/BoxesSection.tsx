@@ -12,7 +12,7 @@ import { hasBackendSignedTransaction } from '../../../libs/utils'
 import { SOLANA_EXPLORER_URL } from '../../../libs/constants'
 import { useNetworkConfiguration } from '../../../context/Solana/SolNetworkConfigurationProvider'
 import toast from 'react-hot-toast'
-import Buffer from 'buffer'
+import { Buffer } from 'buffer'
 
 const BoxesSection: React.FC = () => {
     const boxTypes: BoxType[] = useSelector(
@@ -23,6 +23,7 @@ const BoxesSection: React.FC = () => {
     const [hasPendingTransaction, setHasPendingTransaction] = useState(false)
     const { connection } = useConnection()
     const { networkConfiguration } = useNetworkConfiguration()
+
     const buyMysteryBox = async (boxTypeId: string) => {
         setOpenBuyBoxModal(true)
         if (!publicKey) {
@@ -50,10 +51,7 @@ const BoxesSection: React.FC = () => {
                 .transactionEncoded
             console.log('Transaction:', transactionEncoded)
 
-            const transactionBuffer = Buffer.Buffer.from(
-                transactionEncoded,
-                'base64'
-            )
+            const transactionBuffer = Buffer.from(transactionEncoded, 'base64')
             // const variable = transactionEncoded.deserialize()
             const transactionObject = Transaction.from(transactionBuffer)
 
@@ -73,6 +71,29 @@ const BoxesSection: React.FC = () => {
             setOpenBuyBoxModal(false)
         }
     }
+    async function indexTransaction(signature: string) {
+        try {
+            const response = await fetch(
+                `${import.meta.env.VITE_ENV_BACKEND_URL}/index`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ signature }),
+                }
+            )
+
+            if (!response.ok) {
+                throw new Error('Failed to index the transaction')
+            }
+
+            const result = await response.json()
+            console.log('Transaction indexed successfully:', result)
+        } catch (error) {
+            console.error('Error indexing transaction:', error)
+        }
+    }
 
     async function sendAndConfirmTransaction({
         transaction,
@@ -90,14 +111,17 @@ const BoxesSection: React.FC = () => {
                 connection.rpcEndpoint
             )
             const latestBlockhash = await connection.getLatestBlockhash()
-            transaction.recentBlockhash = latestBlockhash.blockhash
-            transaction.feePayer = publicKey
+            // transaction.recentBlockhash = latestBlockhash.blockhash
+            // transaction.feePayer = publicKey
             setHasPendingTransaction(true)
             console.log('Transaction:', transaction, 'Signing transaction')
-            if (signTransaction === undefined) {
-                throw new Error('signTransaction is undefined')
-            }
+            // if (signTransaction === undefined) {
+            //     throw new Error('signTransaction is undefined')
+            // }
 
+            const txSignature = await sendTransaction(transaction, connection, {
+                skipPreflight: true,
+            })
             // const rawTransaction = transaction.serialize()
             // const txSignature = await connection.sendRawTransaction(
             //     rawTransaction,
@@ -105,13 +129,17 @@ const BoxesSection: React.FC = () => {
             //         skipPreflight: true,
             //     }
             // )
-            const signedTransaction = await signTransaction(transaction)
+            // const signedTransaction = await sendTransaction(transaction)
+            // const signers = transaction.signatures
+            // console.log('SIGNERS:', { signers })
+            // transaction.addSignature(publicKey, Buffer.from(signers[0].signature, 'base64'))
+            // const signedTransaction = await signTransaction(transaction);
+            // transaction.addSignature(publicKey, signedTransaction.signatures[0].signature);
+            // console.log({ transactionSignatures: signedTransaction.signatures })
 
-            console.log({ transactionSignatures: signedTransaction.signatures })
-
-            const txSignature = await connection.sendRawTransaction(
-                signedTransaction.serialize()
-            )
+            // const txSignature = await connection.sendRawTransaction(
+            //     transaction.serialize()
+            // )
 
             // const confirmation = await connection.confirmTransaction(
             //     signature,
@@ -120,7 +148,7 @@ const BoxesSection: React.FC = () => {
 
             // console.log({ signature, confirmation })
 
-            console.log('Transaction:', txSignature, 'Signed')
+            // console.log('Transaction:', txSignature, 'Signed')
 
             const strategy: TransactionConfirmationStrategy = {
                 signature: txSignature,
@@ -155,6 +183,7 @@ const BoxesSection: React.FC = () => {
             if (result.value.err) {
                 return false
             }
+            await indexTransaction(txSignature)
 
             return txSignature
         } catch (error) {
