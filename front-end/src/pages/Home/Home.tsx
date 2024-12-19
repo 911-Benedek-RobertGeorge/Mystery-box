@@ -51,7 +51,7 @@ const Home: React.FC = () => {
     const [scrollPosition, setScrollPosition] = useState(0)
     const [memesImage, setMemesImage] = useState<MemeImage[]>()
     const { connection } = useConnection()
-    const { sendTransaction, publicKey } = useWallet()
+    // const { sendTransaction, publicKey } = useWallet()
     const [hasPendingTransaction, setHasPendingTransaction] = useState(false)
     const { networkConfiguration } = useNetworkConfiguration()
 

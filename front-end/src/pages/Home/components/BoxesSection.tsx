@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { Buffer } from 'buffer'
 import { BoxType } from '../../../libs/interfaces'
 import { useSelector } from 'react-redux'
 import cyanBox from '../../../assets/boxes/cyan_box-Photoroom.png'
@@ -13,6 +12,7 @@ import { hasBackendSignedTransaction } from '../../../libs/utils'
 import { SOLANA_EXPLORER_URL } from '../../../libs/constants'
 import { useNetworkConfiguration } from '../../../context/Solana/SolNetworkConfigurationProvider'
 import toast from 'react-hot-toast'
+import Buffer from 'buffer'
 
 const BoxesSection: React.FC = () => {
     const boxTypes: BoxType[] = useSelector(
@@ -50,9 +50,12 @@ const BoxesSection: React.FC = () => {
                 .transactionEncoded
             console.log('Transaction:', transactionEncoded)
 
-            const transactionObject = Transaction.from(
-                Buffer.from(transactionEncoded, 'base64')
+            const transactionBuffer = Buffer.Buffer.from(
+                transactionEncoded,
+                'base64'
             )
+            // const variable = transactionEncoded.deserialize()
+            const transactionObject = Transaction.from(transactionBuffer)
 
             if (!hasBackendSignedTransaction(transactionObject)) {
                 throw new Error(

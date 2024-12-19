@@ -32,12 +32,12 @@ function App() {
                     `${import.meta.env.VITE_ENV_BACKEND_URL}/boxes/types`,
                     {
                         method: 'GET',
-                        body: null,
                         headers: {
                             'Content-type': 'application/json',
                         },
                     }
                 )
+
                 const data = await response.json()
                 dispatch(setBoxTypes(data))
                 console.log('Box types fetched: ', data)
