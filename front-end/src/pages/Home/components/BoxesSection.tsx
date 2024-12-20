@@ -152,8 +152,8 @@ const BoxesSection: React.FC = () => {
 
             const strategy: TransactionConfirmationStrategy = {
                 signature: txSignature,
-                blockhash: latestBlockhash.blockhash,
-                lastValidBlockHeight: latestBlockhash.lastValidBlockHeight,
+                blockhash: transaction.recentBlockhash!,
+                lastValidBlockHeight: transaction.lastValidBlockHeight!,
             }
             console.log('Transaction:', txSignature, 'Confirming transaction')
 
@@ -183,6 +183,7 @@ const BoxesSection: React.FC = () => {
             if (result.value.err) {
                 return false
             }
+
             await indexTransaction(txSignature)
 
             return txSignature
