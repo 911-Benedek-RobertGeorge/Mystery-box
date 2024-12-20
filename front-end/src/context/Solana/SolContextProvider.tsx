@@ -7,7 +7,6 @@ import {
 } from '@solana/wallet-adapter-base'
 import {
     ConnectionProvider,
-    Wallet,
     WalletProvider,
 } from '@solana/wallet-adapter-react'
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui'
