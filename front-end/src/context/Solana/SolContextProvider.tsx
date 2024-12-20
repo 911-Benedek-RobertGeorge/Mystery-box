@@ -12,17 +12,17 @@ import {
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui'
 import { clusterApiUrl } from '@solana/web3.js'
 import '@solana/wallet-adapter-react-ui/styles.css'
-import { SolAutoConnectProvider } from './SolAutoConnectProvider'
+import {
+    SolAutoConnectProvider,
+    useSolAutoConnect,
+} from './SolAutoConnectProvider'
 import {
     SolNetworkConfigurationProvider,
     useNetworkConfiguration,
 } from './SolNetworkConfigurationProvider'
 
-import {
-    type SolanaSignInInput,
-    SolanaSignInMethod,
-    SolanaSignInOutput,
-} from '@solana/wallet-standard-features'
+import { type SolanaSignInInput } from '@solana/wallet-standard-features'
+
 // import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom'
 
 // export class PhantomWallet implements Wallet {
@@ -41,6 +41,9 @@ import {
 const SolWalletContextProvider: FC<{ children: ReactNode }> = ({
     children,
 }) => {
+    // TODO , investigate why it allows me log connect even if the requests are not being sent
+
+    // const { autoConnect } = useSolAutoConnect()
     const autoSignIn = useCallback(async (adapter: Adapter) => {
         // If the signIn feature is not available, return true
         if (!('signIn' in adapter)) return true
@@ -52,11 +55,18 @@ const SolWalletContextProvider: FC<{ children: ReactNode }> = ({
 
         const input: SolanaSignInInput = await createResponse.json()
 
+        console.log(
+            'input',
+            input,
+            `${import.meta.env.VITE_ENV_BACKEND_URL}/createSignInData`
+        )
         // Send the signInInput to the wallet and trigger a sign-in request
         const output = await adapter.signIn(input)
 
+        console.log('output', output)
         // Verify the sign-in output against the generated input server-side
         let strPayload = JSON.stringify({ input, output })
+        console.log('strPayload', strPayload)
         const verifyResponse = await fetch(
             `${import.meta.env.VITE_ENV_BACKEND_URL}/verifySIWS`,
             {
@@ -65,10 +75,10 @@ const SolWalletContextProvider: FC<{ children: ReactNode }> = ({
             }
         )
         const success = await verifyResponse.json()
-
+        console.log('success', success, verifyResponse)
         // If verification fails, throw an error
         if (!success) throw new Error('Sign In verification failed!')
-
+        console.log('Has thrown error?')
         return false
     }, [])
 
