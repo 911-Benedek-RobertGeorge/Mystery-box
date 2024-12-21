@@ -14,7 +14,12 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "^2.5.0",
+        "@solana/wallet-adapter-base": "0.9.23",
+        "@solana/wallet-adapter-phantom": "^0.9.24",
+        "@solana/wallet-adapter-react": "^0.15.35",
         "@solana/wallet-adapter-react-ui": "^0.9.35",
+        "@solana/wallet-standard-features": "1.1.0",
+        "@solana/wallet-standard-util": "1.1.0",
         "clsx": "^2.1.1",
         "dotenv": "^16.4.5",
         "framer-motion": "^11.11.17",
@@ -24,11 +29,7 @@
         "react-redux": "^9.2.0",
         "react-router-dom": "^6.28.0",
         "tailwind-merge": "^2.5.4",
-        "tailwind-scrollbar": "^3.1.0",
-        "@solana/wallet-adapter-base": "0.9.23",
-        "@solana/wallet-adapter-react": "^0.15.35",
-        "@solana/wallet-standard-features": "1.1.0",
-        "@solana/wallet-standard-util": "1.1.0"
+        "tailwind-scrollbar": "^3.1.0"
     },
     "devDependencies": {
         "@eslint/js": "^9.15.0",

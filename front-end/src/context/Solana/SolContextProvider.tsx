@@ -1,4 +1,3 @@
-import React from 'react'
 import { FC, ReactNode, useCallback, useMemo } from 'react'
 import {
     Adapter,
@@ -12,18 +11,14 @@ import {
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui'
 import { clusterApiUrl } from '@solana/web3.js'
 import '@solana/wallet-adapter-react-ui/styles.css'
-import {
-    SolAutoConnectProvider,
-    useSolAutoConnect,
-} from './SolAutoConnectProvider'
+import { SolAutoConnectProvider } from './SolAutoConnectProvider'
 import {
     SolNetworkConfigurationProvider,
     useNetworkConfiguration,
 } from './SolNetworkConfigurationProvider'
 
 import { type SolanaSignInInput } from '@solana/wallet-standard-features'
-
-// import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom'
+import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom'
 
 // export class PhantomWallet implements Wallet {
 //     #signIn: SolanaSignInMethod = async (...inputs) => {
@@ -43,42 +38,44 @@ const SolWalletContextProvider: FC<{ children: ReactNode }> = ({
 }) => {
     // TODO , investigate why it allows me log connect even if the requests are not being sent
 
-    // const { autoConnect } = useSolAutoConnect()
     const autoSignIn = useCallback(async (adapter: Adapter) => {
         // If the signIn feature is not available, return true
         if (!('signIn' in adapter)) return true
 
         // Fetch the signInInput from the backend
         const createResponse = await fetch(
-            `${import.meta.env.VITE_ENV_BACKEND_URL}/createSignInData`
+            `${import.meta.env.VITE_ENV_BACKEND_URL}/auth/sign-in`
         )
 
         const input: SolanaSignInInput = await createResponse.json()
-
-        console.log(
-            'input',
-            input,
-            `${import.meta.env.VITE_ENV_BACKEND_URL}/createSignInData`
-        )
-        // Send the signInInput to the wallet and trigger a sign-in request
         const output = await adapter.signIn(input)
 
-        console.log('output', output)
-        // Verify the sign-in output against the generated input server-side
-        let strPayload = JSON.stringify({ input, output })
-        console.log('strPayload', strPayload)
+        const payload = {
+            input,
+            output: {
+                account: {
+                    publicKey: Array.from(output.account.publicKey),
+                    address: output.account.address,
+                },
+                signature: Array.from(output.signature),
+                signedMessage: Array.from(output.signedMessage),
+            },
+        }
+
         const verifyResponse = await fetch(
-            `${import.meta.env.VITE_ENV_BACKEND_URL}/verifySIWS`,
+            `${import.meta.env.VITE_ENV_BACKEND_URL}/auth/verify-sign-in`,
             {
                 method: 'POST',
-                body: strPayload,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
             }
         )
         const success = await verifyResponse.json()
-        console.log('success', success, verifyResponse)
-        // If verification fails, throw an error
+
         if (!success) throw new Error('Sign In verification failed!')
-        console.log('Has thrown error?')
+
         return false
     }, [])
 
@@ -92,7 +89,8 @@ const SolWalletContextProvider: FC<{ children: ReactNode }> = ({
 
         [network]
     )
-    const wallets = useMemo(() => [], [network])
+    const wallets = useMemo(() => [new PhantomWalletAdapter()], [network])
+    console.log('wallets', wallets)
     console.log(
         networkConfiguration,
         network,
