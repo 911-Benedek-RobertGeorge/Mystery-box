@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
 import { setSolanaPrice } from './context/store/SolanaSlice'
 import { setBoxTypes } from './context/store/BoxSlice'
+import axios from 'axios'
 
 function App() {
     const dispatch = useDispatch()
@@ -15,10 +16,10 @@ function App() {
     useEffect(() => {
         const fetchSolanaPrice = async () => {
             try {
-                const response = await fetch(
+                const response = await axios(
                     'https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd'
                 )
-                const data = await response.json()
+                const data = await response.data
                 dispatch(setSolanaPrice(data.solana.usd))
                 console.log('Solana price fetched: ', data.solana.usd)
             } catch (error) {
@@ -26,10 +27,14 @@ function App() {
             }
         }
 
+        console.log(
+            'import.meta.env.VITE_ENV_BACKEND_URL',
+            import.meta.env.VITE_ENV_BACKEND_URL
+        )
         const fetchBoxTypes = async () => {
             try {
-                const response = await fetch(
-                    `${import.meta.env.VITE_ENV_BACKEND_URL}/boxes/types`,
+                const response = await axios(
+                    `${import.meta.env.VITE_ENV_BACKEND_URL || 'https://ejacdvrot9.execute-api.eu-central-1.amazonaws.com/api'}/boxes/types`,
                     {
                         method: 'GET',
                         headers: {
@@ -38,7 +43,7 @@ function App() {
                     }
                 )
 
-                const data = await response.json()
+                const data = await response.data
                 dispatch(setBoxTypes(data))
                 console.log('Box types fetched: ', data)
             } catch (error) {

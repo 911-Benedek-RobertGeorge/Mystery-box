@@ -52,7 +52,8 @@ export default defineConfig({
                 'https://ejacdvrot9.execute-api.eu-central-1.amazonaws.com/api'
             ),
             VITE_ENV_BACKEND_PUBLIC_KEY: JSON.stringify(
-                process.env.VITE_ENV_BACKEND_PUBLIC_KEY
+                process.env.VITE_ENV_BACKEND_PUBLIC_KEY ||
+                    'GQqFaWvE2RAQc7V6aTrpWzKmJBNi8qf3G6SwWHL5Yttq'
             ),
         },
     },

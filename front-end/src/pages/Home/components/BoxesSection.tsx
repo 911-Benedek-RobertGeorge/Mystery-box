@@ -13,7 +13,7 @@ import { SOLANA_EXPLORER_URL } from '../../../libs/constants'
 import { useNetworkConfiguration } from '../../../context/Solana/SolNetworkConfigurationProvider'
 import toast from 'react-hot-toast'
 import { Buffer } from 'buffer'
-
+import axios from 'axios'
 const BoxesSection: React.FC = () => {
     const boxTypes: BoxType[] = useSelector(
         (state: { box: { types: BoxType[] } }) => state.box.types

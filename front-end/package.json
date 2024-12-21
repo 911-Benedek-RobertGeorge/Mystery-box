@@ -21,6 +21,7 @@
         "@solana/wallet-standard-features": "1.1.0",
         "@solana/wallet-standard-util": "1.1.0",
         "@vitejs/plugin-basic-ssl": "^1.2.0",
+        "axios": "^1.7.9",
         "clsx": "^2.1.1",
         "dotenv": "^16.4.5",
         "framer-motion": "^11.11.17",
