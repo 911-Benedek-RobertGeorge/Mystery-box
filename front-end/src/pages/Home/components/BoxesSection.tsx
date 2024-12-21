@@ -49,6 +49,7 @@ const BoxesSection: React.FC = () => {
 
             const transactionEncoded = (await response.json())
                 .transactionEncoded
+
             console.log('Transaction:', transactionEncoded)
 
             const transactionBuffer = Buffer.from(transactionEncoded, 'base64')
