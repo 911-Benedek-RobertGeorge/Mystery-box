@@ -20,24 +20,9 @@ import {
 import { type SolanaSignInInput } from '@solana/wallet-standard-features'
 import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom'
 
-// export class PhantomWallet implements Wallet {
-//     #signIn: SolanaSignInMethod = async (...inputs) => {
-//         const outputs: SolanaSignInOutput[] = []
-//         if (inputs.length > 1) {
-//             for (const input of inputs) {
-//                 outputs.push(await this.#phantom.signIn(input))
-//             }
-//         } else {
-//             return [await this.#phantom.signIn(inputs[0])]
-//         }
-//         return outputs
-//     }
-// }
 const SolWalletContextProvider: FC<{ children: ReactNode }> = ({
     children,
 }) => {
-    // TODO , investigate why it allows me log connect even if the requests are not being sent
-
     const autoSignIn = useCallback(async (adapter: Adapter) => {
         // If the signIn feature is not available, return true
         if (!('signIn' in adapter)) return true
@@ -74,6 +59,7 @@ const SolWalletContextProvider: FC<{ children: ReactNode }> = ({
         )
         const success = await verifyResponse.json()
 
+        console.log('Sign In verification success:', success, verifyResponse)
         if (!success) throw new Error('Sign In verification failed!')
 
         return false

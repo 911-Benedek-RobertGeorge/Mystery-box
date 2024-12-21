@@ -14,6 +14,7 @@ import { useNetworkConfiguration } from '../../../context/Solana/SolNetworkConfi
 import toast from 'react-hot-toast'
 import { Buffer } from 'buffer'
 import axios from 'axios'
+import { BuyModal } from './modal/BuyModal'
 const BoxesSection: React.FC = () => {
     const boxTypes: BoxType[] = useSelector(
         (state: { box: { types: BoxType[] } }) => state.box.types
@@ -23,8 +24,10 @@ const BoxesSection: React.FC = () => {
     const [hasPendingTransaction, setHasPendingTransaction] = useState(false)
     const { connection } = useConnection()
     const { networkConfiguration } = useNetworkConfiguration()
+    const [step, setStep] = useState(0)
 
     const buyMysteryBox = async (boxTypeId: string) => {
+        setStep(1)
         setOpenBuyBoxModal(true)
         if (!publicKey) {
             throw new Error('Wallet not connected')
@@ -36,6 +39,7 @@ const BoxesSection: React.FC = () => {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        Authorization: `Bearer ${import.meta.env.VITE_ENV_JWT_TOKEN || ''}`, ///TODO THINK HOW TO KEEP THE JWT TOKEN safe
                     },
                 }
             )
@@ -51,7 +55,7 @@ const BoxesSection: React.FC = () => {
                 .transactionEncoded
 
             console.log('Transaction:', transactionEncoded)
-
+            setStep(2)
             const transactionBuffer = Buffer.from(transactionEncoded, 'base64')
             // const variable = transactionEncoded.deserialize()
             const transactionObject = Transaction.from(transactionBuffer)
@@ -61,7 +65,7 @@ const BoxesSection: React.FC = () => {
                     'Backend has not partial signed the transaction'
                 )
             }
-
+            setStep(3)
             await sendAndConfirmTransaction({
                 transaction: transactionObject,
             })
@@ -72,6 +76,7 @@ const BoxesSection: React.FC = () => {
             setOpenBuyBoxModal(false)
         }
     }
+
     async function indexTransaction(signature: string) {
         try {
             const response = await fetch(
@@ -150,7 +155,7 @@ const BoxesSection: React.FC = () => {
             // console.log({ signature, confirmation })
 
             // console.log('Transaction:', txSignature, 'Signed')
-
+            setStep(4)
             const strategy: TransactionConfirmationStrategy = {
                 signature: txSignature,
                 blockhash: transaction.recentBlockhash!,
@@ -177,7 +182,7 @@ const BoxesSection: React.FC = () => {
                 ),
                 error: (err) => `Transaction failed: ${err.message}`,
             })
-
+            setStep(5)
             const result = await confirmationPromise
             setHasPendingTransaction(false)
 
@@ -186,6 +191,7 @@ const BoxesSection: React.FC = () => {
             }
 
             await indexTransaction(txSignature)
+            setStep(6)
 
             return txSignature
         } catch (error) {
@@ -219,17 +225,23 @@ const BoxesSection: React.FC = () => {
                         <li>Legendary Pepe</li>
                     </ul>
                     <div className="flex justify-center w-full mt-6">
-                        <button
-                            onClick={() => {
-                                buyMysteryBox(boxTypes[0]._id)
-                            }}
-                            disabled={hasPendingTransaction || !publicKey}
-                            className="px-6 py-3 bg-gradient-to-b from-cyan-500 to-cyan-900/30 text-white font-bold rounded-full shadow-lg hover:from-cyan-500 hover:to-cyan-700 transition duration-300 transform hover:scale-105 hover:animate-none animate-pulse"
-                        >
-                            {publicKey
-                                ? 'Buy Mistery Meme Box'
-                                : 'Connect Wallet'}
-                        </button>
+                        <BuyModal
+                            buttonComponent={
+                                <button
+                                    onClick={() =>
+                                        buyMysteryBox(boxTypes[0].id)
+                                    }
+                                    disabled={
+                                        hasPendingTransaction || !publicKey
+                                    }
+                                    className="px-6 py-3 bg-gradient-to-b from-cyan-500 to-cyan-900/30 text-white font-bold rounded-full shadow-lg hover:from-cyan-500 hover:to-cyan-700 transition duration-300 transform hover:scale-105 hover:animate-none animate-pulse"
+                                >
+                                    {publicKey
+                                        ? 'Buy Mistery Meme Box'
+                                        : 'Connect Wallet'}
+                                </button>
+                            }
+                        />
                     </div>
                 </div>
             </div>

@@ -36,3 +36,8 @@ export function shortenAddress(address: string, visibleChars: number): string {
     const end = address.slice(-visibleChars)
     return `${start}...${end}`
 }
+
+export function lamportsToSol(lamports: number): number {
+    const LAMPORTS_PER_SOL = 1_000_000_000
+    return lamports / LAMPORTS_PER_SOL
+}

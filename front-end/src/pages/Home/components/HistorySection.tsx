@@ -141,11 +141,11 @@ const HistorySection: React.FC = () => {
                         <div className="z-50  w-1/6 self-center block">
                             <div className="flex flex-row justify-center">
                                 <div
-                                    x-data="{ tooltip: false }"
+                                    // x-data="{ tooltip: false }"
                                     // onMouseOver={() => (tooltip = true)}
                                     // onMouseLeave={() => (tooltip = false)}
                                     className="relative z-0 -mr-4 inline-flex flex-row transition duration-300 ease-in-out hover:-mr-1"
-                                    x-cloak
+                                    // x-cloak
                                 >
                                     {box.boxContent.map((content) => {
                                         return (
@@ -160,7 +160,7 @@ const HistorySection: React.FC = () => {
                                     {/* TOOLTIP HERE */}
                                     <div
                                         className=" hidden relative z-50 overflow-visible pt-2"
-                                        x-cloak
+                                        // x-cloak
                                         x-show="tooltip"
                                         x-transition:enter="transition ease-out duration-150"
                                         x-transition:enter-start="transform opacity-0 translate-y-full"
