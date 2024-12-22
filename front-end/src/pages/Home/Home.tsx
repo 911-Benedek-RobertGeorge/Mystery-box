@@ -226,7 +226,7 @@ const Home: React.FC = () => {
                             src={solanaImage}
                         /> */}
                         <MemeImagesFloating memesImage={memesImage ?? []} />
-                        <div className=" scale-75 md:scale-90 -top-32 relative z-[102] flex flex-col justify-center items-center">
+                        <div className=" scale-75 md:scale-90 -top-24 relative z-[102] flex flex-col justify-center items-center">
                             <img
                                 src={questionMark}
                                 className="w-[250px] z-[50] absolute -top-48 floating-object transition-transform duration-200 ease-out "
@@ -268,7 +268,7 @@ const Home: React.FC = () => {
                                 style={{ transformStyle: 'preserve-3d' }}
                             ></img>
                         </div>{' '}
-                        <div className="opacity-0 md:opacity-100 w-full md:-ml-[60%] -mt-64 text-center">
+                        {/* <div className="opacity-0 md:opacity-100 w-full md:-ml-[60%] -mt-64 text-center">
                             <div className=" text-xl md:text-3xl w-full flex flex-col leading-tight font-semibold  ">
                                 <h3 className="md:ml-64  text-accent ">
                                     Buy MeMestery boxes
@@ -280,21 +280,21 @@ const Home: React.FC = () => {
                                     Track your ROI
                                 </h1>{' '}
                             </div>
-                        </div>
+                        </div> */}
                     </div>
                 </SectionContainer>
             </BackgroundGradientAnimation>
             <img
                 src={vectorShape}
-                className="w-screen top-[23.5rem] rotate-12 md:rotate-6 h-[900px] absolute z-[50]  "
+                className="w-screen top-[23.5rem] rotate-12 md:rotate-6 h-[900px] absolute z-[]  "
                 style={{ transformStyle: 'preserve-3d' }}
             ></img>{' '}
-            <div className="flex flex-col justify-center items-center w-full">
+            <div className="relative flex flex-col justify-center items-center w-full">
                 {/* <div className="absolute -mt-[30%] -hue-rotate-30 -rotate-12 w-96 animate-fourth">
                     <img src={fluidTape} />
                 </div> */}
                 <div
-                    className="absolute -rotate-12 w-96 z-[102]"
+                    className="absolute -rotate-12 w-96 z-[2]"
                     style={{
                         transform: `translateX(${Math.min(-700 + scrollPosition, 250)}px) translateY(${Math.min(-700 + scrollPosition / 2.5, -330)}px)`,
                         filter: `hue-rotate(${Math.max(-80, 10 - scrollPosition / 10)}deg)`,

@@ -79,7 +79,7 @@ export const ModalBody = ({
 
     const modalRef = useRef(null)
     const { setOpen } = useModal()
-    useOutsideClick(modalRef, () => setOpen(false))
+    // useOutsideClick(modalRef, () => setOpen(false))
 
     return (
         <AnimatePresence>
@@ -96,14 +96,14 @@ export const ModalBody = ({
                         opacity: 0,
                         backdropFilter: 'blur(0px)',
                     }}
-                    className="fixed [perspective:800px] [transform-style:preserve-3d] inset-0 h-full w-full  flex items-center justify-center z-50"
+                    className="fixed [perspective:800px] [transform-style:preserve-3d] inset-0 h-full w-full  flex items-center justify-center z-[200]"
                 >
                     <Overlay />
 
                     <motion.div
                         ref={modalRef}
                         className={cn(
-                            'min-h-[50%] max-h-[90%] md:max-w-[40%] bg-white dark:bg-neutral-950 border border-transparent dark:border-neutral-800 md:rounded-2xl relative z-50 flex flex-col flex-1 overflow-hidden',
+                            'z-[200] min-h-[50%] max-h-[90%] md:max-w-[40%] bg-white dark:bg-neutral-950 border border-transparent dark:border-neutral-800 md:rounded-2xl relative flex flex-col flex-1 overflow-hidden',
                             className
                         )}
                         initial={{
@@ -185,7 +185,7 @@ const Overlay = ({ className }: { className?: string }) => {
                 opacity: 0,
                 backdropFilter: 'blur(0px)',
             }}
-            className={`fixed inset-0 h-full w-full bg-black bg-opacity-50 z-50 ${className}`}
+            className={`fixed inset-0 h-full w-full bg-black bg-opacity-30 z-[200] ${className}`}
         ></motion.div>
     )
 }
@@ -219,25 +219,25 @@ const CloseIcon = () => {
 
 // Hook to detect clicks outside of a component.
 // Add it in a separate file, I've added here for simplicity
-export const useOutsideClick = (
-    ref: React.RefObject<HTMLDivElement>,
-    callback: Function
-) => {
-    useEffect(() => {
-        const listener = (event: any) => {
-            // DO NOTHING if the element being clicked is the target element or their children
-            if (!ref.current || ref.current.contains(event.target)) {
-                return
-            }
-            callback(event)
-        }
+// export const useOutsideClick = (
+//     ref: React.RefObject<HTMLDivElement>,
+//     callback: Function
+// ) => {
+//     useEffect(() => {
+//         const listener = (event: any) => {
+//             // DO NOTHING if the element being clicked is the target element or their children
+//             if (!ref.current || ref.current.contains(event.target)) {
+//                 return
+//             }
+//             callback(event)
+//         }
 
-        document.addEventListener('mousedown', listener)
-        document.addEventListener('touchstart', listener)
+//         document.addEventListener('mousedown', listener)
+//         document.addEventListener('touchstart', listener)
 
-        return () => {
-            document.removeEventListener('mousedown', listener)
-            document.removeEventListener('touchstart', listener)
-        }
-    }, [ref, callback])
-}
+//         return () => {
+//             document.removeEventListener('mousedown', listener)
+//             document.removeEventListener('touchstart', listener)
+//         }
+//     }, [ref, callback])
+// }

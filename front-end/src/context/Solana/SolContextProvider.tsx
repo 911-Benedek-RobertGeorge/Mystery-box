@@ -19,10 +19,14 @@ import {
 
 import { type SolanaSignInInput } from '@solana/wallet-standard-features'
 import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom'
+import { useDispatch } from 'react-redux'
+import { setToken } from '../store/AuthSlice'
 
 const SolWalletContextProvider: FC<{ children: ReactNode }> = ({
     children,
 }) => {
+    const dispatch = useDispatch()
+
     const autoSignIn = useCallback(async (adapter: Adapter) => {
         // If the signIn feature is not available, return true
         if (!('signIn' in adapter)) return true
@@ -58,8 +62,8 @@ const SolWalletContextProvider: FC<{ children: ReactNode }> = ({
             }
         )
         const success = await verifyResponse.json()
-
-        console.log('Sign In verification success:', success, verifyResponse)
+        dispatch(setToken(success.jwt))
+        console.log('Sign In verification success:', success)
         if (!success) throw new Error('Sign In verification failed!')
 
         return false
@@ -75,6 +79,7 @@ const SolWalletContextProvider: FC<{ children: ReactNode }> = ({
 
         [network]
     )
+
     const wallets = useMemo(() => [new PhantomWalletAdapter()], [network])
     console.log('wallets', wallets)
     console.log(

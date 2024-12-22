@@ -15,31 +15,38 @@ import toast from 'react-hot-toast'
 import { Buffer } from 'buffer'
 import axios from 'axios'
 import { BuyModal } from './modal/BuyModal'
+
 const BoxesSection: React.FC = () => {
     const boxTypes: BoxType[] = useSelector(
         (state: { box: { types: BoxType[] } }) => state.box.types
     )
-    const { publicKey, sendTransaction, signTransaction } = useWallet()
+
+    const { publicKey, sendTransaction } = useWallet()
     const [openBuyBoxModal, setOpenBuyBoxModal] = useState(false)
     const [hasPendingTransaction, setHasPendingTransaction] = useState(false)
     const { connection } = useConnection()
     const { networkConfiguration } = useNetworkConfiguration()
     const [step, setStep] = useState(0)
 
+    const jwtToken = useSelector(
+        (state: { auth: { token: string } }) => state.auth.token
+    )
+
     const buyMysteryBox = async (boxTypeId: string) => {
         setStep(1)
         setOpenBuyBoxModal(true)
-        if (!publicKey) {
-            throw new Error('Wallet not connected')
-        }
+
         try {
+            if (!publicKey) {
+                throw new Error('Wallet not connected')
+            }
             const response = await fetch(
                 `${import.meta.env.VITE_ENV_BACKEND_URL}/boxes/${boxTypeId}/wallet/${publicKey?.toBase58()}/open`,
                 {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        Authorization: `Bearer ${import.meta.env.VITE_ENV_JWT_TOKEN || ''}`, ///TODO THINK HOW TO KEEP THE JWT TOKEN safe
+                        Authorization: `Bearer ${jwtToken}`, ///TODO THINK HOW TO KEEP THE JWT TOKEN safe
                     },
                 }
             )
@@ -59,12 +66,12 @@ const BoxesSection: React.FC = () => {
             const transactionBuffer = Buffer.from(transactionEncoded, 'base64')
             // const variable = transactionEncoded.deserialize()
             const transactionObject = Transaction.from(transactionBuffer)
-
-            if (!hasBackendSignedTransaction(transactionObject)) {
-                throw new Error(
-                    'Backend has not partial signed the transaction'
-                )
-            }
+            transactionObject.feePayer = publicKey
+            // if (!hasBackendSignedTransaction(transactionObject)) {
+            //     throw new Error(
+            //         'Backend has not partial signed the transaction'
+            //     )
+            // }
             setStep(3)
             await sendAndConfirmTransaction({
                 transaction: transactionObject,
@@ -72,6 +79,7 @@ const BoxesSection: React.FC = () => {
 
             setOpenBuyBoxModal(false)
         } catch (error) {
+            toast.error('Error buying mystery box' + error)
             console.error('Error buying mystery box:', error)
             setOpenBuyBoxModal(false)
         }
@@ -116,7 +124,7 @@ const BoxesSection: React.FC = () => {
                 'Getting latest blockhash',
                 connection.rpcEndpoint
             )
-            const latestBlockhash = await connection.getLatestBlockhash()
+            // const latestBlockhash = await connection.getLatestBlockhash()
             // transaction.recentBlockhash = latestBlockhash.blockhash
             // transaction.feePayer = publicKey
             setHasPendingTransaction(true)
@@ -203,13 +211,13 @@ const BoxesSection: React.FC = () => {
 
     return (
         <div className=" relative flex flex-col justify-center items-center w-full space-y-32 md:space-y-0">
-            <div className="relative md:-ml-[50%] z-[100]">
+            <div className="relative md:-ml-[50%]  ">
                 <img
                     src={cyanBox}
                     className="w-96"
                     style={{ transformStyle: 'preserve-3d' }}
                 ></img>
-                <div className="absolute inset-0 rounded-lg bg-gradient-to-b from-transparent via-accent to-[#06aefc] opacity-20 blur-xl"></div>
+                <div className="absolute inset-0 rounded-lg bg-gradient-to-b from-transparent via-accent to-transparent opacity-20 blur-2xl"></div>
 
                 <div className="flex flex-col justify-center items-start ml-8 mt-4 text-gray-300">
                     <h2 className="text-2xl font-bold text-cyan-500">
@@ -224,17 +232,17 @@ const BoxesSection: React.FC = () => {
                         <li>Epic Shiba</li>
                         <li>Legendary Pepe</li>
                     </ul>
-                    <div className="flex justify-center w-full mt-6">
+                    <div className="flex justify-center w-full mt-6 ">
                         <BuyModal
+                            onTrigger={() => buyMysteryBox(boxTypes[0]._id)}
                             buttonComponent={
                                 <button
                                     onClick={() =>
-                                        buyMysteryBox(boxTypes[0].id)
+                                        buyMysteryBox(boxTypes[0]._id)
                                     }
                                     disabled={
                                         hasPendingTransaction || !publicKey
                                     }
-                                    className="px-6 py-3 bg-gradient-to-b from-cyan-500 to-cyan-900/30 text-white font-bold rounded-full shadow-lg hover:from-cyan-500 hover:to-cyan-700 transition duration-300 transform hover:scale-105 hover:animate-none animate-pulse"
                                 >
                                     {publicKey
                                         ? 'Buy Mistery Meme Box'
@@ -246,7 +254,7 @@ const BoxesSection: React.FC = () => {
                 </div>
             </div>
 
-            <div className="relative md:-top-[400px] md:ml-[50%] z-[100]">
+            <div className="relative md:-top-[400px] md:ml-[50%] ">
                 <img
                     src={cyanBox}
                     className="w-96 -hue-rotate-60 "
@@ -255,7 +263,7 @@ const BoxesSection: React.FC = () => {
                         // filter: `hue-rotate(${Math.min(-80, Math.max(200 - scrollPosition / 3.3, -250))}deg)`,
                     }}
                 />
-                <div className="absolute inset-0 rounded-lg bg-gradient-to-b from-transparent via-[#3ae9af] to-[#26b321] opacity-20 blur-xl"></div>
+                <div className="absolute inset-0 rounded-lg bg-gradient-to-b from-transparent via-[#3ae9af] to-[#26b321] opacity-20 blur-2xl"></div>
 
                 <div className="z-[110] flex flex-col justify-center items-start ml-8 mt-4 text-gray-300">
                     <h2 className="text-2xl font-bold text-green-500">

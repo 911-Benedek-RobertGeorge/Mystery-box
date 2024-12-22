@@ -44,7 +44,7 @@ export interface Box {
 }
 
 export type BoxType = {
-    id: string
+    _id: string
     name: string
     amountLamports: string
     maxBoxAmount: number
