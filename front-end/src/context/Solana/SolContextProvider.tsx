@@ -120,11 +120,7 @@ export const SolContextProvider: FC<{ children: ReactNode }> = ({
     return (
         <>
             <SolNetworkConfigurationProvider>
-                <SolAutoConnectProvider>
-                    <SolWalletContextProvider>
-                        {children}
-                    </SolWalletContextProvider>
-                </SolAutoConnectProvider>
+                <SolWalletContextProvider>{children}</SolWalletContextProvider>
             </SolNetworkConfigurationProvider>
         </>
     )

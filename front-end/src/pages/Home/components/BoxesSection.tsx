@@ -2,18 +2,7 @@ import React, { useState } from 'react'
 import { BoxType } from '../../../libs/interfaces'
 import { useSelector } from 'react-redux'
 import cyanBox from '../../../assets/boxes/cyan_box-Photoroom.png'
-import { useConnection, useWallet } from '@solana/wallet-adapter-react'
-import {
-    Commitment,
-    Transaction,
-    TransactionConfirmationStrategy,
-} from '@solana/web3.js'
-import { hasBackendSignedTransaction } from '../../../libs/utils'
-import { SOLANA_EXPLORER_URL } from '../../../libs/constants'
-import { useNetworkConfiguration } from '../../../context/Solana/SolNetworkConfigurationProvider'
-import toast from 'react-hot-toast'
-import { Buffer } from 'buffer'
-import axios from 'axios'
+
 import { BuyModal } from './modal/BuyModal'
 import { VITE_ENV_BACKEND_URL } from '../../../libs/config'
 
@@ -21,193 +10,6 @@ const BoxesSection: React.FC = () => {
     const boxTypes: BoxType[] = useSelector(
         (state: { box: { types: BoxType[] } }) => state.box.types
     )
-
-    const { publicKey, sendTransaction } = useWallet()
-    const [openBuyBoxModal, setOpenBuyBoxModal] = useState(false)
-    const [hasPendingTransaction, setHasPendingTransaction] = useState(false)
-    const { connection } = useConnection()
-    const { networkConfiguration } = useNetworkConfiguration()
-    const [step, setStep] = useState(0)
-
-    const jwtToken = useSelector(
-        (state: { auth: { token: string } }) => state.auth.token
-    )
-
-    const buyMysteryBox = async (boxTypeId: string) => {
-        setStep(1)
-        setOpenBuyBoxModal(true)
-
-        try {
-            if (!publicKey) {
-                throw new Error('Wallet not connected')
-            }
-            const response = await fetch(
-                `${VITE_ENV_BACKEND_URL}/boxes/${boxTypeId}/wallet/${publicKey?.toBase58()}/open`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${jwtToken}`, ///TODO THINK HOW TO KEEP THE JWT TOKEN safe
-                    },
-                }
-            )
-
-            if (!response.ok) {
-                throw new Error(
-                    'Failed to fetch the backend to get the transaction'
-                )
-            }
-            console.log('Response:', response)
-
-            const transactionEncoded = (await response.json())
-                .transactionEncoded
-
-            console.log('Transaction:', transactionEncoded)
-            setStep(2)
-            const transactionBuffer = Buffer.from(transactionEncoded, 'base64')
-            // const variable = transactionEncoded.deserialize()
-            const transactionObject = Transaction.from(transactionBuffer)
-            transactionObject.feePayer = publicKey
-
-            // if (!hasBackendSignedTransaction(transactionObject)) {
-            //     throw new Error(
-            //         'Backend has not partial signed the transaction'
-            //     )
-            // }
-
-            setStep(3)
-            await sendAndConfirmTransaction({
-                transaction: transactionObject,
-            })
-
-            setOpenBuyBoxModal(false)
-        } catch (error) {
-            toast.error('Error buying mystery box' + error)
-            console.error('Error buying mystery box:', error)
-            setOpenBuyBoxModal(false)
-        }
-    }
-
-    async function indexTransaction(signature: string) {
-        try {
-            const response = await fetch(`${VITE_ENV_BACKEND_URL}/index`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ signature }),
-            })
-
-            if (!response.ok) {
-                throw new Error('Failed to index the transaction')
-            }
-
-            const result = await response.json()
-            console.log('Transaction indexed successfully:', result)
-        } catch (error) {
-            console.error('Error indexing transaction:', error)
-        }
-    }
-
-    async function sendAndConfirmTransaction({
-        transaction,
-    }: {
-        transaction: Transaction
-    }): Promise<string | false> {
-        try {
-            if (!publicKey) {
-                throw new Error('Wallet not connected')
-            }
-            console.log(
-                'Transaction:',
-                transaction,
-                'Getting latest blockhash',
-                connection.rpcEndpoint
-            )
-            // const latestBlockhash = await connection.getLatestBlockhash()
-            // transaction.recentBlockhash = latestBlockhash.blockhash
-            // transaction.feePayer = publicKey
-            setHasPendingTransaction(true)
-            console.log('Transaction:', transaction, 'Signing transaction')
-            // if (signTransaction === undefined) {
-            //     throw new Error('signTransaction is undefined')
-            // }
-
-            const txSignature = await sendTransaction(transaction, connection, {
-                skipPreflight: true,
-            })
-            // const rawTransaction = transaction.serialize()
-            // const txSignature = await connection.sendRawTransaction(
-            //     rawTransaction,
-            //     {
-            //         skipPreflight: true,
-            //     }
-            // )
-            // const signedTransaction = await sendTransaction(transaction)
-            // const signers = transaction.signatures
-            // console.log('SIGNERS:', { signers })
-            // transaction.addSignature(publicKey, Buffer.from(signers[0].signature, 'base64'))
-            // const signedTransaction = await signTransaction(transaction);
-            // transaction.addSignature(publicKey, signedTransaction.signatures[0].signature);
-            // console.log({ transactionSignatures: signedTransaction.signatures })
-
-            // const txSignature = await connection.sendRawTransaction(
-            //     transaction.serialize()
-            // )
-
-            // const confirmation = await connection.confirmTransaction(
-            //     signature,
-            //     'confirmed'
-            // )
-
-            // console.log({ signature, confirmation })
-
-            // console.log('Transaction:', txSignature, 'Signed')
-            setStep(4)
-            const strategy: TransactionConfirmationStrategy = {
-                signature: txSignature,
-                blockhash: transaction.recentBlockhash!,
-                lastValidBlockHeight: transaction.lastValidBlockHeight!,
-            }
-            console.log('Transaction:', txSignature, 'Confirming transaction')
-
-            const confirmationPromise = connection.confirmTransaction(
-                strategy,
-                'finalized' as Commitment
-            )
-
-            toast.promise(confirmationPromise, {
-                loading: 'Processing Transaction',
-                success: () => (
-                    <a
-                        href={`${SOLANA_EXPLORER_URL}/tx/${txSignature}?cluster=${networkConfiguration}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        style={{ textDecoration: 'underline' }}
-                    >
-                        View on Solana explorer
-                    </a>
-                ),
-                error: (err) => `Transaction failed: ${err.message}`,
-            })
-            setStep(5)
-            const result = await confirmationPromise
-            setHasPendingTransaction(false)
-
-            if (result.value.err) {
-                return false
-            }
-
-            await indexTransaction(txSignature)
-            setStep(6)
-
-            return txSignature
-        } catch (error) {
-            setHasPendingTransaction(false)
-            toast.error('User rejected the request')
-            throw error
-        }
-    }
 
     return (
         <div className=" relative flex flex-col justify-center items-center w-full space-y-32 md:space-y-0">
@@ -233,23 +35,8 @@ const BoxesSection: React.FC = () => {
                         <li>Legendary Pepe</li>
                     </ul>
                     <div className="flex justify-center w-full mt-6 ">
-                        <BuyModal
-                            onTrigger={() => buyMysteryBox(boxTypes[0]._id)}
-                            buttonComponent={
-                                <button
-                                    onClick={() =>
-                                        buyMysteryBox(boxTypes[0]._id)
-                                    }
-                                    disabled={
-                                        hasPendingTransaction || !publicKey
-                                    }
-                                >
-                                    {publicKey
-                                        ? 'Buy Mistery Meme Box'
-                                        : 'Connect Wallet'}
-                                </button>
-                            }
-                        />
+                        <BuyModal box={boxTypes ? boxTypes[0] : null} />{' '}
+                        {/* BuyModal componen */}
                     </div>
                 </div>
             </div>
