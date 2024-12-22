@@ -10,6 +10,7 @@ import { setSolanaPrice } from './context/store/SolanaSlice'
 import { setBoxTypes } from './context/store/BoxSlice'
 import axios from 'axios'
 import { VITE_ENV_BACKEND_URL } from './libs/config'
+import TermsAndConditions from './pages/TermsAndConditions/TermsAndConditions'
 
 function App() {
     const dispatch = useDispatch()
@@ -28,7 +29,6 @@ function App() {
             }
         }
 
-        console.log('.VITE_ENV_BACKEND_URL', VITE_ENV_BACKEND_URL)
         const fetchBoxTypes = async () => {
             try {
                 const response = await axios(
@@ -65,6 +65,14 @@ function App() {
                         <Route path={`/`} element={<Home />} />
                         <Route path={`/boxes`} element={<MysteryBoxes />} />
                         <Route path={`/my-boxes`} element={<MysteryBoxes />} />
+                        <Route
+                            path={`/my-boxes/:id`}
+                            element={<MysteryBoxes />}
+                        />
+                        <Route
+                            path={`/terms-and-conditions`}
+                            element={<TermsAndConditions />}
+                        />
                     </Routes>
                 </div>
             </SolContextProvider>
