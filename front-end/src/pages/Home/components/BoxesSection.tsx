@@ -15,6 +15,7 @@ import toast from 'react-hot-toast'
 import { Buffer } from 'buffer'
 import axios from 'axios'
 import { BuyModal } from './modal/BuyModal'
+import { VITE_ENV_BACKEND_URL } from '../../../libs/config'
 
 const BoxesSection: React.FC = () => {
     const boxTypes: BoxType[] = useSelector(
@@ -41,7 +42,7 @@ const BoxesSection: React.FC = () => {
                 throw new Error('Wallet not connected')
             }
             const response = await fetch(
-                `${import.meta.env.VITE_ENV_BACKEND_URL}/boxes/${boxTypeId}/wallet/${publicKey?.toBase58()}/open`,
+                `${VITE_ENV_BACKEND_URL}/boxes/${boxTypeId}/wallet/${publicKey?.toBase58()}/open`,
                 {
                     method: 'POST',
                     headers: {
@@ -67,11 +68,13 @@ const BoxesSection: React.FC = () => {
             // const variable = transactionEncoded.deserialize()
             const transactionObject = Transaction.from(transactionBuffer)
             transactionObject.feePayer = publicKey
+
             // if (!hasBackendSignedTransaction(transactionObject)) {
             //     throw new Error(
             //         'Backend has not partial signed the transaction'
             //     )
             // }
+
             setStep(3)
             await sendAndConfirmTransaction({
                 transaction: transactionObject,
@@ -87,16 +90,13 @@ const BoxesSection: React.FC = () => {
 
     async function indexTransaction(signature: string) {
         try {
-            const response = await fetch(
-                `${import.meta.env.VITE_ENV_BACKEND_URL}/index`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ signature }),
-                }
-            )
+            const response = await fetch(`${VITE_ENV_BACKEND_URL}/index`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ signature }),
+            })
 
             if (!response.ok) {
                 throw new Error('Failed to index the transaction')

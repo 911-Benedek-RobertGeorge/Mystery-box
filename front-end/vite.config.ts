@@ -42,21 +42,21 @@ export default defineConfig({
     //     ),
     // },
 
-    define: {
-        'import.meta.env': {
-            VITE_ENV_NETWORK: JSON.stringify('mainnet-beta'),
-            VITE_ENV_SOLANA_NETWORK_RPC: JSON.stringify(
-                'https://solana-mainnet.g.alchemy.com/v2/nL4aWYneHAajUr9tLDp4asFLLGnAd45H'
-            ),
-            VITE_ENV_BACKEND_URL: JSON.stringify(
-                'https://ejacdvrot9.execute-api.eu-central-1.amazonaws.com/api'
-            ),
-            VITE_ENV_BACKEND_PUBLIC_KEY: JSON.stringify(
-                process.env.VITE_ENV_BACKEND_PUBLIC_KEY ||
-                    'GQqFaWvE2RAQc7V6aTrpWzKmJBNi8qf3G6SwWHL5Yttq'
-            ),
-        },
-    },
+    // define: {
+    //     'import.meta.env': {
+    //         VITE_ENV_NETWORK: JSON.stringify('mainnet-beta'),
+    //         VITE_ENV_SOLANA_NETWORK_RPC: JSON.stringify(
+    //             'https://solana-mainnet.g.alchemy.com/v2/nL4aWYneHAajUr9tLDp4asFLLGnAd45H'
+    //         ),
+    //         VITE_ENV_BACKEND_URL: JSON.stringify(
+    //             'https://ejacdvrot9.execute-api.eu-central-1.amazonaws.com/api'
+    //         ),
+    //         VITE_ENV_BACKEND_PUBLIC_KEY: JSON.stringify(
+    //             process.env.VITE_ENV_BACKEND_PUBLIC_KEY ||
+    //                 'GQqFaWvE2RAQc7V6aTrpWzKmJBNi8qf3G6SwWHL5Yttq'
+    //         ),
+    //     },
+    // },
     build: {
         sourcemap: true, // Useful for debugging
         outDir: 'dist', // Build output directory

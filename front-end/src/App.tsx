@@ -9,6 +9,7 @@ import { useEffect } from 'react'
 import { setSolanaPrice } from './context/store/SolanaSlice'
 import { setBoxTypes } from './context/store/BoxSlice'
 import axios from 'axios'
+import { VITE_ENV_BACKEND_URL } from './libs/config'
 
 function App() {
     const dispatch = useDispatch()
@@ -27,14 +28,11 @@ function App() {
             }
         }
 
-        console.log(
-            'import.meta.env.VITE_ENV_BACKEND_URL',
-            import.meta.env.VITE_ENV_BACKEND_URL
-        )
+        console.log('.VITE_ENV_BACKEND_URL', VITE_ENV_BACKEND_URL)
         const fetchBoxTypes = async () => {
             try {
                 const response = await axios(
-                    `${import.meta.env.VITE_ENV_BACKEND_URL || 'https://ejacdvrot9.execute-api.eu-central-1.amazonaws.com/api'}/boxes/types`,
+                    `${VITE_ENV_BACKEND_URL || 'https://ejacdvrot9.execute-api.eu-central-1.amazonaws.com/api'}/boxes/types`,
                     {
                         method: 'GET',
                         headers: {

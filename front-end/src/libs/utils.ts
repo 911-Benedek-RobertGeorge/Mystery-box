@@ -1,6 +1,7 @@
 import { ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import { PublicKey, Transaction } from '@solana/web3.js'
+import { VITE_ENV_BACKEND_PUBLIC_KEY } from './config'
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))
@@ -9,9 +10,7 @@ export function cn(...inputs: ClassValue[]) {
 export function hasBackendSignedTransaction(
     partialTransaction: Transaction
 ): boolean {
-    const backendPublicKey = new PublicKey(
-        import.meta.env.VITE_ENV_BACKEND_PUBLIC_KEY
-    )
+    const backendPublicKey = new PublicKey(VITE_ENV_BACKEND_PUBLIC_KEY)
     console.log('Backend public key:', backendPublicKey.toBase58())
 
     // const partialTransaction = Transaction.from(
