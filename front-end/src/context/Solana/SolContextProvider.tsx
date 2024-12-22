@@ -21,6 +21,10 @@ import { type SolanaSignInInput } from '@solana/wallet-standard-features'
 import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom'
 import { useDispatch } from 'react-redux'
 import { setToken } from '../store/AuthSlice'
+import {
+    VITE_ENV_BACKEND_URL,
+    VITE_ENV_SOLANA_NETWORK_RPC,
+} from '../../libs/config'
 
 const SolWalletContextProvider: FC<{ children: ReactNode }> = ({
     children,
@@ -31,9 +35,12 @@ const SolWalletContextProvider: FC<{ children: ReactNode }> = ({
         // If the signIn feature is not available, return true
         if (!('signIn' in adapter)) return true
 
+        const token = localStorage.getItem('jwtToken')
+        if (token) return true //TODO What if the token is invalid?
+
         // Fetch the signInInput from the backend
         const createResponse = await fetch(
-            `${import.meta.env.VITE_ENV_BACKEND_URL}/auth/sign-in`
+            `${VITE_ENV_BACKEND_URL}/auth/sign-in`
         )
 
         const input: SolanaSignInInput = await createResponse.json()
@@ -52,7 +59,7 @@ const SolWalletContextProvider: FC<{ children: ReactNode }> = ({
         }
 
         const verifyResponse = await fetch(
-            `${import.meta.env.VITE_ENV_BACKEND_URL}/auth/verify-sign-in`,
+            `${VITE_ENV_BACKEND_URL}/auth/verify-sign-in`,
             {
                 method: 'POST',
                 headers: {
@@ -73,8 +80,8 @@ const SolWalletContextProvider: FC<{ children: ReactNode }> = ({
     const network = networkConfiguration as WalletAdapterNetwork
     const endpoint = useMemo(
         () =>
-            import.meta.env.VITE_ENV_SOLANA_NETWORK_RPC
-                ? import.meta.env.VITE_ENV_SOLANA_NETWORK_RPC
+            VITE_ENV_SOLANA_NETWORK_RPC
+                ? VITE_ENV_SOLANA_NETWORK_RPC
                 : clusterApiUrl(network),
 
         [network]
@@ -87,7 +94,7 @@ const SolWalletContextProvider: FC<{ children: ReactNode }> = ({
         network,
         clusterApiUrl(network),
         endpoint,
-        import.meta.env.VITE_ENV_SOLANA_NETWORK_RPC
+        VITE_ENV_SOLANA_NETWORK_RPC
     )
 
     const onError = useCallback((error: WalletError) => {
