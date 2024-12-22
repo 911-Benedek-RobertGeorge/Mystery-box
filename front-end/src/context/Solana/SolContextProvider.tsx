@@ -1,6 +1,9 @@
-import React from 'react'
 import { FC, ReactNode, useCallback, useMemo } from 'react'
-import { WalletAdapterNetwork, WalletError } from '@solana/wallet-adapter-base'
+import {
+    Adapter,
+    WalletAdapterNetwork,
+    WalletError,
+} from '@solana/wallet-adapter-base'
 import {
     ConnectionProvider,
     WalletProvider,
@@ -8,37 +11,90 @@ import {
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui'
 import { clusterApiUrl } from '@solana/web3.js'
 import '@solana/wallet-adapter-react-ui/styles.css'
-import {
-    SolAutoConnectProvider,
-    useSolAutoConnect,
-} from './SolAutoConnectProvider'
+import { SolAutoConnectProvider } from './SolAutoConnectProvider'
 import {
     SolNetworkConfigurationProvider,
     useNetworkConfiguration,
 } from './SolNetworkConfigurationProvider'
 
+import { type SolanaSignInInput } from '@solana/wallet-standard-features'
+import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom'
+import { useDispatch } from 'react-redux'
+import { setToken } from '../store/AuthSlice'
+import {
+    VITE_ENV_BACKEND_URL,
+    VITE_ENV_SOLANA_NETWORK_RPC,
+} from '../../libs/config'
+
 const SolWalletContextProvider: FC<{ children: ReactNode }> = ({
     children,
 }) => {
-    const { autoConnect } = useSolAutoConnect()
+    const dispatch = useDispatch()
+
+    const autoSignIn = useCallback(async (adapter: Adapter) => {
+        // If the signIn feature is not available, return true
+        if (!('signIn' in adapter)) return true
+
+        const token = localStorage.getItem('jwtToken')
+        if (token) return true //TODO What if the token is invalid?
+
+        // Fetch the signInInput from the backend
+        const createResponse = await fetch(
+            `${VITE_ENV_BACKEND_URL}/auth/sign-in`
+        )
+
+        const input: SolanaSignInInput = await createResponse.json()
+        const output = await adapter.signIn(input)
+
+        const payload = {
+            input,
+            output: {
+                account: {
+                    publicKey: Array.from(output.account.publicKey),
+                    address: output.account.address,
+                },
+                signature: Array.from(output.signature),
+                signedMessage: Array.from(output.signedMessage),
+            },
+        }
+
+        const verifyResponse = await fetch(
+            `${VITE_ENV_BACKEND_URL}/auth/verify-sign-in`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
+            }
+        )
+        const success = await verifyResponse.json()
+        dispatch(setToken(success.jwt))
+        console.log('Sign In verification success:', success)
+        if (!success) throw new Error('Sign In verification failed!')
+
+        return false
+    }, [])
+
     const { networkConfiguration } = useNetworkConfiguration()
     const network = networkConfiguration as WalletAdapterNetwork
     const endpoint = useMemo(
         () =>
-            // import.meta.env.VITE_ENV_SOLANA_NETWORK_RPC
-            //     ? import.meta.env.VITE_ENV_SOLANA_NETWORK_RPC
-            //     : clusterApiUrl(network),
+            VITE_ENV_SOLANA_NETWORK_RPC
+                ? VITE_ENV_SOLANA_NETWORK_RPC
+                : clusterApiUrl(network),
 
-            'https://solana-mainnet.g.alchemy.com/v2/nL4aWYneHAajUr9tLDp4asFLLGnAd45H',
         [network]
     )
-    const wallets = useMemo(() => [], [network])
+
+    const wallets = useMemo(() => [new PhantomWalletAdapter()], [network])
+    console.log('wallets', wallets)
     console.log(
         networkConfiguration,
         network,
         clusterApiUrl(network),
         endpoint,
-        import.meta.env.VITE_ENV_SOLANA_NETWORK_RPC
+        VITE_ENV_SOLANA_NETWORK_RPC
     )
 
     const onError = useCallback((error: WalletError) => {
@@ -50,7 +106,7 @@ const SolWalletContextProvider: FC<{ children: ReactNode }> = ({
             <WalletProvider
                 wallets={wallets}
                 onError={onError}
-                autoConnect={autoConnect}
+                autoConnect={autoSignIn}
             >
                 <WalletModalProvider>{children}</WalletModalProvider>
             </WalletProvider>
@@ -64,11 +120,7 @@ export const SolContextProvider: FC<{ children: ReactNode }> = ({
     return (
         <>
             <SolNetworkConfigurationProvider>
-                <SolAutoConnectProvider>
-                    <SolWalletContextProvider>
-                        {children}
-                    </SolWalletContextProvider>
-                </SolAutoConnectProvider>
+                <SolWalletContextProvider>{children}</SolWalletContextProvider>
             </SolNetworkConfigurationProvider>
         </>
     )

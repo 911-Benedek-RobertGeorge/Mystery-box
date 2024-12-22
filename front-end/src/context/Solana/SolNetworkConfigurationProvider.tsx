@@ -1,5 +1,6 @@
 import React, { createContext, FC, ReactNode, useContext } from 'react'
 import { useLocalStorage } from '@solana/wallet-adapter-react'
+import { VITE_ENV_NETWORK } from '../../libs/config'
 
 export interface NetworkConfigurationState {
     networkConfiguration: string
@@ -18,13 +19,12 @@ export const SolNetworkConfigurationProvider: FC<{ children: ReactNode }> = ({
 }) => {
     const [networkConfiguration, setNetworkConfiguration] = useLocalStorage(
         'network',
-        import.meta.env.VITE_ENV_NETWORK
+        VITE_ENV_NETWORK
     )
     return (
         <NetworkConfigurationContext.Provider
             value={{
-                networkConfiguration:
-                    networkConfiguration ?? import.meta.env.VITE_ENV_NETWORK,
+                networkConfiguration: networkConfiguration ?? VITE_ENV_NETWORK,
                 setNetworkConfiguration,
             }}
         >

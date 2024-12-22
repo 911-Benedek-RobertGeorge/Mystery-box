@@ -8,6 +8,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
 import { setSolanaPrice } from './context/store/SolanaSlice'
 import { setBoxTypes } from './context/store/BoxSlice'
+import axios from 'axios'
+import { VITE_ENV_BACKEND_URL } from './libs/config'
+import TermsAndConditions from './pages/TermsAndConditions/TermsAndConditions'
 
 function App() {
     const dispatch = useDispatch()
@@ -15,10 +18,10 @@ function App() {
     useEffect(() => {
         const fetchSolanaPrice = async () => {
             try {
-                const response = await fetch(
+                const response = await axios(
                     'https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd'
                 )
-                const data = await response.json()
+                const data = await response.data
                 dispatch(setSolanaPrice(data.solana.usd))
                 console.log('Solana price fetched: ', data.solana.usd)
             } catch (error) {
@@ -28,17 +31,17 @@ function App() {
 
         const fetchBoxTypes = async () => {
             try {
-                const response = await fetch(
-                    `${import.meta.env.VITE_ENV_BACKEND_URL}/boxes/types`,
+                const response = await axios(
+                    `${VITE_ENV_BACKEND_URL || 'https://ejacdvrot9.execute-api.eu-central-1.amazonaws.com/api'}/boxes/types`,
                     {
                         method: 'GET',
-                        body: null,
                         headers: {
                             'Content-type': 'application/json',
                         },
                     }
                 )
-                const data = await response.json()
+
+                const data = await response.data
                 dispatch(setBoxTypes(data))
                 console.log('Box types fetched: ', data)
             } catch (error) {
@@ -62,6 +65,14 @@ function App() {
                         <Route path={`/`} element={<Home />} />
                         <Route path={`/boxes`} element={<MysteryBoxes />} />
                         <Route path={`/my-boxes`} element={<MysteryBoxes />} />
+                        <Route
+                            path={`/my-boxes/:id`}
+                            element={<MysteryBoxes />}
+                        />
+                        <Route
+                            path={`/terms-and-conditions`}
+                            element={<TermsAndConditions />}
+                        />
                     </Routes>
                 </div>
             </SolContextProvider>
