@@ -36,6 +36,7 @@ export function BuyModal({ box }: { box: BoxType | null }) {
     const { networkConfiguration } = useNetworkConfiguration()
     const [step, setStep] = useState(0)
     const [latestTxSignature, setLatestTxSignature] = useState<string>('')
+    console.log('latest:', latestTxSignature)
     const jwtToken = useSelector(
         (state: { auth: { token: string } }) => state.auth.token
     )
@@ -104,14 +105,16 @@ export function BuyModal({ box }: { box: BoxType | null }) {
 
     async function indexTransaction(signature: string) {
         try {
+            console.log('INDEX Signature:', signature)
             const encodedSignature = Buffer.from(signature).toString('base64')
+            console.log('Encoded signature:', encodedSignature)
             const response = await fetch(`${VITE_ENV_BACKEND_URL}/index`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${jwtToken}`,
                 },
-                body: JSON.stringify({ encodedSignature }),
+                body: JSON.stringify({ signature: encodedSignature }),
             })
 
             if (!response.ok) {
