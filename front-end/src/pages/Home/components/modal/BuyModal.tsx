@@ -228,7 +228,7 @@ export function BuyModal({ box }: { box: BoxType | null }) {
             const response = await fetch(
                 `${VITE_ENV_BACKEND_URL}/boxes/${boxId}/claim`,
                 {
-                    method: 'POST',
+                    method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
                         Authorization: `Bearer ${jwtToken}`,

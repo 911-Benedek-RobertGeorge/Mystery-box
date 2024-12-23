@@ -5,17 +5,26 @@ import {
     WalletModalButton,
     WalletMultiButton,
 } from '@solana/wallet-adapter-react-ui'
-import { cn } from '../../libs/utils'
+import { cn, shortenAddress } from '../../libs/utils'
 import { HoveredLink, Menu, MenuItem, ProductItem } from '../ui/NavbarMenu'
 import logo from '../../assets/elements/logo.png'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { Link } from 'react-router-dom'
+import { WalletDisconnectButton } from '@solana/wallet-adapter-react-ui'
+import { useDispatch } from 'react-redux'
+import { clearToken } from '../../context/store/AuthSlice'
+import toast from 'react-hot-toast'
 
 function Navbar({ className }: { className?: string }) {
     const [active, setActive] = useState<string | null>(null)
-    const { connected, publicKey } = useWallet()
+    const { connected, publicKey, disconnect } = useWallet()
     console.log(connected, 'connected', publicKey)
-
+    const dispatch = useDispatch()
+    const onDisconnect = () => {
+        dispatch(clearToken())
+        console.log('disconnecting')
+        disconnect()
+    }
     return (
         <div
             className={cn(
@@ -68,20 +77,38 @@ function Navbar({ className }: { className?: string }) {
                                 <div className="absolute flex flex-col items-center justify-center rounded-3xl p-2 top-16 -left-12 w-[10rem] bg-muted shadow-lg">
                                     <Link
                                         to="/my-boxes"
-                                        className="block px-4 py-2 text-accent-dark hover:text-accent"
+                                        className="block px-4 py-2  text-accent-dark hover:text-accent"
                                         onClick={() => setActive(null)}
                                     >
                                         My Boxes
                                     </Link>
                                     <Link
                                         to="./#"
-                                        className="block px-4 py-2 text-accent-dark hover:text-accent"
+                                        className="block px-4 py-2  text-accent-dark hover:text-accent"
                                         onClick={() => setActive(null)}
                                     >
                                         How to buy
                                     </Link>
-
-                                    <WalletMultiButton
+                                    <div className="text-accent-dark hover:text-accent">
+                                        <button
+                                            onClick={() => {
+                                                navigator.clipboard.writeText(
+                                                    publicKey?.toBase58() ?? ''
+                                                )
+                                                toast.success(
+                                                    'Address copied to clipboard'
+                                                )
+                                            }}
+                                            className="text-accent-dark hover:text-accent"
+                                        >
+                                            {shortenAddress(
+                                                publicKey?.toBase58() ?? '',
+                                                3
+                                            )}
+                                        </button>
+                                    </div>
+                                    <WalletDisconnectButton
+                                        onClick={onDisconnect}
                                         style={{
                                             padding: '0',
                                             backgroundColor: 'transparent',
@@ -90,29 +117,67 @@ function Navbar({ className }: { className?: string }) {
                                                 : '#24B9C0',
                                         }}
                                     />
+                                    {/* <WalletMultiButton
+                                        style={{
+                                            padding: '0',
+                                            backgroundColor: 'transparent',
+                                            color: connected
+                                                ? '#0E7490'
+                                                : '#24B9C0',
+                                        }}
+                                        onClick={
+                                            connected ? onDisconnect : undefined
+                                        }
+                                    /> */}
                                 </div>
                             )}
                         </div>
-                        <div className="hidden md:flex space-x-8 justify-center items-center">
+                        <div className="hidden md:flex space-x-8 justify-center items-center ">
                             <Link
                                 to="/my-boxes"
-                                className="text-accent-dark hover:text-accent"
+                                className="text-accent-dark hover:text-accent "
                             >
                                 My Boxes
                             </Link>
                             <Link
                                 to="./#"
-                                className="text-accent-dark hover:text-accent"
+                                className="text-accent-dark hover:text-accent "
                             >
                                 How to buy
                             </Link>
-                            <WalletMultiButton
+                            <div className="text-accent-dark hover:text-accent">
+                                <button
+                                    onClick={() => {
+                                        navigator.clipboard.writeText(
+                                            publicKey?.toBase58() ?? ''
+                                        )
+                                        toast.success(
+                                            'Address copied to clipboard'
+                                        )
+                                    }}
+                                    className="text-accent-dark hover:text-accent"
+                                >
+                                    {shortenAddress(
+                                        publicKey?.toBase58() ?? '',
+                                        3
+                                    )}
+                                </button>
+                            </div>
+                            <WalletDisconnectButton
+                                onClick={onDisconnect}
                                 style={{
                                     padding: '0',
                                     backgroundColor: 'transparent',
                                     color: connected ? '#0E7490' : '#24B9C0',
                                 }}
                             />
+                            {/* <WalletMultiButton
+                                style={{
+                                    padding: '0',
+                                    backgroundColor: 'transparent',
+                                    color: connected ? '#0E7490' : '#24B9C0',
+                                }}
+                            /> */}
                         </div>
                     </>
                 )}
