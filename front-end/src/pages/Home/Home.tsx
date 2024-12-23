@@ -43,6 +43,7 @@ import HistorySection from './components/HistorySection'
 import { useNetworkConfiguration } from '../../context/Solana/SolNetworkConfigurationProvider'
 import { toast } from 'react-hot-toast'
 import BoxesSection from './components/BoxesSection'
+import MyBoxesSection from './components/MyBoxesSection'
 
 const memeCoinImages = [dogeCoin, chillGuy, bonk, boom, mow, pnut, popcat, wif]
 
@@ -319,6 +320,7 @@ const Home: React.FC = () => {
                 <BoxesSection />
             </div>{' '}
             <HistorySection />
+            <MyBoxesSection />
             <div className="flex flex-col w-screen h-full">
                 <div className="flex flex-col -mt-96 relative justify-center items-center w-full md:w-1/2 h-96  ml-auto text-white p-8">
                     <div className="absolute inset-0 w-full h-screen z-0   ">
