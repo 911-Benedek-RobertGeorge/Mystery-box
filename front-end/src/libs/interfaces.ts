@@ -61,3 +61,9 @@ export interface MysteryBox {
     signature?: string
     status?: BoxStatus
 }
+
+export type memeCoinType = {
+    mintAddress: string
+    image: string
+    name: string
+}

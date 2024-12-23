@@ -290,6 +290,7 @@ const Home: React.FC = () => {
                 className="w-screen top-[23.5rem] rotate-12 md:rotate-6 h-[900px] absolute z-[]  "
                 style={{ transformStyle: 'preserve-3d' }}
             ></img>{' '}
+            {/* BOXES SECTIONS */}
             <div className="relative flex flex-col justify-center items-center w-full">
                 {/* <div className="absolute -mt-[30%] -hue-rotate-30 -rotate-12 w-96 animate-fourth">
                     <img src={fluidTape} />
@@ -316,7 +317,6 @@ const Home: React.FC = () => {
                 >
                     <img src={waveTape} alt="Fluid Tape" />
                 </div>
-                {/* BOXES SECTIONS */}
                 <BoxesSection />
             </div>{' '}
             <HistorySection />

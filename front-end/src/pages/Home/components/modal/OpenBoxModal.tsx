@@ -170,7 +170,7 @@ export function OpenBoxModal({ boxId }: { boxId?: string }) {
                                 <h4 className="text-lg md:text-2xl text-accent-dark  font-bold text-center mb-8">
                                     {step < 6 ? 'Buy ' : 'Open '} box{' '}
                                     <span className="px-1 py-0.5 rounded-md bg-accent-dark/50 border border-accent text-accent">
-                                        name
+                                        {boxId}
                                     </span>{' '}
                                     now!
                                 </h4>

@@ -36,7 +36,22 @@ export function shortenAddress(address: string, visibleChars: number): string {
     return `${start}...${end}`
 }
 
-export function lamportsToSol(lamports: number): number {
-    const LAMPORTS_PER_SOL = 1_000_000_000
-    return lamports / LAMPORTS_PER_SOL
+export function lamportsToSol(lamports: string): number {
+    const LAMPORTS_PER_SOL = 1e9
+    const lamportsNumber = parseInt(lamports, 10)
+    if (isNaN(lamportsNumber)) {
+        return 0
+    }
+    return lamportsNumber / LAMPORTS_PER_SOL
+}
+
+export function timeDifferenceFromNow(date: Date): {
+    hours: number
+    minutes: number
+} {
+    const now = new Date()
+    const diffMs = now.getTime() - date.getTime()
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60))
+    const diffMinutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60))
+    return { hours: diffHours, minutes: diffMinutes }
 }

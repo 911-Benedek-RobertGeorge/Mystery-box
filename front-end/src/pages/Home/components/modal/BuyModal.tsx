@@ -36,7 +36,6 @@ export function BuyModal({ box }: { box: BoxType | null }) {
     const { networkConfiguration } = useNetworkConfiguration()
     const [step, setStep] = useState(0)
     const [latestTxSignature, setLatestTxSignature] = useState<string>('')
-    console.log('latest:', latestTxSignature)
     const jwtToken = useSelector(
         (state: { auth: { token: string } }) => state.auth.token
     )
@@ -123,6 +122,7 @@ export function BuyModal({ box }: { box: BoxType | null }) {
             setStep(6)
 
             const result = await response.json()
+
             console.log('Transaction indexed successfully:', result)
             setBoughtBoxId(result.boxId)
         } catch (error) {
@@ -393,7 +393,9 @@ export function BuyModal({ box }: { box: BoxType | null }) {
 
                         {step > 0 && (
                             <button
-                                onClick={() => openBoughtBox('TODO')}
+                                onClick={() =>
+                                    openBoughtBox(boughtBoxId as string)
+                                }
                                 className=" text-sm px-2 py-1 rounded-md shadow-inner shadow-accent-dark border border-accent-dark  w-28 disabled:bg-muted disabled:border-0 disabled:cursor-not-allowed disabled:shadow-none "
                                 disabled={!readAndAgreeWithTerms}
                             >

@@ -12,7 +12,7 @@ const BoxesSection: React.FC = () => {
     )
 
     return (
-        <div className=" relative flex flex-col justify-center items-center w-full space-y-32 md:space-y-0">
+        <div className=" relative  flex flex-col justify-center items-center w-full space-y-32 md:space-y-0">
             <div className="relative md:-ml-[50%]  ">
                 <img
                     src={cyanBox}
