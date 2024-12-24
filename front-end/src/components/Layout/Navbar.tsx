@@ -1,30 +1,21 @@
 import React, { useState } from 'react'
-import {
-    BaseWalletConnectButton,
-    WalletConnectButton,
-    WalletModalButton,
-    WalletMultiButton,
-} from '@solana/wallet-adapter-react-ui'
+import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import { cn, shortenAddress } from '../../libs/utils'
-import { HoveredLink, Menu, MenuItem, ProductItem } from '../ui/NavbarMenu'
 import logo from '../../assets/elements/logo.png'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { Link } from 'react-router-dom'
 import { WalletDisconnectButton } from '@solana/wallet-adapter-react-ui'
-import { useDispatch } from 'react-redux'
-import { clearToken } from '../../context/store/AuthSlice'
 import toast from 'react-hot-toast'
 
 function Navbar({ className }: { className?: string }) {
     const [active, setActive] = useState<string | null>(null)
     const { connected, publicKey, disconnect } = useWallet()
-    console.log(connected, 'connected', publicKey)
-    const dispatch = useDispatch()
+
     const onDisconnect = () => {
-        dispatch(clearToken())
-        console.log('disconnecting')
+        sessionStorage.removeItem('jwtToken')
         disconnect()
     }
+
     return (
         <div
             className={cn(

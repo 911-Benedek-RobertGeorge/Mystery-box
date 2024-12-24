@@ -25,7 +25,6 @@
         "clsx": "^2.1.1",
         "dotenv": "^16.4.5",
         "framer-motion": "^11.11.17",
-        "isomorphic-fetch": "^3.0.0",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
         "react-hot-toast": "^2.4.1",

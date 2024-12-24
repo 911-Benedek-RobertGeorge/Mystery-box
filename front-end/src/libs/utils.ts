@@ -11,12 +11,7 @@ export function hasBackendSignedTransaction(
     partialTransaction: Transaction
 ): boolean {
     const backendPublicKey = new PublicKey(VITE_ENV_BACKEND_PUBLIC_KEY)
-    console.log('Backend public key:', backendPublicKey.toBase58())
 
-    // const partialTransaction = Transaction.from(
-    //     Buffer.from(partialTxData, 'base64')
-    // ) // Ensure tx data is in Buffer
-    console.log('Partial transaction:', partialTransaction)
     return partialTransaction.signatures.some((signature, index) => {
         if (signature.signature) {
             const signerPublicKey =

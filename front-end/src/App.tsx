@@ -23,7 +23,6 @@ function App() {
                 )
                 const data = await response.data
                 dispatch(setSolanaPrice(data.solana.usd))
-                console.log('Solana price fetched: ', data.solana.usd)
             } catch (error) {
                 console.error('Error fetching Solana price', error)
             }
@@ -43,7 +42,6 @@ function App() {
 
                 const data = await response.data
                 dispatch(setBoxTypes(data))
-                console.log('Box types fetched: ', data)
             } catch (error) {
                 console.error('Error fetching box types', error)
             }

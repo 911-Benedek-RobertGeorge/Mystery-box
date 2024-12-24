@@ -13,7 +13,7 @@ import { memeCoinType, MysteryBox } from '../../../libs/interfaces'
 import { AnimatedTooltip } from '../../../components/ui/AnimatedTooltip'
 interface HistoryItem {
     price: number
-    currentPrice: number
+    totalPaidUSD: number
     roi: number
     date: Date
 
@@ -110,11 +110,10 @@ const HistorySection: React.FC = () => {
                     `${VITE_ENV_BACKEND_URL}/boxes/wallet/${publicKey?.toBase58()} `
                 )
                 const data: MysteryBox[] = await response.json()
-                console.log(data)
                 const historyItems = transformToHistoryItems(data)
                 setHistoryData(historyItems)
             } catch (error) {
-                console.log(error)
+                console.error('fetchMyBoxes: ', error)
             }
         }
 
@@ -129,15 +128,17 @@ const HistorySection: React.FC = () => {
                 lamportsToSol(box.boxType.amountLamports).toFixed(4)
             ),
 
-            currentPrice: parseFloat(
+            totalPaidUSD: parseFloat(
                 (
-                    box.boxContents.reduce(
+                    (box.boxContents.reduce(
                         (acc, content) =>
                             acc + parseInt(content.amountLamports),
                         0
-                    ) / 1e9
+                    ) /
+                        1e9) *
+                    box.boxContents[0].solPrice
                 ).toFixed(4)
-            ), //TODO check this calculation
+            ),
             roi: parseFloat(
                 (
                     (box.boxContents.reduce(
@@ -202,7 +203,7 @@ const HistorySection: React.FC = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="flex flex-row items-center justify-center  ">
+                        <div className="mt-4 md:mt-0 flex flex-row items-center justify-start md:justify-center  ">
                             <AnimatedTooltip items={box.boxContent} />
                         </div>
 
@@ -232,12 +233,12 @@ const HistorySection: React.FC = () => {
                                     </span>
                                 </div>
                                 <div className="text-sm text-slate-500">
-                                    Total Paid{' '}
-                                    {(box.price * solanaPrice).toFixed(2)} USD
+                                    Total Paid {box.totalPaidUSD} USD
                                 </div>
                             </div>
                         </div>
-                        <div className="w-full self-center pt-4 lg:w-1/6 lg:pt-0">
+                        {/* TODO CURRENT PRICE ? */}
+                        {/* <div className="w-full self-center pt-4 lg:w-1/6 lg:pt-0">
                             <div className="ml-1">
                                 <div className="text-xl font-extrabold leading-5 tracking-tight">
                                     <span className="align-middle">
@@ -261,7 +262,8 @@ const HistorySection: React.FC = () => {
                                     USD
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
+
                         {/* <div className="w-full self-center px-1 pt-4 pb-2 lg:w-1/6 lg:px-0 lg:pt-0 lg:pb-0">
                             <div className="text-base font-bold leading-4 tracking-tight">
                                 Risk level

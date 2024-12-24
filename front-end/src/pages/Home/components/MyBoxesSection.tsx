@@ -1,13 +1,9 @@
 import React, { useEffect } from 'react'
-import logo from '../../../assets/elements/logo.png'
-import boom from '../../../assets/coins/boom.png'
+
 import { useSelector } from 'react-redux'
-import { shortenAddress } from '../../../libs/utils'
 import { MysteryBox } from '../../../libs/interfaces'
 import { VITE_ENV_BACKEND_URL } from '../../../libs/config'
 import { useWallet } from '@solana/wallet-adapter-react'
-import { SOLANA_EXPLORER_URL } from '../../../libs/constants'
-import toast from 'react-hot-toast'
 import { OpenBoxModal } from './modal/OpenBoxModal'
 
 interface HistoryItem {
@@ -26,8 +22,6 @@ type memeCoinType = {
     name: string
 }
 
-///TOODO make computations in lamports
-
 const MyBoxesSection: React.FC = () => {
     const solanaPrice = useSelector(
         (state: { solana: { price: number } }) => state.solana.price
@@ -44,10 +38,9 @@ const MyBoxesSection: React.FC = () => {
                     `${VITE_ENV_BACKEND_URL}/boxes/wallet/${publicKey?.toBase58()} `
                 )
                 const data = await response.json()
-                console.log(data)
                 setMyBoxes(data)
             } catch (error) {
-                console.log(error)
+                console.error('fetchMyBoxes: ', error)
             }
         }
         fetchMyBoxes()
@@ -108,7 +101,6 @@ const MyBoxesSection: React.FC = () => {
                                     <button
                                         onClick={() => {
                                             setSelectedBoxId(box._id)
-                                            console.log('selectedBOX ', box)
                                         }}
                                         className="z-[100] mt-4 px-4 py-2 bg-accent text-white rounded-md hover:bg-accent-dark"
                                     >

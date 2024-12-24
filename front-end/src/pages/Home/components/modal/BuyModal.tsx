@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { motion, steps } from 'framer-motion'
+import { motion } from 'framer-motion'
 import {
     Modal,
     ModalBody,
@@ -9,7 +9,6 @@ import {
 } from '../../../../components/ui/AnimatedModal'
 import questionMark from '../../../../assets/elements/question_mark.png'
 import cyanBox from '../../../../assets/boxes/cyan_box.png'
-import SectionContainer from '../SectionContainer'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import {
     Commitment,
@@ -18,8 +17,6 @@ import {
 } from '@solana/web3.js'
 import toast from 'react-hot-toast'
 import { Buffer } from 'buffer'
-import axios from 'axios'
-import { useSelector } from 'react-redux'
 import { useNetworkConfiguration } from '../../../../context/Solana/SolNetworkConfigurationProvider'
 import { VITE_ENV_BACKEND_URL } from '../../../../libs/config'
 import { SOLANA_EXPLORER_URL } from '../../../../libs/constants'
@@ -36,9 +33,9 @@ export function BuyModal({ box }: { box: BoxType | null }) {
     const { networkConfiguration } = useNetworkConfiguration()
     const [step, setStep] = useState(0)
     const [latestTxSignature, setLatestTxSignature] = useState<string>('')
-    const jwtToken = useSelector(
-        (state: { auth: { token: string } }) => state.auth.token
-    )
+
+    const jwtToken = sessionStorage.getItem('jwtToken')
+
     const [boughtBoxId, setBoughtBoxId] = useState<string | null>(null)
 
     const buyMysteryBox = async () => {
@@ -52,6 +49,7 @@ export function BuyModal({ box }: { box: BoxType | null }) {
             if (!publicKey) {
                 throw new Error('Wallet not connected')
             }
+            
             const response = await fetch(
                 `${VITE_ENV_BACKEND_URL}/boxes/${box?._id}/wallet/${publicKey?.toBase58()}/open`,
                 {
@@ -68,17 +66,13 @@ export function BuyModal({ box }: { box: BoxType | null }) {
                     'Failed to fetch the backend to get the transaction'
                 )
             }
-            console.log('Response:', response)
 
             const transactionEncoded = (await response.json())
                 .transactionEncoded
 
-            console.log('Transaction:', transactionEncoded)
             setStep(2)
             const transactionBuffer = Buffer.from(transactionEncoded, 'base64')
-            // const variable = transactionEncoded.deserialize()
             const transactionObject = Transaction.from(transactionBuffer)
-            // transactionObject.feePayer = publicKey
 
             // if (!hasBackendSignedTransaction(transactionObject)) {
             //     throw new Error(
@@ -104,9 +98,8 @@ export function BuyModal({ box }: { box: BoxType | null }) {
 
     async function indexTransaction(signature: string) {
         try {
-            console.log('INDEX Signature:', signature)
+            if (!jwtToken) throw new Error('JWT token not found ')
             const encodedSignature = Buffer.from(signature).toString('base64')
-            console.log('Encoded signature:', encodedSignature)
             const response = await fetch(`${VITE_ENV_BACKEND_URL}/index`, {
                 method: 'POST',
                 headers: {
@@ -122,10 +115,14 @@ export function BuyModal({ box }: { box: BoxType | null }) {
             setStep(6)
 
             const result = await response.json()
-
-            console.log('Transaction indexed successfully:', result)
+            console.log('indexTransaction result', result)
             setBoughtBoxId(result.boxId)
         } catch (error) {
+            if (error instanceof Error) {
+                toast.error('Error indexing transaction' + error.message)
+            } else {
+                toast.error('Error indexing transaction')
+            }
             console.error('Error indexing transaction:', error)
         }
     }
@@ -139,60 +136,23 @@ export function BuyModal({ box }: { box: BoxType | null }) {
             if (!publicKey) {
                 throw new Error('Wallet not connected')
             }
-            console.log(
-                'Transaction:',
-                transaction,
-                'Getting latest blockhash',
-                connection.rpcEndpoint
-            )
+
             const latestBlockhash = await connection.getLatestBlockhash()
-            console.log(latestBlockhash)
             transaction.recentBlockhash = latestBlockhash.blockhash
             transaction.feePayer = publicKey
             setHasPendingTransaction(true)
-            console.log('Transaction:', transaction, 'Signing transaction')
-            // if (signTransaction === undefined) {
-            //     throw new Error('signTransaction is undefined')
-            // }
 
             const txSignature = await sendTransaction(transaction, connection, {
                 skipPreflight: true,
             })
             setLatestTxSignature(txSignature)
-            // const rawTransaction = transaction.serialize()
-            // const txSignature = await connection.sendRawTransaction(
-            //     rawTransaction,
-            //     {
-            //         skipPreflight: true,
-            //     }
-            // )
-            // const signedTransaction = await sendTransaction(transaction)
-            // const signers = transaction.signatures
-            // console.log('SIGNERS:', { signers })
-            // transaction.addSignature(publicKey, Buffer.from(signers[0].signature, 'base64'))
-            // const signedTransaction = await signTransaction(transaction);
-            // transaction.addSignature(publicKey, signedTransaction.signatures[0].signature);
-            // console.log({ transactionSignatures: signedTransaction.signatures })
 
-            // const txSignature = await connection.sendRawTransaction(
-            //     transaction.serialize()
-            // )
-
-            // const confirmation = await connection.confirmTransaction(
-            //     signature,
-            //     'confirmed'
-            // )
-
-            // console.log({ signature, confirmation })
-
-            // console.log('Transaction:', txSignature, 'Signed')
             setStep(4)
             const strategy: TransactionConfirmationStrategy = {
                 signature: txSignature,
                 blockhash: latestBlockhash.blockhash,
                 lastValidBlockHeight: latestBlockhash.lastValidBlockHeight,
             }
-            console.log('Transaction:', txSignature, 'Confirming transaction')
 
             const confirmationPromise = connection.confirmTransaction(
                 strategy,
@@ -213,6 +173,7 @@ export function BuyModal({ box }: { box: BoxType | null }) {
                 ),
                 error: (err) => `Transaction failed: ${err.message}`,
             })
+
             setStep(5)
             const result = await confirmationPromise
             setHasPendingTransaction(false)
@@ -224,9 +185,7 @@ export function BuyModal({ box }: { box: BoxType | null }) {
             return txSignature
         } catch (error) {
             setHasPendingTransaction(false)
-            // toast.error('User rejected the request')
             console.error('Error sending and confirming transaction:', error)
-
             throw error
         }
     }
@@ -246,8 +205,6 @@ export function BuyModal({ box }: { box: BoxType | null }) {
             const transactionEncoded = (await response.json())
                 .transactionEncoded
 
-            console.log('Transaction:', transactionEncoded)
-
             const transactionBuffer = Buffer.from(transactionEncoded, 'base64')
             const transactionObject = Transaction.from(transactionBuffer)
 
@@ -256,13 +213,11 @@ export function BuyModal({ box }: { box: BoxType | null }) {
             //         'Backend has not partial signed the transaction'
             //     )
             // }
-            console.log('Transaction:', transactionObject)
 
             const txSignature = await sendAndConfirmTransaction({
                 transaction: transactionObject,
             })
-
-            console.log('Transaction  open box successfully:', txSignature)
+            console.log('OPEN BOX txSignature', txSignature)
         } catch (error) {
             console.error('Error opening the box transaction:', error)
         }

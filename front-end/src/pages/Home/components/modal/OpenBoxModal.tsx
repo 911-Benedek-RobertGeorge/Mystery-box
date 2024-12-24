@@ -36,9 +36,7 @@ export function OpenBoxModal({ boxId }: { boxId?: string }) {
     const { networkConfiguration } = useNetworkConfiguration()
     const [step, setStep] = useState(0)
     const [latestTxSignature, setLatestTxSignature] = useState<string>('')
-    const jwtToken = useSelector(
-        (state: { auth: { token: string } }) => state.auth.token
-    )
+    const jwtToken = sessionStorage.getItem('jwtToken')
 
     async function sendAndConfirmTransaction({
         transaction,
@@ -49,18 +47,12 @@ export function OpenBoxModal({ boxId }: { boxId?: string }) {
             if (!publicKey) {
                 throw new Error('Wallet not connected')
             }
-            console.log(
-                'Transaction:',
-                transaction,
-                'Getting latest blockhash',
-                connection.rpcEndpoint
-            )
+
             const latestBlockhash = await connection.getLatestBlockhash()
-            console.log(latestBlockhash)
+
             transaction.recentBlockhash = latestBlockhash.blockhash
             transaction.feePayer = publicKey
             setHasPendingTransaction(true)
-            console.log('Transaction:', transaction, 'Signing transaction')
 
             const txSignature = await sendTransaction(transaction, connection, {
                 skipPreflight: true,
@@ -73,7 +65,6 @@ export function OpenBoxModal({ boxId }: { boxId?: string }) {
                 blockhash: latestBlockhash.blockhash,
                 lastValidBlockHeight: latestBlockhash.lastValidBlockHeight,
             }
-            console.log('Transaction:', txSignature, 'Confirming transaction')
 
             const confirmationPromise = connection.confirmTransaction(
                 strategy,
@@ -127,8 +118,6 @@ export function OpenBoxModal({ boxId }: { boxId?: string }) {
             const transactionEncoded = (await response.json())
                 .transactionEncoded
 
-            console.log('Transaction:', transactionEncoded)
-
             const transactionBuffer = Buffer.from(transactionEncoded, 'base64')
             const transactionObject = Transaction.from(transactionBuffer)
 
@@ -137,13 +126,10 @@ export function OpenBoxModal({ boxId }: { boxId?: string }) {
             //         'Backend has not partial signed the transaction'
             //     )
             // }
-            console.log('Transaction:', transactionObject)
 
             const txSignature = await sendAndConfirmTransaction({
                 transaction: transactionObject,
             })
-
-            console.log('Transaction  open box successfully:', txSignature)
         } catch (error) {
             console.error('Error opening the box transaction:', error)
         }
