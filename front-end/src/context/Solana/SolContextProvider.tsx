@@ -11,7 +11,6 @@ import {
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui'
 import { clusterApiUrl } from '@solana/web3.js'
 import '@solana/wallet-adapter-react-ui/styles.css'
-import { SolAutoConnectProvider } from './SolAutoConnectProvider'
 import {
     SolNetworkConfigurationProvider,
     useNetworkConfiguration,
@@ -20,7 +19,6 @@ import {
 import { type SolanaSignInInput } from '@solana/wallet-standard-features'
 import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom'
 import { useDispatch } from 'react-redux'
-import { setToken } from '../store/AuthSlice'
 import {
     VITE_ENV_BACKEND_URL,
     VITE_ENV_SOLANA_NETWORK_RPC,
@@ -29,15 +27,42 @@ import {
 const SolWalletContextProvider: FC<{ children: ReactNode }> = ({
     children,
 }) => {
-    const dispatch = useDispatch()
+    const getTimestampFromJwt = (token: string) => {
+        try {
+            // Split the token into parts
+            const [, payloadBase64] = token.split('.') // Ignore the header and signature
+
+            // Decode the Base64 payload
+            const decodedPayload = JSON.parse(atob(payloadBase64))
+
+            // Extract timestamps (iat or exp)
+            const issuedAt = decodedPayload.iat // Issued at timestamp
+            const expiration = decodedPayload.exp // Expiration timestamp
+
+            return { issuedAt, expiration }
+        } catch (error) {
+            console.error('Error decoding JWT:', error)
+            return null
+        }
+    }
 
     const autoSignIn = useCallback(async (adapter: Adapter) => {
         // If the signIn feature is not available, return true
         if (!('signIn' in adapter)) return true
 
-        const token = localStorage.getItem('jwtToken')
-        if (token) return true //TODO What if the token is invalid?
-
+        const token = sessionStorage.getItem('jwtToken')
+        // Example usage
+        if (token) {
+            console.log('TIMESTMP : ', getTimestampFromJwt(token))
+            const timestamp = getTimestampFromJwt(token)
+            /// if the jwt token is not expired
+            if (
+                timestamp &&
+                timestamp.expiration > Math.floor(Date.now() / 1000)
+            ) {
+                return true
+            }
+        }
         // Fetch the signInInput from the backend
         const createResponse = await fetch(
             `${VITE_ENV_BACKEND_URL}/auth/sign-in`
@@ -68,10 +93,10 @@ const SolWalletContextProvider: FC<{ children: ReactNode }> = ({
                 body: JSON.stringify(payload),
             }
         )
-        const success = await verifyResponse.json()
-        dispatch(setToken(success.jwt))
-        console.log('Sign In verification success:', success)
-        if (!success) throw new Error('Sign In verification failed!')
+        const response = await verifyResponse.json()
+        sessionStorage.setItem('jwtToken', response.jwt)
+        console.log('Sign In verification success:', response)
+        if (!response) throw new Error('Sign In verification failed!')
 
         return false
     }, [])
@@ -88,14 +113,6 @@ const SolWalletContextProvider: FC<{ children: ReactNode }> = ({
     )
 
     const wallets = useMemo(() => [new PhantomWalletAdapter()], [network])
-    console.log('wallets', wallets)
-    console.log(
-        networkConfiguration,
-        network,
-        clusterApiUrl(network),
-        endpoint,
-        VITE_ENV_SOLANA_NETWORK_RPC
-    )
 
     const onError = useCallback((error: WalletError) => {
         console.error(error)

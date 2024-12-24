@@ -43,6 +43,7 @@ import HistorySection from './components/HistorySection'
 import { useNetworkConfiguration } from '../../context/Solana/SolNetworkConfigurationProvider'
 import { toast } from 'react-hot-toast'
 import BoxesSection from './components/BoxesSection'
+import MyBoxesSection from './components/MyBoxesSection'
 
 const memeCoinImages = [dogeCoin, chillGuy, bonk, boom, mow, pnut, popcat, wif]
 
@@ -289,6 +290,7 @@ const Home: React.FC = () => {
                 className="w-screen top-[23.5rem] rotate-12 md:rotate-6 h-[900px] absolute z-[]  "
                 style={{ transformStyle: 'preserve-3d' }}
             ></img>{' '}
+            {/* BOXES SECTIONS */}
             <div className="relative flex flex-col justify-center items-center w-full">
                 {/* <div className="absolute -mt-[30%] -hue-rotate-30 -rotate-12 w-96 animate-fourth">
                     <img src={fluidTape} />
@@ -315,17 +317,17 @@ const Home: React.FC = () => {
                 >
                     <img src={waveTape} alt="Fluid Tape" />
                 </div>
-                {/* BOXES SECTIONS */}
                 <BoxesSection />
             </div>{' '}
             <HistorySection />
+            <MyBoxesSection />
             <div className="flex flex-col w-screen h-full">
                 <div className="flex flex-col -mt-96 relative justify-center items-center w-full md:w-1/2 h-96  ml-auto text-white p-8">
                     <div className="absolute inset-0 w-full h-screen z-0   ">
                         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background-dark to-accent-dark opacity-30 blur-3xl"></div>
                         <div className="absolute inset-0 opacity-40  top-96">
                             <img
-                                className="  z-[111] -hue-rotate-90 transition-all duration-1000  ease-out"
+                                className="  z-[51] -hue-rotate-90 transition-all duration-1000  ease-out"
                                 src={ribbons}
                                 style={{
                                     transform: `translateY(${-1000 + scrollPosition * 0.4}px)`,
@@ -334,7 +336,7 @@ const Home: React.FC = () => {
                             />
                         </div>{' '}
                         <img
-                            className="z-[110] absolut transition-all duration-1000 ease-out "
+                            className=" z-[50] absolut transition-all duration-1000 ease-out "
                             src={key}
                             style={{
                                 transform: `translateX(${Math.max(0, -2650 + scrollPosition)}px) translateY(${-2050 + scrollPosition}px) `, //translateX(${((-1 * (scrollPosition  / 5) % 2) * scrollPosition) % 1200}px)
@@ -344,7 +346,7 @@ const Home: React.FC = () => {
                 </div>
 
                 <div className="flex flex-col mt-64 relative justify-center items-center w-full h-full text-white p-8">
-                    <div className="z-[110] flex flex-col justify-center items-center w-full h-full  text-white p-8">
+                    <div className="  z-50 flex flex-col justify-center items-center w-full h-full  text-white p-8">
                         {' '}
                         <h2 className="text-4xl font-bold mb-4">
                             How It Works
