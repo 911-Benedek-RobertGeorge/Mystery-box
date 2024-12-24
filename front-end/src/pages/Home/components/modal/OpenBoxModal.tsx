@@ -57,7 +57,6 @@ export function OpenBoxModal({ boxId }: { boxId?: string }) {
             const txSignature = await sendTransaction(transaction, connection, {
                 skipPreflight: true,
             })
-            setLatestTxSignature(txSignature)
 
             setStep(4)
             const strategy: TransactionConfirmationStrategy = {
@@ -70,21 +69,28 @@ export function OpenBoxModal({ boxId }: { boxId?: string }) {
                 strategy,
                 'finalized' as Commitment
             )
-
-            toast.promise(confirmationPromise, {
-                loading: 'Processing Transaction',
-                success: () => (
-                    <a
-                        href={`${SOLANA_EXPLORER_URL}/tx/${txSignature}?cluster=${networkConfiguration}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        style={{ textDecoration: 'underline' }}
-                    >
-                        View on Solana explorer
-                    </a>
-                ),
-                error: (err) => `Transaction failed: ${err.message}`,
-            })
+            console.log('   confirmationPromise', txSignature)
+            toast.promise(
+                confirmationPromise,
+                {
+                    loading: 'Processing Transaction',
+                    success: () => (
+                        <a
+                            href={`${SOLANA_EXPLORER_URL}/tx/${txSignature}?cluster=${networkConfiguration}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            style={{ textDecoration: 'underline' }}
+                        >
+                            View on Solana explorer
+                        </a>
+                    ),
+                    error: (err) => `Transaction failed: ${err.message}`,
+                },
+                {
+                    duration: 10000,
+                }
+            )
+            setLatestTxSignature(txSignature)
             setStep(5)
             const result = await confirmationPromise
             setHasPendingTransaction(false)
@@ -142,9 +148,9 @@ export function OpenBoxModal({ boxId }: { boxId?: string }) {
                     className="bg-muted shadow-inner shadow-accent-dark text-accent
                 scale-75 md:scale-100 items-center relative rounded-full flex justify-center group/modal-btn"
                 >
-                    <button className="group-hover/modal-btn:translate-x-40 text-center transition duration-500 ">
+                    <span className="group-hover/modal-btn:translate-x-40 text-center transition duration-500 ">
                         Open memebox
-                    </button>{' '}
+                    </span>{' '}
                     <div className="-translate-x-40 group-hover/modal-btn:translate-x-0 flex items-center justify-center absolute inset-0 transition duration-500 text-white z-20">
                         <img className="w-8" src={questionMark} />
                     </div>

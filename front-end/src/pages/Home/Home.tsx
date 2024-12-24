@@ -327,7 +327,7 @@ const Home: React.FC = () => {
                         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background-dark to-accent-dark opacity-30 blur-3xl"></div>
                         <div className="absolute inset-0 opacity-40  top-96">
                             <img
-                                className="  z-[111] -hue-rotate-90 transition-all duration-1000  ease-out"
+                                className="  z-[51] -hue-rotate-90 transition-all duration-1000  ease-out"
                                 src={ribbons}
                                 style={{
                                     transform: `translateY(${-1000 + scrollPosition * 0.4}px)`,
@@ -336,7 +336,7 @@ const Home: React.FC = () => {
                             />
                         </div>{' '}
                         <img
-                            className="z-[110] absolut transition-all duration-1000 ease-out "
+                            className=" z-[50] absolut transition-all duration-1000 ease-out "
                             src={key}
                             style={{
                                 transform: `translateX(${Math.max(0, -2650 + scrollPosition)}px) translateY(${-2050 + scrollPosition}px) `, //translateX(${((-1 * (scrollPosition  / 5) % 2) * scrollPosition) % 1200}px)
@@ -346,7 +346,7 @@ const Home: React.FC = () => {
                 </div>
 
                 <div className="flex flex-col mt-64 relative justify-center items-center w-full h-full text-white p-8">
-                    <div className="z-[110] flex flex-col justify-center items-center w-full h-full  text-white p-8">
+                    <div className="  z-50 flex flex-col justify-center items-center w-full h-full  text-white p-8">
                         {' '}
                         <h2 className="text-4xl font-bold mb-4">
                             How It Works
