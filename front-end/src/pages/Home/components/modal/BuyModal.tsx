@@ -10,11 +10,7 @@ import {
 import questionMark from '../../../../assets/elements/question_mark.png'
 import cyanBox from '../../../../assets/boxes/cyan_box.png'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
-import {
-    Commitment,
-    Transaction,
-    TransactionConfirmationStrategy,
-} from '@solana/web3.js'
+import { Transaction, TransactionConfirmationStrategy } from '@solana/web3.js'
 import toast from 'react-hot-toast'
 import { Buffer } from 'buffer'
 import { useNetworkConfiguration } from '../../../../context/Solana/SolNetworkConfigurationProvider'
@@ -163,11 +159,9 @@ export function BuyModal({ box }: { box: BoxType | null }) {
                 lastValidBlockHeight: latestBlockhash.lastValidBlockHeight,
             }
 
+            console.log('strategy', strategy)
 
-            const confirmationPromise = connection.confirmTransaction(
-                strategy,
-                'confirmed' as Commitment
-            )
+            const confirmationPromise = confirmTransaction(txSignature)
 
             toast.promise(confirmationPromise, {
                 loading: 'Processing Transaction',
@@ -188,16 +182,36 @@ export function BuyModal({ box }: { box: BoxType | null }) {
             const result = await confirmationPromise
             setHasPendingTransaction(false)
 
-            if (result.value.err) {
-                return false
+            if (!result) {
+                throw new Error('Transaction not confirmed')
             }
 
             return txSignature
         } catch (error) {
             setHasPendingTransaction(false)
+            toast.error('Error sending and confirming transaction:' + error)
             console.error('Error sending and confirming transaction:', error)
             throw error
         }
+    }
+
+    async function confirmTransaction(signature: string) {
+        const maxRetries = 20
+        let retryCount = 0
+
+        while (retryCount < maxRetries) {
+            const tx = await connection.getTransaction(signature, {
+                commitment: 'confirmed',
+                maxSupportedTransactionVersion: 0,
+            })
+            if (tx) {
+                console.log('tx', tx)
+                return tx
+            }
+            retryCount++
+            await new Promise((resolve) => setTimeout(resolve, 2000))
+        }
+        throw new Error('Transaction not confirmed')
     }
 
     async function openBoughtBox(boxId: string) {
