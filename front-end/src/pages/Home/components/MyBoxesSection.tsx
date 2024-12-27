@@ -29,13 +29,19 @@ const MyBoxesSection: React.FC = () => {
     const [myBoxes, setMyBoxes] = React.useState<MysteryBox[]>()
     const { publicKey } = useWallet()
     const [selectedBoxId, setSelectedBoxId] = React.useState<string>('')
+    const jwtToken = sessionStorage.getItem('jwtToken')
 
     useEffect(() => {
         if (!publicKey) return
         const fetchMyBoxes = async () => {
             try {
                 const response = await fetch(
-                    `${VITE_ENV_BACKEND_URL}/boxes/wallet/${publicKey?.toBase58()} `
+                    `${VITE_ENV_BACKEND_URL}/boxes/me`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${jwtToken}`,
+                        },
+                    }
                 )
                 const data = await response.json()
                 setMyBoxes(data)

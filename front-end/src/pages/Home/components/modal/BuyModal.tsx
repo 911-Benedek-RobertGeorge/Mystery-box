@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import {
     Modal,
@@ -21,10 +21,6 @@ import { useNetworkConfiguration } from '../../../../context/Solana/SolNetworkCo
 import { VITE_ENV_BACKEND_URL } from '../../../../libs/config'
 import { SOLANA_EXPLORER_URL } from '../../../../libs/constants'
 import { BoxType } from '../../../../libs/interfaces'
-import {
-    WalletConnectButton,
-    WalletMultiButton,
-} from '@solana/wallet-adapter-react-ui'
 
 export function BuyModal({ box }: { box: BoxType | null }) {
     const images = [cyanBox]
@@ -55,7 +51,7 @@ export function BuyModal({ box }: { box: BoxType | null }) {
             }
 
             const response = await fetch(
-                `${VITE_ENV_BACKEND_URL}/boxes/${box?._id}/wallet/${publicKey?.toBase58()}/open`,
+                `${VITE_ENV_BACKEND_URL}/boxes/box-type/${box?._id}/buy`,
                 {
                     method: 'POST',
                     headers: {
@@ -157,9 +153,7 @@ export function BuyModal({ box }: { box: BoxType | null }) {
             transaction.feePayer = publicKey
             setHasPendingTransaction(true)
 
-            const txSignature = await sendTransaction(transaction, connection, {
-                skipPreflight: true,
-            })
+            const txSignature = await sendTransaction(transaction, connection)
             setLatestTxSignature(txSignature)
 
             setStep(4)
@@ -169,9 +163,10 @@ export function BuyModal({ box }: { box: BoxType | null }) {
                 lastValidBlockHeight: latestBlockhash.lastValidBlockHeight,
             }
 
+
             const confirmationPromise = connection.confirmTransaction(
                 strategy,
-                'finalized' as Commitment
+                'confirmed' as Commitment
             )
 
             toast.promise(confirmationPromise, {

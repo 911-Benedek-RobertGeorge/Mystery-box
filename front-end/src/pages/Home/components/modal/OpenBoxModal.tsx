@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { motion, steps } from 'framer-motion'
+import { useState } from 'react'
+import { motion } from 'framer-motion'
 import {
     Modal,
     ModalBody,
@@ -9,7 +9,6 @@ import {
 } from '../../../../components/ui/AnimatedModal'
 import questionMark from '../../../../assets/elements/question_mark.png'
 import cyanBox from '../../../../assets/boxes/cyan_box.png'
-import SectionContainer from '../SectionContainer'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import {
     Commitment,
@@ -17,13 +16,9 @@ import {
     TransactionConfirmationStrategy,
 } from '@solana/web3.js'
 import toast from 'react-hot-toast'
-import { Buffer } from 'buffer'
-import axios from 'axios'
-import { useSelector } from 'react-redux'
 import { useNetworkConfiguration } from '../../../../context/Solana/SolNetworkConfigurationProvider'
 import { VITE_ENV_BACKEND_URL } from '../../../../libs/config'
 import { SOLANA_EXPLORER_URL } from '../../../../libs/constants'
-import { BoxType } from '../../../../libs/interfaces'
 
 export function OpenBoxModal({ boxId }: { boxId?: string }) {
     const images = [cyanBox]
@@ -112,30 +107,20 @@ export function OpenBoxModal({ boxId }: { boxId?: string }) {
     async function openBoughtBox(boxId: string) {
         try {
             const response = await fetch(
-                `${VITE_ENV_BACKEND_URL}/boxes/${boxId}/claim`,
+                `${VITE_ENV_BACKEND_URL}/boxes/box/${boxId}/claim`,
                 {
-                    method: 'GET',
+                    method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         Authorization: `Bearer ${jwtToken}`,
                     },
                 }
             )
-            const transactionEncoded = (await response.json())
-                .transactionEncoded
-
-            const transactionBuffer = Buffer.from(transactionEncoded, 'base64')
-            const transactionObject = Transaction.from(transactionBuffer)
-
-            // if (!hasBackendSignedTransaction(transactionObject)) {
-            //     throw new Error(
-            //         'Backend has not partial signed the transaction'
-            //     )
-            // }
-
-            const txSignature = await sendAndConfirmTransaction({
-                transaction: transactionObject,
-            })
+            const data = await response.json()
+            console.log('data', data)
+            if (data.error) {
+                throw new Error(data.error)
+            }
         } catch (error) {
             console.error('Error opening the box transaction:', error)
         }

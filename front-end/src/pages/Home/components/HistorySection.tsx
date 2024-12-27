@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
 import logo from '../../../assets/elements/logo.png'
-import boom from '../../../assets/coins/boom.png'
 import { useSelector } from 'react-redux'
 import {
     lamportsToSol,
@@ -101,13 +100,19 @@ const HistorySection: React.FC = () => {
     )
     const { publicKey } = useWallet()
     const [historyData, setHistoryData] = React.useState<HistoryItem[]>([])
+    const jwtToken = sessionStorage.getItem('jwtToken')
 
     useEffect(() => {
         if (!publicKey) return
         const fetchMyBoxes = async () => {
             try {
                 const response = await fetch(
-                    `${VITE_ENV_BACKEND_URL}/boxes/wallet/${publicKey?.toBase58()} `
+                    `${VITE_ENV_BACKEND_URL}/boxes/results`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${jwtToken}`,
+                        },
+                    }
                 )
                 const data: MysteryBox[] = await response.json()
                 const historyItems = transformToHistoryItems(data)
