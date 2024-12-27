@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
-import { cn, shortenAddress } from '../../libs/utils'
+import { cn, scrollToSection, shortenAddress } from '../../libs/utils'
 import logo from '../../assets/elements/logo.png'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { Link } from 'react-router-dom'
@@ -66,20 +66,22 @@ function Navbar({ className }: { className?: string }) {
                             </button>
                             {active === 'menu' && (
                                 <div className="absolute flex flex-col items-center justify-center rounded-3xl p-2 top-16 -left-12 w-[10rem] bg-muted shadow-lg">
-                                    <Link
-                                        to="/my-boxes"
+                                    <button
                                         className="block px-4 py-2  text-accent-dark hover:text-accent"
-                                        onClick={() => setActive(null)}
+                                        onClick={() => {
+                                            setActive(null)
+                                            scrollToSection('my-boxes')
+                                        }}
                                     >
                                         My Boxes
-                                    </Link>
-                                    <Link
+                                    </button>
+                                    {/* <Link
                                         to="./#"
                                         className="block px-4 py-2  text-accent-dark hover:text-accent"
                                         onClick={() => setActive(null)}
                                     >
                                         How to buy
-                                    </Link>
+                                    </Link> */}
                                     <div className="text-accent-dark hover:text-accent">
                                         <button
                                             onClick={() => {
@@ -124,18 +126,21 @@ function Navbar({ className }: { className?: string }) {
                             )}
                         </div>
                         <div className="hidden md:flex space-x-8 justify-center items-center ">
-                            <Link
-                                to="/my-boxes"
-                                className="text-accent-dark hover:text-accent "
+                            <button
+                                className="  text-accent-dark hover:text-accent"
+                                onClick={() => {
+                                    setActive(null)
+                                    scrollToSection('my-boxes')
+                                }}
                             >
                                 My Boxes
-                            </Link>
-                            <Link
+                            </button>
+                            {/* <Link
                                 to="./#"
                                 className="text-accent-dark hover:text-accent "
                             >
                                 How to buy
-                            </Link>
+                            </Link> */}
                             <div className="text-accent-dark hover:text-accent">
                                 <button
                                     onClick={() => {

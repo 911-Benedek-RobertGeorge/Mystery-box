@@ -56,16 +56,7 @@ const Home: React.FC = () => {
     const [hasPendingTransaction, setHasPendingTransaction] = useState(false)
     const { networkConfiguration } = useNetworkConfiguration()
 
-    // get the trending memeCoins from the API
     useEffect(() => {
-        // fetch('https://paste.ofcode.org/GXPu3JHPGeX4v6BptHgLcP')
-        //     .then((response) => response.json())
-        //     .then((data) => {
-        //         setMemesImage(data)
-        //     })
-        //     .catch((error) => {
-        //         console.error('Error:', error)
-        //     })
         const memeImages = memeCoinImages.map((meme) => {
             return {
                 src: meme,

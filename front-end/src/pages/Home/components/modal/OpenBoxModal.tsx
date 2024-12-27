@@ -106,6 +106,12 @@ export function OpenBoxModal({ boxId }: { boxId?: string }) {
 
     async function openBoughtBox(boxId: string) {
         try {
+            if (!publicKey || !jwtToken) {
+                toast.prototype('Plase reconnect your wallet')
+                throw new Error('JWT Token not found')
+                return
+            }
+
             const response = await fetch(
                 `${VITE_ENV_BACKEND_URL}/boxes/box/${boxId}/claim`,
                 {
@@ -191,6 +197,7 @@ export function OpenBoxModal({ boxId }: { boxId?: string }) {
                                             type="checkbox"
                                             id="terms"
                                             className="mr-2"
+                                            checked={readAndAgreeWithTerms}
                                         />
                                         <label
                                             htmlFor="terms"

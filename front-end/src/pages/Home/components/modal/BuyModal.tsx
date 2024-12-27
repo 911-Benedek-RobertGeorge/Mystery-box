@@ -11,16 +11,18 @@ import questionMark from '../../../../assets/elements/question_mark.png'
 import cyanBox from '../../../../assets/boxes/cyan_box.png'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import { Transaction, TransactionConfirmationStrategy } from '@solana/web3.js'
-import toast from 'react-hot-toast'
+import toast, { CheckmarkIcon, LoaderIcon } from 'react-hot-toast'
 import { Buffer } from 'buffer'
 import { useNetworkConfiguration } from '../../../../context/Solana/SolNetworkConfigurationProvider'
 import { VITE_ENV_BACKEND_URL } from '../../../../libs/config'
 import { SOLANA_EXPLORER_URL } from '../../../../libs/constants'
 import { BoxType } from '../../../../libs/interfaces'
+import { lamportsToSol } from '../../../../libs/utils'
 
 export function BuyModal({ box }: { box: BoxType | null }) {
     const images = [cyanBox]
-    const [readAndAgreeWithTerms, setReadAndAgreeWithTerms] = useState(false)
+    const [readAndAgreeWithTerms, setReadAndAgreeWithTerms] =
+        useState<boolean>(false)
 
     const { publicKey, sendTransaction } = useWallet()
     const [openBuyBoxModal, setOpenBuyBoxModal] = useState(false)
@@ -39,15 +41,13 @@ export function BuyModal({ box }: { box: BoxType | null }) {
         setOpenBuyBoxModal(true)
 
         try {
-            if (!box) {
-                throw new Error('Box not found')
-            }
-            if (!publicKey) {
-                throw new Error('Wallet not connected')
-            }
+            console.log('buyMysteryBox', box?._id)
+            if (!box || !box._id) throw new Error('Box not found')
+            if (!publicKey) throw new Error('Wallet not connected')
+            if (!jwtToken) throw new Error('JWT token not found, re-login')
 
             const response = await fetch(
-                `${VITE_ENV_BACKEND_URL}/boxes/box-type/${box?._id}/buy`,
+                `${VITE_ENV_BACKEND_URL}/boxes/box-type/${box._id}/buy`,
                 {
                     method: 'POST',
                     headers: {
@@ -56,6 +56,7 @@ export function BuyModal({ box }: { box: BoxType | null }) {
                     },
                 }
             )
+            console.log(response, 'response')
 
             if (!response.ok) {
                 throw new Error(
@@ -65,7 +66,7 @@ export function BuyModal({ box }: { box: BoxType | null }) {
 
             const transactionEncoded = (await response.json())
                 .transactionEncoded
-
+            console.log('transactionEncoded', transactionEncoded)
             setStep(2)
             const transactionBuffer = Buffer.from(transactionEncoded, 'base64')
             const transactionObject = Transaction.from(transactionBuffer)
@@ -83,7 +84,7 @@ export function BuyModal({ box }: { box: BoxType | null }) {
             if (!txSignature) return
 
             await indexTransaction(txSignature)
-
+            setStep(7)
             setOpenBuyBoxModal(false)
         } catch (error) {
             toast.error('Error buying mystery box' + error)
@@ -96,12 +97,7 @@ export function BuyModal({ box }: { box: BoxType | null }) {
         try {
             console.log('indexTransaction', signature)
             if (!jwtToken) throw new Error('JWT token not found ')
-            const encodedSignature = Buffer.from(signature, 'utf-8').toString(
-                'base64'
-            )
-            console.log('encodedSignature', encodedSignature, {
-                signature: encodedSignature,
-            })
+
             const response = await fetch(`${VITE_ENV_BACKEND_URL}/index`, {
                 method: 'POST',
                 headers: {
@@ -264,7 +260,7 @@ export function BuyModal({ box }: { box: BoxType | null }) {
                         </div>
                     </ModalTrigger>
                     <ModalBody className="z-[200]  bg-background-dark w-full shadow-inner rounded-t-xl  shadow-cyan-600    ">
-                        <ModalContent className="   ">
+                        <ModalContent className=" ">
                             <div className="">
                                 <div className="">
                                     <h4 className="text-lg md:text-2xl text-accent-dark  font-bold text-center mb-8">
@@ -304,7 +300,7 @@ export function BuyModal({ box }: { box: BoxType | null }) {
                                             </motion.div>
                                         ))}
                                     </div>
-                                    <div className="py-10 flex flex-wrap gap-x-4 gap-y-6 items-start justify-start max-w-sm mx-auto">
+                                    <div className="py-10 flex flex-col gap-x-4 gap-y-6 items-start justify-start max-w-sm mx-auto">
                                         <div className="flex items-center justify-center">
                                             <input
                                                 onChange={(e) =>
@@ -315,6 +311,7 @@ export function BuyModal({ box }: { box: BoxType | null }) {
                                                 type="checkbox"
                                                 id="terms"
                                                 className="mr-2"
+                                                checked={readAndAgreeWithTerms}
                                             />
                                             <label
                                                 htmlFor="terms"
@@ -330,38 +327,86 @@ export function BuyModal({ box }: { box: BoxType | null }) {
                                                 </a>
                                             </label>
                                         </div>
-                                        <div className="flex items-center justify-center">
+                                        <div className="flex  items-center justify-between">
                                             <span className="text-neutral-200 dark:text-neutral-400 text-sm">
-                                                Price: 0.2 SOL
+                                                Price:{' '}
+                                                {lamportsToSol(
+                                                    box?.amountLamports ?? '0'
+                                                ).toFixed(4)}{' '}
+                                                SOL
+                                            </span>
+                                            <span className="text-neutral-200 dark:text-neutral-400 text-sm">
+                                                Max Box Buy :{' '}
+                                                {box?.maxBoxAmount}
                                             </span>
                                         </div>
-                                        <div className="flex items-center justify-center">
-                                            <span className="text-neutral-200 dark:text-neutral-400 text-sm">
-                                                Possible rewards: ///TODO how to
-                                                get these?
-                                                <ul className="list-disc pl-5">
-                                                    <li className="text-neutral-200 dark:text-neutral-400 text-sm">
-                                                        DogeCoin
+                                        <div className="flex flex-col items-center justify-center w-full">
+                                            <ol className="w-full">
+                                                {[
+                                                    'Initiate Purchase',
+                                                    'Fetch Transaction',
+                                                    'Sign Transaction',
+                                                    'Send Transaction',
+                                                    'Confirm Transaction',
+                                                    'Complete Purchase',
+                                                ].map((text, index) => (
+                                                    <li
+                                                        key={index}
+                                                        className={`text-neutral-200 dark:text-neutral-400 text-sm ${
+                                                            step >= index + 1
+                                                                ? 'font-bold shadow-md shadow-cyan-500/50'
+                                                                : ''
+                                                        } flex items-center justify-between p-2 rounded-md mb-2 transition-all duration-300 ease-in-out ${
+                                                            step === index + 1
+                                                                ? 'bg-accent-dark/50'
+                                                                : ''
+                                                        }`}
+                                                    >
+                                                        <div className="flex items-center">
+                                                            {step ===
+                                                                index + 1 && (
+                                                                <LoaderIcon className="animate-spin mr-4" />
+                                                            )}
+                                                            {text}
+                                                        </div>
+                                                        {step > index + 1 && (
+                                                            <CheckmarkIcon className="" />
+                                                        )}
                                                     </li>
-                                                    <li className="text-neutral-200 dark:text-neutral-400 text-sm">
-                                                        Shiba Inu
-                                                    </li>
-                                                    <li className="text-neutral-200 dark:text-neutral-400 text-sm">
-                                                        PepeCoin
-                                                    </li>
-                                                    <li className="text-neutral-200 dark:text-neutral-400 text-sm">
-                                                        Floki Inu
-                                                    </li>
-                                                </ul>
-                                            </span>
+                                                ))}
+                                            </ol>
                                         </div>
-                                        <div className="flex items-center justify-center">
-                                            <span className="text-neutral-200 dark:text-neutral-400 text-sm">
-                                                Limited Edition Box
-                                            </span>
-                                        </div>
-                                    </div>{' '}
-                                </div>
+                                        <ol className="w-full">
+                                            {[
+                                                'Initiate Purchase',
+                                                'Fetch Transaction',
+                                                'Sign Transaction',
+                                                'Send Transaction',
+                                                'Confirm Transaction',
+                                                'Complete Purchase',
+                                            ].map((text, index) => (
+                                                <li
+                                                    key={index}
+                                                    className={`text-neutral-200 dark:text-neutral-400 text-sm ${
+                                                        step >= index + 1
+                                                            ? 'font-bold shadow-md shadow-cyan-500/50'
+                                                            : ''
+                                                    } flex items-center justify-between p-2 rounded-md mb-2`}
+                                                >
+                                                    <div className="flex items-center">
+                                                        {step === index + 1 && (
+                                                            <LoaderIcon className="animate-spin mr-4" />
+                                                        )}
+                                                        {text}
+                                                    </div>
+                                                    {step > index + 1 && (
+                                                        <CheckmarkIcon className="" />
+                                                    )}
+                                                </li>
+                                            ))}
+                                        </ol>
+                                    </div>
+                                </div>{' '}
                             </div>
                         </ModalContent>
                         <ModalFooter className="gap-4 bg-neutral-950 flex items-center justify-center">
@@ -384,13 +429,13 @@ export function BuyModal({ box }: { box: BoxType | null }) {
                                     Open Box Now ! 🎉
                                 </button>
                             )}
-                            <button
+                            {/* <button
                                 onClick={() =>
                                     indexTransaction(latestTxSignature)
                                 }
                             >
                                 index transaction{' '}
-                            </button>
+                            </button> */}
                         </ModalFooter>
                     </ModalBody>
                 </Modal>

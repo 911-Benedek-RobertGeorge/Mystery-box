@@ -128,7 +128,7 @@ const HistorySection: React.FC = () => {
     const transformToHistoryItems = (
         mysteryBoxes: MysteryBox[]
     ): HistoryItem[] => {
-        return mysteryBoxes.reverse().map((box) => ({
+        return mysteryBoxes.map((box) => ({
             price: parseFloat(
                 lamportsToSol(box.boxType.amountLamports).toFixed(4)
             ),
@@ -159,7 +159,7 @@ const HistorySection: React.FC = () => {
             date: new Date(box.updatedAt),
 
             boxType: box.boxType.name,
-            boxContent: box.boxContents.map((content) => ({
+            boxContent: box.boxContents?.map((content) => ({
                 mintAddress: content.token.mint,
                 image: content.token.image,
                 name: content.token.name,

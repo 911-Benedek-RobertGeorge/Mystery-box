@@ -31,6 +31,8 @@ export interface BoxType {
     name: string
     __v: number
     amountLamports: string
+    lockedBoxes: number
+    maxBoxAmount: number
 }
 
 export interface BoxContent {
@@ -50,6 +52,10 @@ export interface BoxContent {
 export enum BoxStatus {
     BOUGHT = 'BOUGHT',
     OPEN = 'OPEN',
+    AVAILABLE = 'AVAILABLE',
+    LOCKED = 'LOCKED',
+    CLAIMING = 'CLAIMING',
+    CLAIMED = 'CLAIMED',
 }
 export interface MysteryBox {
     _id: string

@@ -6,22 +6,6 @@ import { VITE_ENV_BACKEND_URL } from '../../../libs/config'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { OpenBoxModal } from './modal/OpenBoxModal'
 
-interface HistoryItem {
-    price: number
-    currentPrice: number
-    roi: number
-    date: string
-    boxType: string
-    boxContent: memeCoinType[]
-    image: string
-}
-
-type memeCoinType = {
-    mintAddress: string
-    image: string
-    name: string
-}
-
 const MyBoxesSection: React.FC = () => {
     const solanaPrice = useSelector(
         (state: { solana: { price: number } }) => state.solana.price
@@ -32,7 +16,7 @@ const MyBoxesSection: React.FC = () => {
     const jwtToken = sessionStorage.getItem('jwtToken')
 
     useEffect(() => {
-        if (!publicKey) return
+        if (!publicKey || !jwtToken) return
         const fetchMyBoxes = async () => {
             try {
                 const response = await fetch(
@@ -44,13 +28,17 @@ const MyBoxesSection: React.FC = () => {
                     }
                 )
                 const data = await response.json()
+                console.log(response, 'DATA', data)
+                if (response.status !== 200) {
+                    throw new Error(data.message)
+                }
                 setMyBoxes(data)
             } catch (error) {
                 console.error('fetchMyBoxes: ', error)
             }
         }
         fetchMyBoxes()
-    }, [publicKey])
+    }, [publicKey, jwtToken])
 
     return (
         <>
@@ -59,14 +47,17 @@ const MyBoxesSection: React.FC = () => {
                     Please connect your wallet to view your boxes.
                 </div>
             ) : (
-                <div className=" w-screen h-screen flex flex-col justify-center items-center p-10 md:p-64">
+                <div
+                    id="my-boxes"
+                    className=" w-screen h-screen flex flex-col justify-center items-center p-10 md:p-64"
+                >
                     <div className="flex justify-start items-start w-full ">
                         <span className="text-3xl font-bold text-accent p-2 mb-4 ">
                             My boxes ({myBoxes?.length})
                         </span>
                     </div>
-                    {myBoxes &&
-                        myBoxes.map((box, index) => {
+                    {myBoxes && myBoxes.length > 0 ? (
+                        myBoxes?.map((box, index) => {
                             return (
                                 <div
                                     key={index}
@@ -114,12 +105,22 @@ const MyBoxesSection: React.FC = () => {
                                     </button>
                                 </div>
                             )
-                        })}
-                    {selectedBoxId && (
-                        <p className="text-accent ">
+                        })
+                    ) : (
+                        //    selectedBoxId && (
+                        //         <p className="text-accent ">
+                        //             {' '}
+                        //             Selected Box: {selectedBoxId}
+                        //         </p>
+                        //     )
+
+                        <div>
                             {' '}
-                            Selected Box: {selectedBoxId}
-                        </p>
+                            <span className="text-accent text-xl">
+                                {' '}
+                                You don't own any box, why dont you buy one ?{' '}
+                            </span>{' '}
+                        </div>
                     )}
                     <OpenBoxModal boxId={selectedBoxId} />
                 </div>

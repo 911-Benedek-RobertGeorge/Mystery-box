@@ -10,6 +10,7 @@ const BoxesSection: React.FC = () => {
     const boxTypes: BoxType[] = useSelector(
         (state: { box: { types: BoxType[] } }) => state.box.types
     )
+    console.log('boxTypes', boxTypes)
 
     return (
         <div className=" relative  flex flex-col justify-center items-center w-full space-y-32 md:space-y-0">

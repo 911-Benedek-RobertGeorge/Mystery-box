@@ -50,3 +50,14 @@ export function timeDifferenceFromNow(date: Date): {
     const diffMinutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60))
     return { hours: diffHours, minutes: diffMinutes }
 }
+
+export const scrollToSection = (sectionId: string) => {
+    const section = document.getElementById(sectionId)
+
+    if (section) {
+        window.scrollTo({
+            top: section.offsetTop,
+            behavior: 'smooth',
+        })
+    }
+}
