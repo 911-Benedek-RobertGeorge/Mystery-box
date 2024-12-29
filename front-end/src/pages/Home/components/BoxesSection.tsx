@@ -61,7 +61,7 @@ const BoxDetails: React.FC<{ box: BoxType; comingSoon?: string }> = ({
     comingSoon,
 }) => {
     return (
-        <div className="relative max-w-md items-center justify-center">
+        <div className="relative max-w-md items-center justify-center p-6 md:p-0">
             <img
                 src={cyanBox}
                 className="w-96 mx-auto"

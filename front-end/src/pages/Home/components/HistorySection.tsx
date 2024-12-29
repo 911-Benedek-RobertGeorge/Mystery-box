@@ -95,13 +95,14 @@ const HistorySection: React.FC = () => {
     }
 
     return (
-        <div className="z-[111]   flex flex-col justify-center items-center p-10 md:p-64">
+        <div className="z-[111] flex flex-col justify-center items-center p-10 md:p-64 ">
             {/* <div className="mb-3 flex w-full max-w-screen-xl transform cursor-pointer flex-col justify-between rounded-md bg-white bg-opacity-75 p-6 text-slate-800 transition duration-500 ease-in-out hover:-translate-y-1 hover:shadow-lg dark:bg-slate-700 dark:bg-opacity-25 dark:text-slate-300 lg:flex-row lg:p-4"> */}
             <div className="flex justify-start items-start w-full ">
                 <span className="text-3xl font-bold text-accent p-2 mb-4 ">
                     Latest Boxes sold
                 </span>
             </div>
+
             {historyData.slice(0, 5).map((box, index) => {
                 return (
                     <div

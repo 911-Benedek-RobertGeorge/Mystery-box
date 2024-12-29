@@ -295,7 +295,7 @@ const Home: React.FC = () => {
                     <img src={fluidTape} />
                 </div> */}
                 <div
-                    className="absolute -rotate-12 w-96 z-[-1]]"
+                    className="absolute -rotate-12 w-96 z-[-1]"
                     style={{
                         transform: `translateX(${Math.min(-700 + scrollPosition, 250)}px) translateY(${Math.min(-700 + scrollPosition / 2.5, -330)}px)`,
                         filter: `hue-rotate(${Math.max(-80, 10 - scrollPosition / 10)}deg)`,
@@ -352,7 +352,7 @@ const Home: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="flex flex-col mt-64 relative justify-center items-center w-full h-full text-white p-8">
+                <div className="flex flex-col relative justify-center items-center w-full h-full text-white p-8">
                     <div className="  z-50 flex flex-col justify-center items-center w-full h-full  text-white p-8">
                         {' '}
                         <h2 className="text-4xl font-bold mb-4">
