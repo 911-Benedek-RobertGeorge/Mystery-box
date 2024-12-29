@@ -465,7 +465,7 @@ export function BuyModal({ box }: { box: BoxType | null }) {
                                 <button
                                     onClick={buyMysteryBox}
                                     className=" text-sm px-2 py-1 rounded-md shadow-inner shadow-accent-dark border border-accent-dark  w-28 disabled:bg-muted disabled:border-0 disabled:cursor-not-allowed disabled:shadow-none "
-                                    disabled={!readAndAgreeWithTerms}
+                                    // disabled={!readAndAgreeWithTerms}
                                 >
                                     Buy box{' '}
                                 </button>

@@ -23,7 +23,6 @@ interface HistoryItem {
 }
 
 const HistorySection: React.FC = () => {
-
     const { publicKey } = useWallet()
     const [historyData, setHistoryData] = React.useState<HistoryItem[]>([])
     const jwtToken = sessionStorage.getItem('jwtToken')
@@ -103,7 +102,7 @@ const HistorySection: React.FC = () => {
                     Latest Boxes sold
                 </span>
             </div>
-            {historyData.map((box, index) => {
+            {historyData.slice(0, 5).map((box, index) => {
                 return (
                     <div
                         key={index}

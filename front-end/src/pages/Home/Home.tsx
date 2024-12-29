@@ -1,12 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { BackgroundGradientAnimation } from '../../components/ui/BackgroundGradientAnimation'
 import SectionContainer from './components/SectionContainer'
-import geometricVector from '../../assets/shapes/geometric-vector-shape.webp'
-import Navbar from '../../components/Layout/Navbar'
-import waterDrop from '../../assets/shapes/drop.png'
+import { motion } from 'framer-motion'
 import prism from '../../assets/shapes/prism.png'
 import vectorShape from '../../assets/elements/vector-shape.png'
-import simpleBox from '../../assets/elements/logo1.png'
+import simpleBox from '../../assets/elements/simple_box.png'
 import stand from '../../assets/shapes/stand.png'
 import questionMark from '../../assets/elements/question_mark.png'
 import dogeCoin from '../../assets/coins/doge.png'
@@ -19,17 +17,13 @@ import wif from '../../assets/coins/wif.png'
 import key from '../../assets/boxes/key.png'
 import chillGuy from '../../assets/coins/chill-guy.png'
 import bonk from '../../assets/coins/bonk.png'
-import cyanBox from '../../assets/boxes/cyan_box-Photoroom.png'
-import riskyBox from '../../assets/boxes/risky-box.png'
-import heartImage from '../../assets/elements/heart.png'
+
 import fluidTape from '../../assets/elements/fluid_tape.png'
 import waveTape from '../../assets/shapes/wave_tape.png'
-import { use } from 'framer-motion/client'
-import { MEMES, SOLANA_EXPLORER_URL } from '../../libs/constants'
+
 import MemeImagesFloating from './components/MemeImagesFloating'
 import { MemeImage, Token } from '../../libs/interfaces'
-import solanaImage from '../../assets/elements/solana.png'
-import lines from '../../assets/shapes/lines.png'
+
 import ribbons from '../../assets/shapes/ribbons.png'
 import leafes from '../../assets/shapes/leafess.png'
 import smile from '../../assets/shapes/smile.png'
@@ -292,7 +286,7 @@ const Home: React.FC = () => {
             </BackgroundGradientAnimation>
             <img
                 src={vectorShape}
-                className="w-screen top-[23.5rem] rotate-12 md:rotate-6 h-[900px] absolute z-[]  "
+                className="w-screen top-[23.5rem] rotate-12 md:rotate-6 h-[900px] absolute  animate-pulse"
                 style={{ transformStyle: 'preserve-3d' }}
             ></img>{' '}
             {/* BOXES SECTIONS */}
@@ -301,7 +295,7 @@ const Home: React.FC = () => {
                     <img src={fluidTape} />
                 </div> */}
                 <div
-                    className="absolute -rotate-12 w-96 z-[2]"
+                    className="absolute -rotate-12 w-96 z-[-1]]"
                     style={{
                         transform: `translateX(${Math.min(-700 + scrollPosition, 250)}px) translateY(${Math.min(-700 + scrollPosition / 2.5, -330)}px)`,
                         filter: `hue-rotate(${Math.max(-80, 10 - scrollPosition / 10)}deg)`,
@@ -311,17 +305,25 @@ const Home: React.FC = () => {
                 >
                     <img src={fluidTape} alt="Fluid Tape" />
                 </div>
-                <div
-                    className="absolute w-80 "
-                    style={{
-                        transform: `translateX(${Math.max(1300 - scrollPosition)}px) translateY(${Math.min(-1200 + scrollPosition)}px)`,
-                        filter: `hue-rotate(${Math.min(-80, Math.max(200 - scrollPosition / 3.3, -250))}deg)`,
-                        transition:
-                            'transform 0.2s ease-out, filter 0.2s ease-out',
+
+                <motion.div
+                    className="absolute w-80"
+                    initial={{
+                        x: 1300,
+                        y: -1200,
+                        rotate: 120,
+                        filter: 'hue-rotate(200deg)',
                     }}
+                    animate={{
+                        x: Math.max(1300 - scrollPosition, scrollPosition / 3),
+                        y: Math.min(-1200 + scrollPosition),
+                        rotate: Math.min(0, 100 - scrollPosition / 10),
+                        filter: `hue-rotate(${Math.min(0, 200 - scrollPosition / 3.3)}deg)`,
+                    }}
+                    transition={{ ease: 'easeOut', duration: 0.2 }}
                 >
                     <img src={waveTape} alt="Fluid Tape" />
-                </div>
+                </motion.div>
                 <BoxesSection />
             </div>{' '}
             <HistorySection />
