@@ -11,19 +11,24 @@ import questionMark from '../../../../assets/elements/question_mark.png'
 import cyanBox from '../../../../assets/boxes/cyan_box.png'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import { Transaction, TransactionConfirmationStrategy } from '@solana/web3.js'
-import toast, { CheckmarkIcon, LoaderIcon } from 'react-hot-toast'
+import toast, { LoaderIcon } from 'react-hot-toast'
 import { Buffer } from 'buffer'
 import { useNetworkConfiguration } from '../../../../context/Solana/SolNetworkConfigurationProvider'
 import { VITE_ENV_BACKEND_URL } from '../../../../libs/config'
 import { SOLANA_EXPLORER_URL } from '../../../../libs/constants'
 import { BoxType } from '../../../../libs/interfaces'
 import { lamportsToSol } from '../../../../libs/utils'
+import { FaCheckCircle } from 'react-icons/fa'
+import { useSelector } from 'react-redux'
+import { OpenBoxModal } from './OpenBoxModal'
 
 export function BuyModal({ box }: { box: BoxType | null }) {
     const images = [cyanBox]
     const [readAndAgreeWithTerms, setReadAndAgreeWithTerms] =
         useState<boolean>(false)
-
+    const solanaPrice = useSelector(
+        (state: { solana: { price: number } }) => state.solana.price
+    )
     const { publicKey, sendTransaction } = useWallet()
     const [openBuyBoxModal, setOpenBuyBoxModal] = useState(false)
     const [hasPendingTransaction, setHasPendingTransaction] = useState(false)
@@ -31,7 +36,6 @@ export function BuyModal({ box }: { box: BoxType | null }) {
     const { networkConfiguration } = useNetworkConfiguration()
     const [step, setStep] = useState(0)
     const [latestTxSignature, setLatestTxSignature] = useState<string>('')
-
     const jwtToken = sessionStorage.getItem('jwtToken')
 
     const [boughtBoxId, setBoughtBoxId] = useState<string | null>(null)
@@ -77,18 +81,19 @@ export function BuyModal({ box }: { box: BoxType | null }) {
             //     )
             // }
 
-            setStep(3)
+            setStep(2)
             const txSignature = await sendAndConfirmTransaction({
                 transaction: transactionObject,
             })
             if (!txSignature) return
 
             await indexTransaction(txSignature)
-            setStep(7)
+            setStep(6)
             setOpenBuyBoxModal(false)
         } catch (error) {
             toast.error('Error buying mystery box' + error)
             console.error('Error buying mystery box:', error)
+            setStep(-1)
             setOpenBuyBoxModal(false)
         }
     }
@@ -110,7 +115,7 @@ export function BuyModal({ box }: { box: BoxType | null }) {
             if (!response.ok) {
                 throw new Error('Failed to index the transaction')
             }
-            setStep(6)
+            setStep(5)
 
             const result = await response.json()
             if (result.message) {
@@ -119,7 +124,7 @@ export function BuyModal({ box }: { box: BoxType | null }) {
             }
             console.log('indexTransaction result', result)
 
-            setBoughtBoxId(result.boxId)
+            setBoughtBoxId(result._id)
         } catch (error) {
             if (error instanceof Error) {
                 toast.error('Error indexing transaction' + error.message)
@@ -148,7 +153,7 @@ export function BuyModal({ box }: { box: BoxType | null }) {
             const txSignature = await sendTransaction(transaction, connection)
             setLatestTxSignature(txSignature)
 
-            setStep(4)
+            setStep(3)
             const strategy: TransactionConfirmationStrategy = {
                 signature: txSignature,
                 blockhash: latestBlockhash.blockhash,
@@ -174,7 +179,7 @@ export function BuyModal({ box }: { box: BoxType | null }) {
                 error: (err) => `Transaction failed: ${err.message}`,
             })
 
-            setStep(5)
+            setStep(4)
             const result = await confirmationPromise
             setHasPendingTransaction(false)
 
@@ -185,8 +190,9 @@ export function BuyModal({ box }: { box: BoxType | null }) {
             return txSignature
         } catch (error) {
             setHasPendingTransaction(false)
-            toast.error('Error sending and confirming transaction:' + error)
+            // toast.error('Error sending and confirming transaction:' + error)
             console.error('Error sending and confirming transaction:', error)
+
             throw error
         }
     }
@@ -210,42 +216,43 @@ export function BuyModal({ box }: { box: BoxType | null }) {
         throw new Error('Transaction not confirmed')
     }
 
-    async function openBoughtBox(boxId: string) {
-        try {
-            const response = await fetch(
-                `${VITE_ENV_BACKEND_URL}/boxes/${boxId}/claim`,
-                {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${jwtToken}`,
-                    },
-                }
-            )
-            console.log((await response) + 'response claim')
-            const transactionEncoded = (await response.json())
-                .transactionEncoded
+    // async function openBoughtBox(boxId: string) {
+    //     try {
+    //         const response = await fetch(
+    //             `${VITE_ENV_BACKEND_URL}/boxes/${boxId}/claim`,
+    //             {
+    //                 method: 'GET',
+    //                 headers: {
+    //                     'Content-Type': 'application/json',
+    //                     Authorization: `Bearer ${jwtToken}`,
+    //                 },
+    //             }
+    //         )
+    //         console.log((await response) + 'response claim')
+    //         const transactionEncoded = (await response.json())
+    //             .transactionEncoded
 
-            const transactionBuffer = Buffer.from(transactionEncoded, 'base64')
-            const transactionObject = Transaction.from(transactionBuffer)
+    //         const transactionBuffer = Buffer.from(transactionEncoded, 'base64')
+    //         const transactionObject = Transaction.from(transactionBuffer)
 
-            // if (!hasBackendSignedTransaction(transactionObject)) {
-            //     throw new Error(
-            //         'Backend has not partial signed the transaction'
-            //     )
-            // }
+    //         // if (!hasBackendSignedTransaction(transactionObject)) {
+    //         //     throw new Error(
+    //         //         'Backend has not partial signed the transaction'
+    //         //     )
+    //         // }
 
-            const txSignature = await sendAndConfirmTransaction({
-                transaction: transactionObject,
-            })
-            console.log('OPEN BOX txSignature', txSignature)
-        } catch (error) {
-            console.error('Error opening the box transaction:', error)
-        }
-    }
+    //         const txSignature = await sendAndConfirmTransaction({
+    //             transaction: transactionObject,
+    //         })
+    //         console.log('OPEN BOX txSignature', txSignature)
+    //     } catch (error) {
+    //         setStep(0)
+    //         console.error('Error opening the box transaction:', error)
+    //     }
+    // }
 
     return (
-        <div className=" py-40 flex items-center justify-center">
+        <div className="  flex items-center justify-center">
             {publicKey ? (
                 <Modal>
                     <ModalTrigger
@@ -259,18 +266,18 @@ export function BuyModal({ box }: { box: BoxType | null }) {
                             <img className="w-8" src={questionMark} />
                         </div>
                     </ModalTrigger>
-                    <ModalBody className="z-[200]  bg-background-dark w-full shadow-inner rounded-t-xl  shadow-cyan-600    ">
+                    <ModalBody className="  bg-background-dark w-full shadow-inner rounded-t-xl  shadow-cyan-600    ">
                         <ModalContent className=" ">
                             <div className="">
                                 <div className="">
                                     <h4 className="text-lg md:text-2xl text-accent-dark  font-bold text-center mb-8">
-                                        {step < 6 ? 'Buy ' : 'Open '} box{' '}
+                                        {!boughtBoxId ? 'Buy ' : 'Open '}{' '}
                                         <span className="px-1 py-0.5 rounded-md bg-accent-dark/50 border border-accent text-accent">
                                             {box?.name}
                                         </span>{' '}
                                         now!
                                     </h4>
-                                    <div className="flex justify-center items-center">
+                                    <div className="flex justify-center items-center ">
                                         {images.map((image, idx) => (
                                             <motion.div
                                                 key={'images' + idx}
@@ -300,133 +307,167 @@ export function BuyModal({ box }: { box: BoxType | null }) {
                                             </motion.div>
                                         ))}
                                     </div>
-                                    <div className="py-10 flex flex-col gap-x-4 gap-y-6 items-start justify-start max-w-sm mx-auto">
-                                        <div className="flex items-center justify-center">
-                                            <input
-                                                onChange={(e) =>
-                                                    setReadAndAgreeWithTerms(
-                                                        e.target.checked
-                                                    )
-                                                }
-                                                type="checkbox"
-                                                id="terms"
-                                                className="mr-2"
-                                                checked={readAndAgreeWithTerms}
-                                            />
-                                            <label
-                                                htmlFor="terms"
-                                                className="text-neutral-200 dark:text-neutral-400 text-sm"
-                                            >
-                                                I have read and agree with the{' '}
-                                                <a
-                                                    href="/terms-and-conditions"
-                                                    target="_blank"
-                                                    className="text-accent underline"
-                                                >
-                                                    terms and conditions
-                                                </a>
-                                            </label>
-                                        </div>
-                                        <div className="flex  items-center justify-between">
-                                            <span className="text-neutral-200 dark:text-neutral-400 text-sm">
-                                                Price:{' '}
-                                                {lamportsToSol(
-                                                    box?.amountLamports ?? '0'
-                                                ).toFixed(4)}{' '}
-                                                SOL
-                                            </span>
-                                            <span className="text-neutral-200 dark:text-neutral-400 text-sm">
-                                                Max Box Buy :{' '}
-                                                {box?.maxBoxAmount}
-                                            </span>
-                                        </div>
-                                        <div className="flex flex-col items-center justify-center w-full">
-                                            <ol className="w-full">
-                                                {[
-                                                    'Initiate Purchase',
-                                                    'Fetch Transaction',
-                                                    'Sign Transaction',
-                                                    'Send Transaction',
-                                                    'Confirm Transaction',
-                                                    'Complete Purchase',
-                                                ].map((text, index) => (
-                                                    <li
-                                                        key={index}
-                                                        className={`text-neutral-200 dark:text-neutral-400 text-sm ${
-                                                            step >= index + 1
-                                                                ? 'font-bold shadow-md shadow-cyan-500/50'
-                                                                : ''
-                                                        } flex items-center justify-between p-2 rounded-md mb-2 transition-all duration-300 ease-in-out ${
-                                                            step === index + 1
-                                                                ? 'bg-accent-dark/50'
-                                                                : ''
-                                                        }`}
+                                    <div className="py-10 flex flex-col  gap-y-6 items-start max-w-sm justify-start  mx-auto max-h-[20rem] md:max-h-[15rem]">
+                                        {!boughtBoxId && step <= 0 ? (
+                                            <div className=" ">
+                                                <p className="text-sm text-gray-400 mb-2">
+                                                    Unlock a random selection of
+                                                    meme coins and join the fun.
+                                                    Rewards are completely
+                                                    random!
+                                                </p>
+                                                <div className="flex flex-row space-x-4  items-center justify-between">
+                                                    <span className="text-neutral-200 dark:text-neutral-400">
+                                                        Price:{' '}
+                                                        {lamportsToSol(
+                                                            box?.amountLamports ??
+                                                                '0'
+                                                        ).toFixed(4)}{' '}
+                                                        SOL
+                                                    </span>
+                                                    <span>
+                                                        ~{' '}
+                                                        {(
+                                                            lamportsToSol(
+                                                                box?.amountLamports ??
+                                                                    '0'
+                                                            ) * solanaPrice
+                                                        ).toFixed(2)}{' '}
+                                                        USD{' '}
+                                                    </span>
+                                                </div>
+                                                <p className="text-sm text-gray-400 mb-4">
+                                                    Max Purchase Limit:{' '}
+                                                    <span className="text-white">
+                                                        {box?.maxBoxAmount}
+                                                    </span>
+                                                </p>
+                                                <div className="text-xs text-left text-gray-400 mb-4">
+                                                    <p className="text-accent">
+                                                        By signing the
+                                                        transaction and
+                                                        purchasing, you agree to
+                                                        the following:
+                                                    </p>
+                                                    <ul className="list-disc list-inside ml-4">
+                                                        <li>
+                                                            This is not
+                                                            financial advice.
+                                                        </li>
+
+                                                        <li>
+                                                            Contents are random,
+                                                            and their value may
+                                                            vary.
+                                                        </li>
+                                                        <li>
+                                                            All sales are final,
+                                                            and no refunds are
+                                                            available.
+                                                        </li>
+                                                        <li>
+                                                            You can read more
+                                                            here{' '}
+                                                            <a
+                                                                href="/terms-and-conditions"
+                                                                target="_blank"
+                                                                className="text-accent underline"
+                                                            >
+                                                                terms and
+                                                                conditions
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                {/* <div className="flex items-center justify-center">
+                                                    <input
+                                                        onChange={(e) =>
+                                                            setReadAndAgreeWithTerms(
+                                                                e.target.checked
+                                                            )
+                                                        }
+                                                        type="checkbox"
+                                                        id="terms"
+                                                        className="mr-2"
+                                                        checked={
+                                                            readAndAgreeWithTerms
+                                                        }
+                                                    />
+                                                    <label
+                                                        htmlFor="terms"
+                                                        className="text-neutral-200 dark:text-neutral-400 text-sm"
                                                     >
-                                                        <div className="flex items-center">
-                                                            {step ===
+                                                        I have read and agree
+                                                        with the{' '}
+                                                        <a
+                                                            href="/terms-and-conditions"
+                                                            target="_blank"
+                                                            className="text-accent underline"
+                                                        >
+                                                            terms and conditions
+                                                        </a>
+                                                    </label>
+                                                </div> */}
+                                            </div>
+                                        ) : (
+                                            <div className="flex flex-col items-center justify-center w-full ">
+                                                <ol className="w-full">
+                                                    {[
+                                                        'Initiate Purchase',
+                                                        'Sign Transaction',
+                                                        'Send Transaction',
+                                                        'Confirm Transaction',
+                                                        'Complete Purchase',
+                                                    ].map((text, index) => (
+                                                        <li
+                                                            key={index}
+                                                            className={`text-neutral-200 dark:text-neutral-400 text-sm ${
+                                                                step >=
+                                                                index + 1
+                                                                    ? 'font-bold shadow-md shadow-cyan-500/50'
+                                                                    : ''
+                                                            } flex items-center justify-between p-2 rounded-md `}
+                                                        >
+                                                            <div className="flex items-center">
+                                                                {step ===
+                                                                    index +
+                                                                        1 && (
+                                                                    <LoaderIcon className="animate-spin mr-4" />
+                                                                )}
+                                                                {text}
+                                                            </div>
+                                                            {step >
                                                                 index + 1 && (
-                                                                <LoaderIcon className="animate-spin mr-4" />
+                                                                <FaCheckCircle className="text-accent" />
                                                             )}
-                                                            {text}
-                                                        </div>
-                                                        {step > index + 1 && (
-                                                            <CheckmarkIcon className="" />
-                                                        )}
-                                                    </li>
-                                                ))}
-                                            </ol>
-                                        </div>
-                                        <ol className="w-full">
-                                            {[
-                                                'Initiate Purchase',
-                                                'Fetch Transaction',
-                                                'Sign Transaction',
-                                                'Send Transaction',
-                                                'Confirm Transaction',
-                                                'Complete Purchase',
-                                            ].map((text, index) => (
-                                                <li
-                                                    key={index}
-                                                    className={`text-neutral-200 dark:text-neutral-400 text-sm ${
-                                                        step >= index + 1
-                                                            ? 'font-bold shadow-md shadow-cyan-500/50'
-                                                            : ''
-                                                    } flex items-center justify-between p-2 rounded-md mb-2`}
-                                                >
-                                                    <div className="flex items-center">
-                                                        {step === index + 1 && (
-                                                            <LoaderIcon className="animate-spin mr-4" />
-                                                        )}
-                                                        {text}
-                                                    </div>
-                                                    {step > index + 1 && (
-                                                        <CheckmarkIcon className="" />
-                                                    )}
-                                                </li>
-                                            ))}
-                                        </ol>
-                                    </div>
-                                </div>{' '}
+                                                        </li>
+                                                    ))}
+                                                </ol>
+                                            </div>
+                                        )}
+                                    </div>{' '}
+                                </div>
                             </div>
                         </ModalContent>
                         <ModalFooter className="gap-4 bg-neutral-950 flex items-center justify-center">
-                            <button
-                                onClick={buyMysteryBox}
-                                className=" text-sm px-2 py-1 rounded-md shadow-inner shadow-accent-dark border border-accent-dark  w-28 disabled:bg-muted disabled:border-0 disabled:cursor-not-allowed disabled:shadow-none "
-                                disabled={!readAndAgreeWithTerms}
-                            >
-                                Buy box{' '}
-                            </button>
-
-                            {boughtBoxId && (
+                            {boughtBoxId ? (
+                                // <button
+                                //     onClick={() =>
+                                //         openBoughtBox(boughtBoxId as string)
+                                //     }
+                                //     className=" text-sm px-2 py-1 rounded-md shadow-inner shadow-accent-dark border border-accent-dark  w-28 disabled:bg-muted disabled:border-0 disabled:cursor-not-allowed disabled:shadow-none "
+                                //     disabled={!readAndAgreeWithTerms}
+                                // >
+                                //     Open Box Now ! 🎉
+                                // </button>\
+                                <OpenBoxModal boxId={boughtBoxId} />
+                            ) : (
                                 <button
-                                    onClick={() =>
-                                        openBoughtBox(boughtBoxId as string)
-                                    }
+                                    onClick={buyMysteryBox}
                                     className=" text-sm px-2 py-1 rounded-md shadow-inner shadow-accent-dark border border-accent-dark  w-28 disabled:bg-muted disabled:border-0 disabled:cursor-not-allowed disabled:shadow-none "
                                     disabled={!readAndAgreeWithTerms}
                                 >
-                                    Open Box Now ! 🎉
+                                    Buy box{' '}
                                 </button>
                             )}
                             {/* <button

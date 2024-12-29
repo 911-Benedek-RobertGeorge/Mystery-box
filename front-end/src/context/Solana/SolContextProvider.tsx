@@ -51,9 +51,8 @@ const SolWalletContextProvider: FC<{ children: ReactNode }> = ({
         if (!('signIn' in adapter)) return true
 
         const token = sessionStorage.getItem('jwtToken')
-        // Example usage
+
         if (token) {
-            console.log('TIMESTMP : ', getTimestampFromJwt(token))
             const timestamp = getTimestampFromJwt(token)
             /// if the jwt token is not expired
             if (

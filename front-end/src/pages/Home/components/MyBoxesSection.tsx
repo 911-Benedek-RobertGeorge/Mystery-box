@@ -16,9 +16,10 @@ const MyBoxesSection: React.FC = () => {
     const jwtToken = sessionStorage.getItem('jwtToken')
 
     useEffect(() => {
-        if (!publicKey || !jwtToken) return
         const fetchMyBoxes = async () => {
             try {
+                if (!publicKey || !jwtToken) return
+
                 const response = await fetch(
                     `${VITE_ENV_BACKEND_URL}/boxes/me`,
                     {

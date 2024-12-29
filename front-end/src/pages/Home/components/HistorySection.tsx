@@ -22,82 +22,8 @@ interface HistoryItem {
     buyer: string
 }
 
-// const historyData: HistoryItem[] = [
-//     {
-//         price: 0.3,
-//         currentPrice: 1.27,
-//         roi: 50,
-//         date: '10/20/2022',
-//         boxType: 'Risky',
-//         boxContent: [
-//             { mintAddress: '0x1234', image: boom, name: 'boom' },
-//             { mintAddress: '0x5678', image: boom, name: 'boom' },
-//             { mintAddress: '0x1234', image: boom, name: 'boom' },
-//             { mintAddress: '0x5678', image: boom, name: 'boom' },
-//             { mintAddress: '0x1234', image: boom, name: 'boom' },
-//         ],
-//         image: logo,
-//     },
-//     {
-//         price: 1,
-//         currentPrice: 0.57,
-//         roi: 25,
-//         date: '11/21/2024',
-//         boxType: 'Safe',
-//         boxContent: [
-//             { mintAddress: '0x1234', image: boom, name: 'boom' },
-//             { mintAddress: '0x5678', image: boom, name: 'boom' },
-//         ],
-
-//         image: logo,
-//     },
-//     {
-//         price: 1,
-//         currentPrice: 0.57,
-//         roi: 25,
-//         date: '11/21/2024',
-//         boxType: 'Safe',
-//         boxContent: [
-//             { mintAddress: '0x1234', image: boom, name: 'boom' },
-//             { mintAddress: '0x5678', image: boom, name: 'boom' },
-//         ],
-
-//         image: logo,
-//     },
-//     {
-//         price: 1,
-//         currentPrice: 0.57,
-//         roi: 25,
-//         date: '11/21/2024',
-//         boxType: 'Safe',
-//         boxContent: [
-//             { mintAddress: '0x1234', image: boom, name: 'boom' },
-//             { mintAddress: '0x5678', image: boom, name: 'boom' },
-//         ],
-
-//         image: logo,
-//     },
-//     {
-//         price: 1,
-//         currentPrice: 0.57,
-//         roi: 25,
-//         date: '11/21/2024',
-//         boxType: 'Safe',
-//         boxContent: [
-//             { mintAddress: '0x1234', image: boom, name: 'boom' },
-//             { mintAddress: '0x5678', image: boom, name: 'boom' },
-//         ],
-
-//         image: logo,
-//     },
-// ]
-
-///TOODO make computations in lamports
-
 const HistorySection: React.FC = () => {
-    const solanaPrice = useSelector(
-        (state: { solana: { price: number } }) => state.solana.price
-    )
+
     const { publicKey } = useWallet()
     const [historyData, setHistoryData] = React.useState<HistoryItem[]>([])
     const jwtToken = sessionStorage.getItem('jwtToken')

@@ -27,23 +27,17 @@ import waveTape from '../../assets/shapes/wave_tape.png'
 import { use } from 'framer-motion/client'
 import { MEMES, SOLANA_EXPLORER_URL } from '../../libs/constants'
 import MemeImagesFloating from './components/MemeImagesFloating'
-import { MemeImage } from '../../libs/interfaces'
+import { MemeImage, Token } from '../../libs/interfaces'
 import solanaImage from '../../assets/elements/solana.png'
 import lines from '../../assets/shapes/lines.png'
 import ribbons from '../../assets/shapes/ribbons.png'
 import leafes from '../../assets/shapes/leafess.png'
 import smile from '../../assets/shapes/smile.png'
-import {
-    Commitment,
-    Transaction,
-    TransactionConfirmationStrategy,
-} from '@solana/web3.js'
-import { useConnection, useWallet } from '@solana/wallet-adapter-react'
+
 import HistorySection from './components/HistorySection'
-import { useNetworkConfiguration } from '../../context/Solana/SolNetworkConfigurationProvider'
-import { toast } from 'react-hot-toast'
 import BoxesSection from './components/BoxesSection'
 import MyBoxesSection from './components/MyBoxesSection'
+import { VITE_ENV_BACKEND_URL } from '../../libs/config'
 
 const memeCoinImages = [dogeCoin, chillGuy, bonk, boom, mow, pnut, popcat, wif]
 
@@ -51,19 +45,39 @@ const Home: React.FC = () => {
     const containerRef = useRef<HTMLDivElement | null>(null)
     const [scrollPosition, setScrollPosition] = useState(0)
     const [memesImage, setMemesImage] = useState<MemeImage[]>()
-    const { connection } = useConnection()
     // const { sendTransaction, publicKey } = useWallet()
-    const [hasPendingTransaction, setHasPendingTransaction] = useState(false)
-    const { networkConfiguration } = useNetworkConfiguration()
 
     useEffect(() => {
-        const memeImages = memeCoinImages.map((meme) => {
+        let memeImages = memeCoinImages.map((meme) => {
             return {
                 src: meme,
                 top: `${Math.random() * 50 + 10}%`,
                 left: `${Math.random() * 80 + 10}%`,
             }
         })
+        const fetchMemeImages = async () => {
+            try {
+                const response = await fetch(`${VITE_ENV_BACKEND_URL}/tokens`)
+                const data = await response.json()
+
+                memeImages = [
+                    ...memeImages,
+                    ...data.map((meme: Token) => ({
+                        src: meme?.image ?? '',
+                        top: `${Math.random() * 50 + 10}%`,
+                        left: `${Math.random() * 80 + 10}%`,
+                        name: meme.name,
+                    })),
+                ]
+
+                setMemesImage(memeImages)
+            } catch (error) {
+                console.error('Error fetching tokens:', error)
+            }
+        }
+
+        fetchMemeImages()
+
         setMemesImage(memeImages)
     }, [])
 

@@ -33,6 +33,7 @@ export interface BoxType {
     amountLamports: string
     lockedBoxes: number
     maxBoxAmount: number
+    availableBoxes: number
 }
 
 export interface BoxContent {
