@@ -23,23 +23,16 @@ interface HistoryItem {
 }
 
 const HistorySection: React.FC = () => {
-    const { publicKey } = useWallet()
     const [historyData, setHistoryData] = React.useState<HistoryItem[]>([])
-    const jwtToken = sessionStorage.getItem('jwtToken')
 
     useEffect(() => {
-        if (!publicKey) return
         const fetchMyBoxes = async () => {
             try {
                 const response = await fetch(
-                    `${VITE_ENV_BACKEND_URL}/boxes/results`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${jwtToken}`,
-                        },
-                    }
+                    `${VITE_ENV_BACKEND_URL}/boxes/results`
                 )
                 const data: MysteryBox[] = await response.json()
+
                 const historyItems = transformToHistoryItems(data)
                 setHistoryData(historyItems)
             } catch (error) {
@@ -48,8 +41,7 @@ const HistorySection: React.FC = () => {
         }
 
         fetchMyBoxes()
-    }, [publicKey])
-
+    }, [])
     const transformToHistoryItems = (
         mysteryBoxes: MysteryBox[]
     ): HistoryItem[] => {
@@ -57,18 +49,26 @@ const HistorySection: React.FC = () => {
             price: parseFloat(
                 lamportsToSol(box.boxType.amountLamports).toFixed(4)
             ),
+            ///TODO CHECK THE TOTAL PAID USD ? do I need to compute that ?
 
             totalPaidUSD: parseFloat(
                 (
-                    (box.boxContents.reduce(
-                        (acc, content) =>
-                            acc + parseInt(content.amountLamports),
-                        0
-                    ) /
-                        1e9) *
-                    box.boxContents[0].solPrice
-                ).toFixed(4)
+                    box.boxContents[0].solPrice *
+                    lamportsToSol(box.boxType.amountLamports)
+                ).toFixed(2)
             ),
+
+            // parseFloat(
+            //     (
+            //         (box.boxContents.reduce(
+            //             (acc, content) =>
+            //                 acc + parseInt(content.amountLamports),
+            //             0
+            //         ) /
+            //             1e9) *
+            //         box.boxContents[0].solPrice
+            //     ).toFixed(4)
+            // ),
             roi: parseFloat(
                 (
                     (box.boxContents.reduce(
@@ -150,7 +150,6 @@ const HistorySection: React.FC = () => {
                                         : timeDifferenceFromNow(box.date)
                                               .minutes + ' minutes ago'}
                                 </div>
-                                {/* ///TODO Add a function to calculate the time difference */}
                             </div>
                         </div>
                         <div className="w-full self-center pt-4 lg:w-1/6 lg:pt-0">

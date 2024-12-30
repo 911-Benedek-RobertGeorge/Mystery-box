@@ -295,7 +295,7 @@ const Home: React.FC = () => {
                     <img src={fluidTape} />
                 </div> */}
                 <div
-                    className="absolute -rotate-12 w-96 z-[-1]"
+                    className="absolute -rotate-12 w-96 z-[2]"
                     style={{
                         transform: `translateX(${Math.min(-700 + scrollPosition, 250)}px) translateY(${Math.min(-700 + scrollPosition / 2.5, -330)}px)`,
                         filter: `hue-rotate(${Math.max(-80, 10 - scrollPosition / 10)}deg)`,

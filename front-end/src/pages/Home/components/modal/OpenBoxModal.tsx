@@ -133,7 +133,7 @@ export function OpenBoxModal({ boxId }: { boxId?: string }) {
     }
 
     return (
-        <div className="  h-full  flex items-center justify-center z-[105]">
+        <div className=" h-full  flex items-center justify-center z-[105]">
             <Modal>
                 <ModalTrigger
                     className="bg-muted shadow-inner shadow-accent-dark text-accent
@@ -146,7 +146,7 @@ export function OpenBoxModal({ boxId }: { boxId?: string }) {
                         <img className="w-8" src={questionMark} />
                     </div>
                 </ModalTrigger>
-                <ModalBody className="z-[200]  bg-background-dark w-full shadow-inner rounded-t-xl  shadow-cyan-600    ">
+                <ModalBody className="z-[200] bg-background-dark w-full shadow-inner rounded-t-xl  shadow-cyan-600">
                     <ModalContent className="">
                         <div className="">
                             <div className="">

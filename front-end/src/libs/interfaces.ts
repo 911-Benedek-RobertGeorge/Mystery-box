@@ -65,8 +65,9 @@ export interface MysteryBox {
     buyer: string
     createdAt: string
     updatedAt: string
-    signature?: string
     status?: BoxStatus
+    claimSignature?: string
+    buySignature?: string
 }
 
 export type memeCoinType = {
