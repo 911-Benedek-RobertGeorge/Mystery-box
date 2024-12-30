@@ -1,12 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { BackgroundGradientAnimation } from '../../components/ui/BackgroundGradientAnimation'
 import SectionContainer from './components/SectionContainer'
-import geometricVector from '../../assets/shapes/geometric-vector-shape.webp'
-import Navbar from '../../components/Layout/Navbar'
-import waterDrop from '../../assets/shapes/drop.png'
+import { motion } from 'framer-motion'
 import prism from '../../assets/shapes/prism.png'
 import vectorShape from '../../assets/elements/vector-shape.png'
-import simpleBox from '../../assets/elements/logo1.png'
+import simpleBox from '../../assets/elements/simple_box.png'
 import stand from '../../assets/shapes/stand.png'
 import questionMark from '../../assets/elements/question_mark.png'
 import dogeCoin from '../../assets/coins/doge.png'
@@ -19,30 +17,21 @@ import wif from '../../assets/coins/wif.png'
 import key from '../../assets/boxes/key.png'
 import chillGuy from '../../assets/coins/chill-guy.png'
 import bonk from '../../assets/coins/bonk.png'
-import cyanBox from '../../assets/boxes/cyan_box-Photoroom.png'
-import riskyBox from '../../assets/boxes/risky-box.png'
-import heartImage from '../../assets/elements/heart.png'
+
 import fluidTape from '../../assets/elements/fluid_tape.png'
 import waveTape from '../../assets/shapes/wave_tape.png'
-import { use } from 'framer-motion/client'
-import { MEMES, SOLANA_EXPLORER_URL } from '../../libs/constants'
+
 import MemeImagesFloating from './components/MemeImagesFloating'
-import { MemeImage } from '../../libs/interfaces'
-import solanaImage from '../../assets/elements/solana.png'
-import lines from '../../assets/shapes/lines.png'
+import { MemeImage, Token } from '../../libs/interfaces'
+
 import ribbons from '../../assets/shapes/ribbons.png'
 import leafes from '../../assets/shapes/leafess.png'
 import smile from '../../assets/shapes/smile.png'
-import {
-    Commitment,
-    Transaction,
-    TransactionConfirmationStrategy,
-} from '@solana/web3.js'
-import { useConnection, useWallet } from '@solana/wallet-adapter-react'
+
 import HistorySection from './components/HistorySection'
-import { useNetworkConfiguration } from '../../context/Solana/SolNetworkConfigurationProvider'
-import { toast } from 'react-hot-toast'
 import BoxesSection from './components/BoxesSection'
+import MyBoxesSection from './components/MyBoxesSection'
+import { VITE_ENV_BACKEND_URL } from '../../libs/config'
 
 const memeCoinImages = [dogeCoin, chillGuy, bonk, boom, mow, pnut, popcat, wif]
 
@@ -50,28 +39,39 @@ const Home: React.FC = () => {
     const containerRef = useRef<HTMLDivElement | null>(null)
     const [scrollPosition, setScrollPosition] = useState(0)
     const [memesImage, setMemesImage] = useState<MemeImage[]>()
-    const { connection } = useConnection()
     // const { sendTransaction, publicKey } = useWallet()
-    const [hasPendingTransaction, setHasPendingTransaction] = useState(false)
-    const { networkConfiguration } = useNetworkConfiguration()
 
-    // get the trending memeCoins from the API
     useEffect(() => {
-        // fetch('https://paste.ofcode.org/GXPu3JHPGeX4v6BptHgLcP')
-        //     .then((response) => response.json())
-        //     .then((data) => {
-        //         setMemesImage(data)
-        //     })
-        //     .catch((error) => {
-        //         console.error('Error:', error)
-        //     })
-        const memeImages = memeCoinImages.map((meme) => {
+        let memeImages = memeCoinImages.map((meme) => {
             return {
                 src: meme,
                 top: `${Math.random() * 50 + 10}%`,
                 left: `${Math.random() * 80 + 10}%`,
             }
         })
+        const fetchMemeImages = async () => {
+            try {
+                const response = await fetch(`${VITE_ENV_BACKEND_URL}/tokens`)
+                const data = await response.json()
+
+                memeImages = [
+                    ...memeImages,
+                    ...data.map((meme: Token) => ({
+                        src: meme?.image ?? '',
+                        top: `${Math.random() * 50 + 10}%`,
+                        left: `${Math.random() * 80 + 10}%`,
+                        name: meme.name,
+                    })),
+                ]
+
+                setMemesImage(memeImages)
+            } catch (error) {
+                console.error('Error fetching tokens:', error)
+            }
+        }
+
+        fetchMemeImages()
+
         setMemesImage(memeImages)
     }, [])
 
@@ -286,9 +286,10 @@ const Home: React.FC = () => {
             </BackgroundGradientAnimation>
             <img
                 src={vectorShape}
-                className="w-screen top-[23.5rem] rotate-12 md:rotate-6 h-[900px] absolute z-[]  "
+                className="w-screen top-[23.5rem] rotate-12 md:rotate-6 h-[900px] absolute  animate-pulse"
                 style={{ transformStyle: 'preserve-3d' }}
             ></img>{' '}
+            {/* BOXES SECTIONS */}
             <div className="relative flex flex-col justify-center items-center w-full">
                 {/* <div className="absolute -mt-[30%] -hue-rotate-30 -rotate-12 w-96 animate-fourth">
                     <img src={fluidTape} />
@@ -304,28 +305,36 @@ const Home: React.FC = () => {
                 >
                     <img src={fluidTape} alt="Fluid Tape" />
                 </div>
-                <div
-                    className="absolute w-80 "
-                    style={{
-                        transform: `translateX(${Math.max(1300 - scrollPosition)}px) translateY(${Math.min(-1200 + scrollPosition)}px)`,
-                        filter: `hue-rotate(${Math.min(-80, Math.max(200 - scrollPosition / 3.3, -250))}deg)`,
-                        transition:
-                            'transform 0.2s ease-out, filter 0.2s ease-out',
+
+                <motion.div
+                    className="absolute w-80"
+                    initial={{
+                        x: 1300,
+                        y: -1200,
+                        rotate: 120,
+                        filter: 'hue-rotate(200deg)',
                     }}
+                    animate={{
+                        x: Math.max(1300 - scrollPosition, scrollPosition / 3),
+                        y: Math.min(-1200 + scrollPosition),
+                        rotate: Math.min(0, 100 - scrollPosition / 10),
+                        filter: `hue-rotate(${Math.min(0, 200 - scrollPosition / 3.3)}deg)`,
+                    }}
+                    transition={{ ease: 'easeOut', duration: 0.2 }}
                 >
                     <img src={waveTape} alt="Fluid Tape" />
-                </div>
-                {/* BOXES SECTIONS */}
+                </motion.div>
                 <BoxesSection />
             </div>{' '}
             <HistorySection />
+            <MyBoxesSection />
             <div className="flex flex-col w-screen h-full">
                 <div className="flex flex-col -mt-96 relative justify-center items-center w-full md:w-1/2 h-96  ml-auto text-white p-8">
                     <div className="absolute inset-0 w-full h-screen z-0   ">
                         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background-dark to-accent-dark opacity-30 blur-3xl"></div>
                         <div className="absolute inset-0 opacity-40  top-96">
                             <img
-                                className="  z-[111] -hue-rotate-90 transition-all duration-1000  ease-out"
+                                className="  z-[51] -hue-rotate-90 transition-all duration-1000  ease-out"
                                 src={ribbons}
                                 style={{
                                     transform: `translateY(${-1000 + scrollPosition * 0.4}px)`,
@@ -334,7 +343,7 @@ const Home: React.FC = () => {
                             />
                         </div>{' '}
                         <img
-                            className="z-[110] absolut transition-all duration-1000 ease-out "
+                            className=" z-[50] absolut transition-all duration-1000 ease-out "
                             src={key}
                             style={{
                                 transform: `translateX(${Math.max(0, -2650 + scrollPosition)}px) translateY(${-2050 + scrollPosition}px) `, //translateX(${((-1 * (scrollPosition  / 5) % 2) * scrollPosition) % 1200}px)
@@ -343,8 +352,8 @@ const Home: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="flex flex-col mt-64 relative justify-center items-center w-full h-full text-white p-8">
-                    <div className="z-[110] flex flex-col justify-center items-center w-full h-full  text-white p-8">
+                <div className="flex flex-col relative justify-center items-center w-full h-full text-white p-8">
+                    <div className="  z-50 flex flex-col justify-center items-center w-full h-full  text-white p-8">
                         {' '}
                         <h2 className="text-4xl font-bold mb-4">
                             How It Works

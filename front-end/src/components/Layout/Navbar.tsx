@@ -1,30 +1,21 @@
 import React, { useState } from 'react'
-import {
-    BaseWalletConnectButton,
-    WalletConnectButton,
-    WalletModalButton,
-    WalletMultiButton,
-} from '@solana/wallet-adapter-react-ui'
-import { cn, shortenAddress } from '../../libs/utils'
-import { HoveredLink, Menu, MenuItem, ProductItem } from '../ui/NavbarMenu'
+import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
+import { cn, scrollToSection, shortenAddress } from '../../libs/utils'
 import logo from '../../assets/elements/logo.png'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { Link } from 'react-router-dom'
 import { WalletDisconnectButton } from '@solana/wallet-adapter-react-ui'
-import { useDispatch } from 'react-redux'
-import { clearToken } from '../../context/store/AuthSlice'
 import toast from 'react-hot-toast'
 
 function Navbar({ className }: { className?: string }) {
     const [active, setActive] = useState<string | null>(null)
     const { connected, publicKey, disconnect } = useWallet()
-    console.log(connected, 'connected', publicKey)
-    const dispatch = useDispatch()
+
     const onDisconnect = () => {
-        dispatch(clearToken())
-        console.log('disconnecting')
+        sessionStorage.removeItem('jwtToken')
         disconnect()
     }
+
     return (
         <div
             className={cn(
@@ -75,20 +66,22 @@ function Navbar({ className }: { className?: string }) {
                             </button>
                             {active === 'menu' && (
                                 <div className="absolute flex flex-col items-center justify-center rounded-3xl p-2 top-16 -left-12 w-[10rem] bg-muted shadow-lg">
-                                    <Link
-                                        to="/my-boxes"
+                                    <button
                                         className="block px-4 py-2  text-accent-dark hover:text-accent"
-                                        onClick={() => setActive(null)}
+                                        onClick={() => {
+                                            setActive(null)
+                                            scrollToSection('my-boxes')
+                                        }}
                                     >
                                         My Boxes
-                                    </Link>
-                                    <Link
+                                    </button>
+                                    {/* <Link
                                         to="./#"
                                         className="block px-4 py-2  text-accent-dark hover:text-accent"
                                         onClick={() => setActive(null)}
                                     >
                                         How to buy
-                                    </Link>
+                                    </Link> */}
                                     <div className="text-accent-dark hover:text-accent">
                                         <button
                                             onClick={() => {
@@ -133,18 +126,21 @@ function Navbar({ className }: { className?: string }) {
                             )}
                         </div>
                         <div className="hidden md:flex space-x-8 justify-center items-center ">
-                            <Link
-                                to="/my-boxes"
-                                className="text-accent-dark hover:text-accent "
+                            <button
+                                className="  text-accent-dark hover:text-accent"
+                                onClick={() => {
+                                    setActive(null)
+                                    scrollToSection('my-boxes')
+                                }}
                             >
                                 My Boxes
-                            </Link>
-                            <Link
+                            </button>
+                            {/* <Link
                                 to="./#"
                                 className="text-accent-dark hover:text-accent "
                             >
                                 How to buy
-                            </Link>
+                            </Link> */}
                             <div className="text-accent-dark hover:text-accent">
                                 <button
                                     onClick={() => {

@@ -29,7 +29,93 @@ const TermsAndConditions: React.FC = () => {
                                 in cryptocurrency-related activities.
                             </p>
                         </li>
-                        <li className="mb-6">
+                        <li className="text-justify">
+                            We do not guarantee the value or profitability of
+                            the items contained within the mystery box. You may
+                            receive coins or items of minimal or no value.
+                        </li>
+                        <li className="text-justify">
+                            Purchasing mystery boxes is a high-risk activity.
+                            The market value of crypto assets is volatile and
+                            may lose value at any time.
+                        </li>
+                        <li className="text-justify">
+                            All purchases are final and non-refundable. By
+                            proceeding, you agree to this policy.
+                        </li>
+                        <li className="text-justify">
+                            This product does not constitute financial advice.
+                            Make decisions at your own risk and consult a
+                            financial professional if needed.
+                        </li>
+                        <li className="text-justify">
+                            It is your responsibility to ensure compliance with
+                            local laws regarding crypto transactions and
+                            ownership.
+                        </li>
+                        <li className="text-justify">
+                            We are not responsible for any issues arising from
+                            wallet integration, transaction delays, or errors
+                            caused by third-party services or blockchains.
+                        </li>
+                        <li className="text-justify">
+                            You must be at least 18 years old to use this
+                            platform and purchase mystery boxes.
+                        </li>
+                        <li className="text-justify">
+                            We do not guarantee uninterrupted access to the
+                            platform due to potential downtime, maintenance, or
+                            blockchain congestion.
+                        </li>
+                        <li className="text-justify">
+                            By purchasing, you acknowledge that you have read
+                            and understood all the risks and terms outlined
+                            here.
+                        </li>
+                        <li className="text-justify">
+                            We do not guarantee the value or profitability of
+                            the items contained within the mystery box. You may
+                            receive coins or items of minimal or no value.
+                        </li>
+                        <li className="text-justify">
+                            Purchasing mystery boxes is a high-risk activity.
+                            The market value of crypto assets is volatile and
+                            may lose value at any time.
+                        </li>
+                        <li className="text-justify">
+                            All purchases are final and non-refundable. By
+                            proceeding, you agree to this policy.
+                        </li>
+                        <li className="text-justify">
+                            This product does not constitute financial advice.
+                            Make decisions at your own risk and consult a
+                            financial professional if needed.
+                        </li>
+                        <li className="text-justify">
+                            It is your responsibility to ensure compliance with
+                            local laws regarding crypto transactions and
+                            ownership.
+                        </li>
+                        <li className="text-justify">
+                            We are not responsible for any issues arising from
+                            wallet integration, transaction delays, or errors
+                            caused by third-party services or blockchains.
+                        </li>
+                        <li className="text-justify">
+                            You must be at least 18 years old to use this
+                            platform and purchase mystery boxes.
+                        </li>
+                        <li className="text-justify">
+                            We do not guarantee uninterrupted access to the
+                            platform due to potential downtime, maintenance, or
+                            blockchain congestion.
+                        </li>
+                        <li className="text-justify">
+                            By purchasing, you acknowledge that you have read
+                            and understood all the risks and terms outlined
+                            here.
+                        </li>
+                        <li className="mb-6 mt-12 ">
                             <h2 className="text-2xl font-semibold">
                                 No Guarantees
                             </h2>

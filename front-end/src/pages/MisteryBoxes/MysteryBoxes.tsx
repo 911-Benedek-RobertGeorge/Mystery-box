@@ -1,5 +1,4 @@
 import React from 'react'
-import HeroSection from '../Home/components/HeroSection'
 
 const MysteryBoxes: React.FC = () => {
     const boxes = [
@@ -28,7 +27,6 @@ const MysteryBoxes: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-gray-900 text-white">
-            <HeroSection />
             <h1 className="text-center text-4xl font-bold py-8">
                 Choose Your Mystery Box
             </h1>

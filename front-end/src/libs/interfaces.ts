@@ -13,40 +13,65 @@ export enum RiskType {
 export interface MintWithTicker {
     mint: string
     ticker: string
+    boxContents: BoxContent[]
+}
+export interface Token {
+    _id: string
+    name: string
+    symbol: string
+    image: string
+    mint: string
+    decimals: number
+    description: string
+    __v: number
 }
 
-export interface BoxType1 {
+export interface BoxType {
+    _id: string
     name: string
-    risk: RiskType
-    maxBoxAmount: number // max number of boxes that can be bought
-    // toadd available boxes
-    amountLamports: string // price
-    mints: MintWithTicker[] // all the mints , not needed
+    __v: number
+    amountLamports: string
+    lockedBoxes: number
+    maxBoxAmount: number
+    availableBoxes: number
 }
 
 export interface BoxContent {
-    /// memecoin type
-    mint: string
-    ticker: string
+    _id: string
+    token: Token
+    solPrice: number
     amountLamports: string
     amount: string
     percentage: string
-    buyPrice?: string
     signatures: string[]
-    createdAt: Date
+    ata: string
+    status: string
+    createdAt: string
+    __v: number
 }
 
-export interface Box {
+export enum BoxStatus {
+    BOUGHT = 'BOUGHT',
+    OPEN = 'OPEN',
+    AVAILABLE = 'AVAILABLE',
+    LOCKED = 'LOCKED',
+    CLAIMING = 'CLAIMING',
+    CLAIMED = 'CLAIMED',
+}
+export interface MysteryBox {
+    _id: string
     boxContents: BoxContent[]
     boxType: BoxType
-    buyer?: string
-    createdAt: Date
+    buyer: string
+    createdAt: string
+    updatedAt: string
+    status?: BoxStatus
+    claimSignature?: string
+    buySignature?: string
 }
 
-export type BoxType = {
-    _id: string
+export type memeCoinType = {
+    mintAddress: string
+    image: string
     name: string
-    amountLamports: string
-    maxBoxAmount: number
-    availableBoxes: number
 }
