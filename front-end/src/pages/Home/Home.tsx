@@ -226,7 +226,7 @@ const Home: React.FC = () => {
                             src={solanaImage}
                         /> */}
                         <MemeImagesFloating memesImage={memesImage ?? []} />
-                        <div className=" scale-75 md:scale-90 -top-24 relative z-[102] flex flex-col justify-center items-center">
+                        <div className=" scale-75 md:scale-90 md:-top-24 relative z-[102] flex flex-col justify-center items-center">
                             <img
                                 src={questionMark}
                                 className="w-[250px] z-[50] absolute -top-48 floating-object transition-transform duration-200 ease-out "
@@ -353,7 +353,7 @@ const Home: React.FC = () => {
                 </div>
 
                 <div className="flex flex-col relative justify-center items-center w-full h-full text-white p-8">
-                    <div className="  z-50 flex flex-col justify-center items-center w-full h-full  text-white p-8">
+                    <div className="flex flex-col justify-center items-center w-full h-full  text-white p-8 z-[101]">
                         {' '}
                         <h2 className="text-4xl font-bold mb-4">
                             How It Works
@@ -393,7 +393,7 @@ const Home: React.FC = () => {
 
                 <SectionContainer key={2}>
                     <div className="flex flex-col justify-center items-center w-full h-full  text-stone-300 ">
-                        <div className=" absolute z-[110] flex flex-col  w-full h-full    ">
+                        <div className=" absolute z-[1] flex flex-col  w-full h-full ">
                             {' '}
                             <img
                                 src={leafes}
@@ -404,7 +404,7 @@ const Home: React.FC = () => {
                                 className="absolute rotate-90 -ml-8 h-[600px] left-0 -top-64 opacity-40"
                             />
                         </div>
-                        <div className="flex flex-col justify-center items-center -top-[32]">
+                        <div className="flex flex-col justify-center items-center -top-[32] p-4">
                             <h2 className="text-4xl font-bold mb-16">
                                 About Us
                             </h2>
