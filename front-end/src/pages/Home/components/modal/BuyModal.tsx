@@ -10,7 +10,7 @@ import {
 import questionMark from '../../../../assets/elements/question_mark.png'
 import cyanBox from '../../../../assets/boxes/cyan_box.png'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
-import { Transaction, TransactionConfirmationStrategy } from '@solana/web3.js'
+import { Transaction } from '@solana/web3.js'
 import toast, { LoaderIcon } from 'react-hot-toast'
 import { Buffer } from 'buffer'
 import { useNetworkConfiguration } from '../../../../context/Solana/SolNetworkConfigurationProvider'
@@ -24,13 +24,11 @@ import { OpenBoxModal } from './OpenBoxModal'
 
 export function BuyModal({ box }: { box: BoxType | null }) {
     const images = [cyanBox]
-    const [readAndAgreeWithTerms, setReadAndAgreeWithTerms] =
-        useState<boolean>(false)
+
     const solanaPrice = useSelector(
         (state: { solana: { price: number } }) => state.solana.price
     )
     const { publicKey, sendTransaction } = useWallet()
-    const [openBuyBoxModal, setOpenBuyBoxModal] = useState(false)
     const [hasPendingTransaction, setHasPendingTransaction] = useState(false)
     const { connection } = useConnection()
     const { networkConfiguration } = useNetworkConfiguration()
@@ -42,10 +40,8 @@ export function BuyModal({ box }: { box: BoxType | null }) {
 
     const buyMysteryBox = async () => {
         setStep(1)
-        setOpenBuyBoxModal(true)
 
         try {
-            console.log('buyMysteryBox', box?._id)
             if (!box || !box._id) throw new Error('Box not found')
             if (!publicKey) throw new Error('Wallet not connected')
             if (!jwtToken) throw new Error('JWT token not found, re-login')
@@ -60,7 +56,6 @@ export function BuyModal({ box }: { box: BoxType | null }) {
                     },
                 }
             )
-            console.log(response, 'response')
 
             if (!response.ok) {
                 throw new Error(
@@ -70,16 +65,9 @@ export function BuyModal({ box }: { box: BoxType | null }) {
 
             const transactionEncoded = (await response.json())
                 .transactionEncoded
-            console.log('transactionEncoded', transactionEncoded)
             setStep(2)
             const transactionBuffer = Buffer.from(transactionEncoded, 'base64')
             const transactionObject = Transaction.from(transactionBuffer)
-
-            // if (!hasBackendSignedTransaction(transactionObject)) {
-            //     throw new Error(
-            //         'Backend has not partial signed the transaction'
-            //     )
-            // }
 
             setStep(2)
             const txSignature = await sendAndConfirmTransaction({
@@ -89,18 +77,15 @@ export function BuyModal({ box }: { box: BoxType | null }) {
 
             await indexTransaction(txSignature)
             setStep(6)
-            setOpenBuyBoxModal(false)
         } catch (error) {
             toast.error('Error buying mystery box' + error)
             console.error('Error buying mystery box:', error)
             setStep(-1)
-            setOpenBuyBoxModal(false)
         }
     }
 
     async function indexTransaction(signature: string) {
         try {
-            console.log('indexTransaction', signature)
             if (!jwtToken) throw new Error('JWT token not found ')
 
             const response = await fetch(`${VITE_ENV_BACKEND_URL}/index`, {
@@ -122,8 +107,6 @@ export function BuyModal({ box }: { box: BoxType | null }) {
                 console.error(result.message)
                 return
             }
-            console.log('indexTransaction result', result)
-            console.log(result.box)
             setBoughtBoxId(result.box._id)
         } catch (error) {
             if (error instanceof Error) {
@@ -153,13 +136,6 @@ export function BuyModal({ box }: { box: BoxType | null }) {
             setLatestTxSignature(txSignature)
 
             setStep(3)
-            const strategy: TransactionConfirmationStrategy = {
-                signature: txSignature,
-                blockhash: latestBlockhash.blockhash,
-                lastValidBlockHeight: latestBlockhash.lastValidBlockHeight,
-            }
-
-            console.log('strategy', strategy)
 
             const confirmationPromise = confirmTransaction(txSignature)
 
@@ -183,13 +159,12 @@ export function BuyModal({ box }: { box: BoxType | null }) {
             setHasPendingTransaction(false)
 
             if (!result) {
-                throw new Error('Transaction not confirmed')
+                throw new Error('Transaction not confirmed' + result)
             }
 
             return txSignature
         } catch (error) {
             setHasPendingTransaction(false)
-            // toast.error('Error sending and confirming transaction:' + error)
             console.error('Error sending and confirming transaction:', error)
 
             throw error
@@ -206,7 +181,6 @@ export function BuyModal({ box }: { box: BoxType | null }) {
                 maxSupportedTransactionVersion: 0,
             })
             if (tx) {
-                console.log('tx', tx)
                 return tx
             }
             retryCount++
@@ -214,41 +188,6 @@ export function BuyModal({ box }: { box: BoxType | null }) {
         }
         throw new Error('Transaction not confirmed')
     }
-
-    // async function openBoughtBox(boxId: string) {
-    //     try {
-    //         const response = await fetch(
-    //             `${VITE_ENV_BACKEND_URL}/boxes/${boxId}/claim`,
-    //             {
-    //                 method: 'GET',
-    //                 headers: {
-    //                     'Content-Type': 'application/json',
-    //                     Authorization: `Bearer ${jwtToken}`,
-    //                 },
-    //             }
-    //         )
-    //         console.log((await response) + 'response claim')
-    //         const transactionEncoded = (await response.json())
-    //             .transactionEncoded
-
-    //         const transactionBuffer = Buffer.from(transactionEncoded, 'base64')
-    //         const transactionObject = Transaction.from(transactionBuffer)
-
-    //         // if (!hasBackendSignedTransaction(transactionObject)) {
-    //         //     throw new Error(
-    //         //         'Backend has not partial signed the transaction'
-    //         //     )
-    //         // }
-
-    //         const txSignature = await sendAndConfirmTransaction({
-    //             transaction: transactionObject,
-    //         })
-    //         console.log('OPEN BOX txSignature', txSignature)
-    //     } catch (error) {
-    //         setStep(0)
-    //         console.error('Error opening the box transaction:', error)
-    //     }
-    // }
 
     return (
         <div className="  flex items-center justify-center">
@@ -378,35 +317,6 @@ export function BuyModal({ box }: { box: BoxType | null }) {
                                                         </li>
                                                     </ul>
                                                 </div>
-                                                {/* <div className="flex items-center justify-center">
-                                                    <input
-                                                        onChange={(e) =>
-                                                            setReadAndAgreeWithTerms(
-                                                                e.target.checked
-                                                            )
-                                                        }
-                                                        type="checkbox"
-                                                        id="terms"
-                                                        className="mr-2"
-                                                        checked={
-                                                            readAndAgreeWithTerms
-                                                        }
-                                                    />
-                                                    <label
-                                                        htmlFor="terms"
-                                                        className="text-neutral-200 dark:text-neutral-400 text-sm"
-                                                    >
-                                                        I have read and agree
-                                                        with the{' '}
-                                                        <a
-                                                            href="/terms-and-conditions"
-                                                            target="_blank"
-                                                            className="text-accent underline"
-                                                        >
-                                                            terms and conditions
-                                                        </a>
-                                                    </label>
-                                                </div> */}
                                             </div>
                                         ) : (
                                             <div className="flex flex-col items-center justify-center w-full ">
@@ -450,15 +360,6 @@ export function BuyModal({ box }: { box: BoxType | null }) {
                         </ModalContent>
                         <ModalFooter className="gap-4 bg-neutral-950 flex items-center justify-center h-16">
                             {boughtBoxId ? (
-                                // <button
-                                //     onClick={() =>
-                                //         openBoughtBox(boughtBoxId as string)
-                                //     }
-                                //     className=" text-sm px-2 py-1 rounded-md shadow-inner shadow-accent-dark border border-accent-dark  w-28 disabled:bg-muted disabled:border-0 disabled:cursor-not-allowed disabled:shadow-none "
-                                //     disabled={!readAndAgreeWithTerms}
-                                // >
-                                //     Open Box Now ! 🎉
-                                // </button>\
                                 <OpenBoxModal boxId={boughtBoxId} />
                             ) : (
                                 <button
@@ -469,13 +370,6 @@ export function BuyModal({ box }: { box: BoxType | null }) {
                                     Buy box{' '}
                                 </button>
                             )}
-                            {/* <button
-                                onClick={() =>
-                                    indexTransaction(latestTxSignature)
-                                }
-                            >
-                                index transaction{' '}
-                            </button> */}
                         </ModalFooter>
                     </ModalBody>
                 </Modal>

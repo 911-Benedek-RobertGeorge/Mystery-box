@@ -2,7 +2,6 @@ import Home from './pages/Home/Home'
 import { SolContextProvider } from './context/Solana/SolContextProvider'
 import { Route, Routes, BrowserRouter as Router } from 'react-router-dom'
 import Navbar from './components/Layout/Navbar'
-import MysteryBoxes from './pages/MisteryBoxes/MysteryBoxes'
 import { Toaster } from 'react-hot-toast'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
@@ -61,12 +60,7 @@ function App() {
 
                     <Routes>
                         <Route path={`/`} element={<Home />} />
-                        <Route path={`/boxes`} element={<MysteryBoxes />} />
-                        <Route path={`/my-boxes`} element={<MysteryBoxes />} />
-                        <Route
-                            path={`/my-boxes/:id`}
-                            element={<MysteryBoxes />}
-                        />
+
                         <Route
                             path={`/terms-and-conditions`}
                             element={<TermsAndConditions />}

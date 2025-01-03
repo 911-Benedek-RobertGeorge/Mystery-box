@@ -47,7 +47,6 @@ const HistorySection: React.FC = () => {
             price: parseFloat(
                 lamportsToSol(box.boxType.amountLamports).toFixed(4)
             ),
-            ///TODO CHECK THE TOTAL PAID USD ? do I need to compute that ?
 
             totalPaidUSD: parseFloat(
                 (
@@ -93,7 +92,6 @@ const HistorySection: React.FC = () => {
 
     return (
         <div className="z-[100] flex flex-col justify-center items-center p-10 md:p-64 ">
-            {/* <div className="mb-3 flex w-full max-w-screen-xl transform cursor-pointer flex-col justify-between rounded-md bg-white bg-opacity-75 p-6 text-slate-800 transition duration-500 ease-in-out hover:-translate-y-1 hover:shadow-lg dark:bg-slate-700 dark:bg-opacity-25 dark:text-slate-300 lg:flex-row lg:p-4"> */}
             <div className="flex justify-start items-start w-full ">
                 <span className="text-3xl font-bold text-accent p-2 mb-4 ">
                     Latest Boxes sold
@@ -164,54 +162,9 @@ const HistorySection: React.FC = () => {
                                 </div>
                             </div>
                         </div>
-                        {/* TODO CURRENT PRICE ? */}
-                        {/* <div className="w-full self-center pt-4 lg:w-1/6 lg:pt-0">
-                            <div className="ml-1">
-                                <div className="text-xl font-extrabold leading-5 tracking-tight">
-                                    <span className="align-middle">
-                                        {box.currentPrice} SOL
-                                    </span>
-                                    {box.currentPrice - box.price > 0 ? (
-                                        <span className="text-[8px] ml-2 rounded bg-green-600 px-2 py-1 align-middle font-bold uppercase text-white">
-                                            Profit
-                                        </span>
-                                    ) : (
-                                        <span className="text-[8px] ml-2 rounded bg-red-600 px-2 py-1 align-middle font-bold uppercase text-white">
-                                            Loss
-                                        </span>
-                                    )}
-                                </div>
-                                <div className="text-sm text-slate-500">
-                                    Current price{' '}
-                                    {(box.currentPrice * solanaPrice).toFixed(
-                                        2
-                                    )}{' '}
-                                    USD
-                                </div>
-                            </div>
-                        </div> */}
-
-                        {/* <div className="w-full self-center px-1 pt-4 pb-2 lg:w-1/6 lg:px-0 lg:pt-0 lg:pb-0">
-                            <div className="text-base font-bold leading-4 tracking-tight">
-                                Risk level
-                            </div>
-                            <div className="status-bars w-full pt-2">
-                                <div className="flex flex-row lg:pr-6">
-                                    <div className="max-w-6 h-1 w-1/5 rounded bg-green-500"></div>
-                                    <div className="max-w-6 ml-1 h-1 w-1/5 rounded bg-amber-500"></div>
-                                    <div className="max-w-6 ml-1 h-1 w-1/5 rounded bg-red-500"></div>
-
-                                    <div className="max-w-6 ml-1 h-1 w-1/5 rounded bg-slate-400 bg-opacity-25 dark:bg-slate-600"></div>
-                                    <div className="max-w-6 ml-1 h-1 w-1/5 rounded bg-slate-400 bg-opacity-25 dark:bg-slate-600"></div>
-                                    <div className="max-w-6 ml-1 h-1 w-1/5 rounded bg-slate-400 bg-opacity-25 dark:bg-slate-600"></div>
-                                </div>
-                            </div>
-                        </div> */}
                     </div>
                 )
             })}
-
-            {/* </div> */}
         </div>
     )
 }

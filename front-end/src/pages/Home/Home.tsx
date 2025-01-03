@@ -39,7 +39,6 @@ const Home: React.FC = () => {
     const containerRef = useRef<HTMLDivElement | null>(null)
     const [scrollPosition, setScrollPosition] = useState(0)
     const [memesImage, setMemesImage] = useState<MemeImage[]>()
-    // const { sendTransaction, publicKey } = useWallet()
 
     useEffect(() => {
         let memeImages = memeCoinImages.map((meme) => {
@@ -126,70 +125,6 @@ const Home: React.FC = () => {
         }
     }, [])
 
-    ///TODO https://ui.aceternity.com/components/wavy-background
-    ///TODO ADD MEMES AND SET DURATION BIGGER
-    /// TODO ADD https://sketchfab.com/3d-models/quantum-cube-02971982b92347d4b6ddbe1c0d6487c5 AS LOADING AND OR OPENING A CHEST ANIMATION
-
-    // async function sendAndConfirmTransaction({
-    //     transaction,
-    // }: {
-    //     transaction: Transaction
-    // }) {
-    //     try {
-    //         if (!publicKey) {
-    //             throw new Error('Wallet not connected')
-    //         }
-    //         const latestBlockhash = await connection.getLatestBlockhash()
-    //         transaction.recentBlockhash = latestBlockhash.blockhash
-    //         transaction.feePayer = publicKey
-    //         setHasPendingTransaction(true)
-    //         const txSignature = await sendTransaction(transaction, connection, {
-    //             skipPreflight: true,
-    //             preflightCommitment: 'finalized',
-    //         })
-
-    //         const strategy: TransactionConfirmationStrategy = {
-    //             signature: txSignature,
-    //             blockhash: latestBlockhash.blockhash,
-    //             lastValidBlockHeight: latestBlockhash.lastValidBlockHeight,
-    //         }
-    //         const confirmationPromise = connection.confirmTransaction(
-    //             strategy,
-    //             'finalized' as Commitment
-    //         )
-
-    //         toast.promise(confirmationPromise, {
-    //             loading: 'Processing Transaction',
-    //             success: () => (
-    //                 <a
-    //                     href={`${SOLANA_EXPLORER_URL}/tx/${txSignature}?cluster=${networkConfiguration}`}
-    //                     target="_blank"
-    //                     rel="noreferrer"
-    //                     style={{ textDecoration: 'underline' }}
-    //                 >
-    //                     View on Solana explorer
-    //                 </a>
-    //             ),
-    //             error: (err) => `Transaction failed: ${err.message}`,
-    //         })
-
-    //         const result = await confirmationPromise
-    //         setHasPendingTransaction(false)
-
-    //         if (result.value.err) {
-    //             return false
-    //         }
-
-    //         return txSignature
-    //     } catch (error) {
-    //         // Show error toast
-    //         setHasPendingTransaction(false)
-    //         toast.error('User rejected the request')
-
-    //         throw error
-    //     }
-    // }
-
     return (
         <div className="flex flex-col relative w-screen max-w-screen select-none bg-background-dark overflow-hidden">
             <BackgroundGradientAnimation
@@ -216,16 +151,7 @@ const Home: React.FC = () => {
                             </div>
                             `
                         </div>
-                        `{' '}
-                        {/* <img
-                            className="floating-object absolute bottom-20 right-0 w-[15%]"
-                            src={solanaImage}
-                        />{' '}
-                        <img
-                            className="floating-object absolute bottom-0 right-0 w-[45%]"
-                            src={solanaImage}
-                        /> */}
-                        <MemeImagesFloating memesImage={memesImage ?? []} />
+                        ` <MemeImagesFloating memesImage={memesImage ?? []} />
                         <div className=" scale-75 md:scale-90 md:-top-24 relative z-[102] flex flex-col justify-center items-center">
                             <img
                                 src={questionMark}
@@ -268,19 +194,6 @@ const Home: React.FC = () => {
                                 style={{ transformStyle: 'preserve-3d' }}
                             ></img>
                         </div>{' '}
-                        {/* <div className="opacity-0 md:opacity-100 w-full md:-ml-[60%] -mt-64 text-center">
-                            <div className=" text-xl md:text-3xl w-full flex flex-col leading-tight font-semibold  ">
-                                <h3 className="md:ml-64  text-accent ">
-                                    Buy MeMestery boxes
-                                </h3>
-                                <h1 className=" mt-6 ml-48  text-purple-800  ">
-                                    Uncover treasures
-                                </h1>{' '}
-                                <h1 className=" mt-8 ml-32   text-accent-secondary ">
-                                    Track your ROI
-                                </h1>{' '}
-                            </div>
-                        </div> */}
                     </div>
                 </SectionContainer>
             </BackgroundGradientAnimation>
@@ -291,9 +204,6 @@ const Home: React.FC = () => {
             ></img>{' '}
             {/* BOXES SECTIONS */}
             <div className="relative flex flex-col justify-center items-center w-full">
-                {/* <div className="absolute -mt-[30%] -hue-rotate-30 -rotate-12 w-96 animate-fourth">
-                    <img src={fluidTape} />
-                </div> */}
                 <div
                     className="absolute -rotate-12 w-96 z-[2]"
                     style={{
@@ -353,7 +263,7 @@ const Home: React.FC = () => {
                 </div>
 
                 <div className="flex flex-col relative justify-center items-center w-full h-full text-white p-8">
-                    <div className="flex flex-col justify-center items-center w-full h-full  text-white p-8 z-[101]">
+                    <div className="flex flex-col justify-center items-center w-full h-full  text-white p-8 z-[51]">
                         {' '}
                         <h2 className="text-4xl font-bold mb-4">
                             How It Works

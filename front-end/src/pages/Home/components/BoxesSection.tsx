@@ -12,7 +12,6 @@ const BoxesSection: React.FC = () => {
 
     return (
         <div className=" relative flex flex-col md:flex-row justify-center items-center w-full space-y-32 md:space-y-0 pt-32">
-            {/* {boxTypes?.map((box) => <BoxDetails box={box} />)} */}
             <div className="md:ml-32">
                 {boxTypes && <BoxDetails box={boxTypes[0]} />}
             </div>
@@ -22,36 +21,6 @@ const BoxesSection: React.FC = () => {
                     <BoxDetails comingSoon="Next week " box={boxTypes[1]} />
                 )}
             </div>
-            {/* <div className="relative  ">
-                <img
-                    src={cyanBox}
-                    className="w-96  "
-                    style={{
-                        transformStyle: 'preserve-3d',
-                    }}
-                />
-                <div className="absolute inset-0 rounded-lg bg-gradient-to-b from-transparent via-[#3ae9af] to-[#26b321] opacity-20 blur-2xl"></div>
-
-                <div className="z-[110] flex flex-col justify-center items-start ml-8 mt-4 text-gray-300">
-                    <h2 className="text-2xl font-bold text-green-500">
-                        Legendary Level
-                    </h2>
-                    <p className="text-lg  ">The Ultimate Meme Connoisseur</p>
-                    <h2 className="text-2xl font-bold text-green-500 mt-4">
-                        Epic Meme Treasures
-                    </h2>
-                    <ul className="list-disc list-inside text-lg ">
-                        <li>Rare Pepe</li>
-                        <li>Mooning Doge</li>
-                        <li>Elon Musk Tweets</li>
-                    </ul>
-                    <div className="flex justify-center w-full mt-6">
-                        <button className="px-6 py-3 bg-gradient-to-r from-green-400 to-green-600 text-white font-bold rounded-full shadow-lg hover:from-green-500 hover:to-green-700 transition duration-300 transform hover:scale-105">
-                            Coming soon...
-                        </button>
-                    </div>
-                </div>
-            </div> */}
         </div>
     )
 }
@@ -112,11 +81,7 @@ const BoxDetails: React.FC<{ box: BoxType; comingSoon?: string }> = ({
                         <h2 className="text-xl font-bold text-cyan-500">
                             Why Buy a Memebox?
                         </h2>
-                        {/* <p className="mt-2">
-                            Unlock trending meme coins and exclusive surprises!
-                            Each box offers excitement, rewards, and potential
-                            gains.
-                        </p> */}
+
                         <p className="mt-2">
                             Diversify your portfolio and get a chance to win
                             <span className="text-cyan-500 font-bold">

@@ -17,8 +17,7 @@ import toast from 'react-hot-toast'
 import { useNetworkConfiguration } from '../../../../context/Solana/SolNetworkConfigurationProvider'
 import { VITE_ENV_BACKEND_URL } from '../../../../libs/config'
 import { cn } from '../../../../libs/utils'
-import key from '../../../../assets/boxes/key.png'
-import box from '../../../../assets/boxes/cyan_box-Photoroom.png'
+
 import chillguy from '../../../../assets/coins/chill-guy.png'
 
 import { confetti } from '@tsparticles/confetti'
@@ -31,11 +30,7 @@ export function OpenBoxModal({
     boxId?: string
     hiddenTrigger?: boolean
 }) {
-    const images = [cyanBox]
-    const [readAndAgreeWithTerms, setReadAndAgreeWithTerms] = useState(false)
-
     const { publicKey, sendTransaction } = useWallet()
-    const [openBuyBoxModal, setOpenBuyBoxModal] = useState(false)
     const [hasPendingTransaction, setHasPendingTransaction] = useState(false)
     const { connection } = useConnection()
     const { networkConfiguration } = useNetworkConfiguration()
@@ -118,16 +113,20 @@ export function OpenBoxModal({
                         hiddenTrigger ? 'hidden' : ''
                     )}
                 >
-                    <span
-                        id="open-box-modal-button"
-                        className="group-hover/modal-btn:translate-x-40 text-center transition duration-500"
-                        onClick={() => openBoughtBox(boxId ?? '')}
-                    >
-                        Open memebox
-                    </span>
-                    <div className="-translate-x-40 group-hover/modal-btn:translate-x-0 flex items-center justify-center absolute inset-0 transition duration-500 text-white z-20">
-                        <img className="w-8" src={questionMark} />
-                    </div>
+                    {boxId && (
+                        <>
+                            <span
+                                id="open-box-modal-button"
+                                className="group-hover/modal-btn:translate-x-40 text-center transition duration-500"
+                                onClick={() => openBoughtBox(boxId)}
+                            >
+                                Open memebox
+                            </span>
+                            <div className="-translate-x-40 group-hover/modal-btn:translate-x-0 flex items-center justify-center absolute inset-0 transition duration-500 text-white z-20">
+                                <img className="w-8" src={questionMark} />
+                            </div>
+                        </>
+                    )}
                 </ModalTrigger>
                 <ModalBody className="z-[200] bg-background-dark w-full shadow-inner rounded-t-xl  shadow-cyan-600">
                     <ModalContent className="">
@@ -157,17 +156,6 @@ export function OpenBoxModal({
                             )}
                         </div>
                     </ModalContent>
-                    {/* <ModalFooter className="gap-4 bg-neutral-950 flex items-center justify-center">
-                        {boxId && (
-                            <button
-                                onClick={() => openBoughtBox(boxId)}
-                                className="text-accent text-sm px-2 py-1 rounded-md shadow-inner shadow-accent-dark border border-accent-dark   disabled:bg-muted disabled:border-0 disabled:cursor-not-allowed disabled:shadow-none "
-                                disabled={!readAndAgreeWithTerms}
-                            >
-                                Open Box Now ! 🎉
-                            </button>
-                        )}
-                    </ModalFooter> */}
                 </ModalBody>
             </Modal>
         </div>
