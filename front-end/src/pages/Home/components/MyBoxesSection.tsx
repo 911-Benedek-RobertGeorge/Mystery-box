@@ -185,15 +185,20 @@ const MyBoxesSection: React.FC = () => {
                                                         </div>
                                                         <div className="text-sm text-slate-500">
                                                             Total Paid{' '}
-                                                            {(
-                                                                box
-                                                                    .boxContents[0]
-                                                                    .solPrice *
-                                                                lamportsToSol(
-                                                                    box.boxType
-                                                                        .amountLamports
-                                                                )
-                                                            ).toFixed(2)}
+                                                            {box.boxContents &&
+                                                            box.boxContents[0]
+                                                                ?.solPrice
+                                                                ? (
+                                                                      box
+                                                                          .boxContents[0]
+                                                                          .solPrice *
+                                                                      lamportsToSol(
+                                                                          box
+                                                                              .boxType
+                                                                              .amountLamports
+                                                                      )
+                                                                  ).toFixed(2)
+                                                                : '0.00'}
                                                             USD
                                                         </div>
                                                     </div>

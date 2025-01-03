@@ -1,12 +1,10 @@
 import React, { useEffect } from 'react'
 import logo from '../../../assets/elements/logo.png'
-import { useSelector } from 'react-redux'
 import {
     lamportsToSol,
     shortenAddress,
     timeDifferenceFromNow,
 } from '../../../libs/utils'
-import { useWallet } from '@solana/wallet-adapter-react'
 import { VITE_ENV_BACKEND_URL } from '../../../libs/config'
 import { memeCoinType, MysteryBox } from '../../../libs/interfaces'
 import { AnimatedTooltip } from '../../../components/ui/AnimatedTooltip'
@@ -51,12 +49,15 @@ const HistorySection: React.FC = () => {
             ),
             ///TODO CHECK THE TOTAL PAID USD ? do I need to compute that ?
 
-            totalPaidUSD: parseFloat(
-                (
-                    box.boxContents[0].solPrice *
-                    lamportsToSol(box.boxType.amountLamports)
-                ).toFixed(2)
-            ),
+            totalPaidUSD:
+                box.boxContents && box.boxContents[0]?.solPrice
+                    ? parseFloat(
+                          (
+                              box.boxContents[0].solPrice *
+                              lamportsToSol(box.boxType.amountLamports)
+                          ).toFixed(2)
+                      )
+                    : 0,
 
             // parseFloat(
             //     (
