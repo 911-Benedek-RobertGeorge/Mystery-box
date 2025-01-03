@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { BoxType } from '../../../libs/interfaces'
 import { useSelector } from 'react-redux'
 import cyanBox from '../../../assets/boxes/cyan_box-Photoroom.png'
