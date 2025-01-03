@@ -39,7 +39,6 @@ export interface BoxType {
 export interface BoxContent {
     _id: string
     token: Token
-    solPrice: number
     amountLamports: string
     amount: string
     percentage: string
@@ -68,6 +67,7 @@ export interface MysteryBox {
     status?: BoxStatus
     claimSignature?: string
     buySignature?: string
+    solPrice: number
 }
 
 export type memeCoinType = {

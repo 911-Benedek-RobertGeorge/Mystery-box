@@ -61,13 +61,13 @@ const BoxDetails: React.FC<{ box: BoxType; comingSoon?: string }> = ({
     comingSoon,
 }) => {
     return (
-        <div className="relative max-w-md items-center justify-center p-6 md:p-0">
+        <div className="relative max-w-md items-center justify-center p-6 md:p-0 z-[101]">
             <img
                 src={cyanBox}
                 className="w-96 mx-auto"
                 style={{ transformStyle: 'preserve-3d' }}
             ></img>
-            <div className="absolute inset-0 rounded-lg bg-gradient-to-b from-transparent via-accent to-accent-dark/50 opacity-20 blur-3xl"></div>
+            <div className="absolute inset-0 rounded-lg bg-gradient-to-b from-transparent via-accent to-accent-dark/50 opacity-20 blur-3xl  "></div>
 
             {!comingSoon ? (
                 <div className="flex flex-col justify-center items-start ml-8 mt-4 text-gray-300">
@@ -127,7 +127,13 @@ const BoxDetails: React.FC<{ box: BoxType; comingSoon?: string }> = ({
                         </p>
                     </div>
                     <div className="flex justify-center w-full mt-8 ">
-                        <BuyModal box={box} />
+                        {box?.availableBoxes > 0 ? (
+                            <BuyModal box={box} />
+                        ) : (
+                            <span className="text-accent-secondary font-bold">
+                                Boxes sold out, come back later!
+                            </span>
+                        )}
                     </div>
                 </div>
             ) : (

@@ -123,8 +123,8 @@ export function BuyModal({ box }: { box: BoxType | null }) {
                 return
             }
             console.log('indexTransaction result', result)
-
-            setBoughtBoxId(result._id)
+            console.log(result.box)
+            setBoughtBoxId(result.box._id)
         } catch (error) {
             if (error instanceof Error) {
                 toast.error('Error indexing transaction' + error.message)
@@ -134,7 +134,6 @@ export function BuyModal({ box }: { box: BoxType | null }) {
             console.error('Error indexing transaction:', error)
         }
     }
-
     async function sendAndConfirmTransaction({
         transaction,
     }: {
@@ -449,7 +448,7 @@ export function BuyModal({ box }: { box: BoxType | null }) {
                                 </div>
                             </div>
                         </ModalContent>
-                        <ModalFooter className="gap-4 bg-neutral-950 flex items-center justify-center">
+                        <ModalFooter className="gap-4 bg-neutral-950 flex items-center justify-center h-16">
                             {boughtBoxId ? (
                                 // <button
                                 //     onClick={() =>
@@ -465,7 +464,7 @@ export function BuyModal({ box }: { box: BoxType | null }) {
                                 <button
                                     onClick={buyMysteryBox}
                                     className=" text-sm px-2 py-1 rounded-md shadow-inner shadow-accent-dark border border-accent-dark  w-28 disabled:bg-muted disabled:border-0 disabled:cursor-not-allowed disabled:shadow-none "
-                                    // disabled={!readAndAgreeWithTerms}
+                                    disabled={step > 0}
                                 >
                                     Buy box{' '}
                                 </button>
