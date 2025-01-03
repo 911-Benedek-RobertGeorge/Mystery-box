@@ -74,7 +74,7 @@ const MyBoxesSection: React.FC = () => {
                             My boxes ({myBoxes?.length})
                         </span>
                     </div>
-                    <div className="flex flex-col w-full items-start justify-start">
+                    <div className="flex flex-col w-full items-start justify-start max-h-[40rem] overflow-y-auto pr-4 md:pr-12 md:pt-8">
                         {myBoxes && myBoxes.length > 0 ? (
                             myBoxes?.map((box, index) => {
                                 return (
@@ -188,8 +188,7 @@ const MyBoxesSection: React.FC = () => {
                                                 <div className="text-sm text-slate-500">
                                                     Total Paid{' '}
                                                     {(
-                                                        box.boxContents[0]
-                                                            .solPrice *
+                                                        box.solPrice *
                                                         lamportsToSol(
                                                             box.boxType
                                                                 .amountLamports
