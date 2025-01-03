@@ -1,12 +1,10 @@
 import React, { useEffect } from 'react'
 import logo from '../../../assets/elements/logo.png'
-import { useSelector } from 'react-redux'
 import {
     lamportsToSol,
     shortenAddress,
     timeDifferenceFromNow,
 } from '../../../libs/utils'
-import { useWallet } from '@solana/wallet-adapter-react'
 import { VITE_ENV_BACKEND_URL } from '../../../libs/config'
 import { memeCoinType, MysteryBox } from '../../../libs/interfaces'
 import { AnimatedTooltip } from '../../../components/ui/AnimatedTooltip'
