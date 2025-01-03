@@ -140,7 +140,7 @@ export function OpenBoxModal({ boxId }: { boxId?: string }) {
                 scale-75 md:scale-100 items-center relative rounded-full flex justify-center group/modal-btn"
                 >
                     <span className="group-hover/modal-btn:translate-x-40 text-center transition duration-500 ">
-                        Open memebox
+                        Claim box
                     </span>{' '}
                     <div className="-translate-x-40 group-hover/modal-btn:translate-x-0 flex items-center justify-center absolute inset-0 transition duration-500 text-white z-20">
                         <img className="w-8" src={questionMark} />
