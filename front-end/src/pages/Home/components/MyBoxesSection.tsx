@@ -73,7 +73,7 @@ const MyBoxesSection: React.FC<MyBoxesSectionProps> = ({
             ) : (
                 <div
                     id="my-boxes"
-                    className="flex flex-col justify-start items-center p-10 xl:px-64"
+                    className="flex flex-col justify-start items-center p-10 xl:px-64 pb-64"
                 >
                     <div className="flex justify-start items-start w-full">
                         <span className="text-3xl font-bold text-accent p-2 mb-4">

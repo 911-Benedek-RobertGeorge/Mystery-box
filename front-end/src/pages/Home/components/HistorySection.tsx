@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import cyanBox from '../../../assets/boxes/cyan_box.png'
+import logo from '../../../assets/elements/logo.png'
 import {
     lamportsToSol,
     shortenAddress,
@@ -51,6 +51,7 @@ const HistorySection: React.FC<{
             price: parseFloat(
                 lamportsToSol(box.boxType.amountLamports).toFixed(4)
             ),
+            ///TODO CHECK THE TOTAL PAID USD ? do I need to compute that ?
 
             initialUsdValue: parseFloat(box.initialUsdValue?.toFixed(2)),
 
@@ -86,23 +87,24 @@ const HistorySection: React.FC<{
                 image: content.token.image,
                 name: content.token.name,
             })),
-            image: cyanBox,
+            image: logo,
             buyer: box.buyer,
         }))
     }
 
     return (
-        <div className="z-[100] flex flex-col justify-center items-center p-10 xl:p-64 ">
-            <div className="flex justify-start items-start w-full ">
-                <span className="text-3xl font-bold text-accent p-2 mb-4 ">
-                    Latest Boxes sold
+        <div className="relative flex flex-col justify-start items-center w-full max-w-screen-xl mx-auto px-4 xl:px-16 py-12">
+            <div className="flex justify-start items-start w-full">
+                <span className="text-2xl font-bold bg-gradient-to-r from-accent to-accent-light bg-clip-text text-transparent mb-4 italic">
+                    Professional degenes bought
                 </span>
             </div>
-            {historyData.slice(0, 5).map((box, index) => {
-                return (
+
+            <div className="w-full space-y-4">
+                {historyData.slice(0, 5).map((box, index) => (
                     <div
                         key={index}
-                        className="mb-3 flex w-full max-w-screen transform   flex-col justify-between rounded-md bg-background-light bg-opacity-75 p-6 text-accent transition duration-500 ease-in-out hover:-translate-y-1 hover:shadow-2xl hover:shadow-accent-dark md:flex-row md:p-4"
+                        className="flex w-full transform cursor-pointer flex-col justify-between rounded-md bg-background-light bg-opacity-75 p-6 text-accent transition duration-500 ease-in-out hover:-translate-y-1 hover:shadow-2xl hover:shadow-accent-dark md:flex-row md:p-4"
                     >
                         <div className="flex w-full flex-row md:w-3/12">
                             <div className="relative flex flex-col">
@@ -181,9 +183,78 @@ const HistorySection: React.FC<{
                                 </div>
                             )}
                         </div>
+                        {/* TODO CURRENT PRICE ? */}
+                        {/* <div className="w-full self-center pt-4 lg:w-1/6 lg:pt-0">
+                            <div className="ml-1">
+                                <div className="text-xl font-extrabold leading-5 tracking-tight">
+                                    <span className="align-middle">
+                                        {box.currentPrice} SOL
+                                    </span>
+                                    {box.currentPrice - box.price > 0 ? (
+                                        <span className="text-[8px] ml-2 rounded bg-green-600 px-2 py-1 align-middle font-bold uppercase text-white">
+                                            Profit
+                                        </span>
+                                    ) : (
+                                        <span className="text-[8px] ml-2 rounded bg-red-600 px-2 py-1 align-middle font-bold uppercase text-white">
+                                            Loss
+                                        </span>
+                                    )}
+                                </div>
+                                <div className="text-sm text-slate-500">
+                                    Current price{' '}
+                                    {(box.currentPrice * solanaPrice).toFixed(
+                                        2
+                                    )}{' '}
+                                    USD
+                                </div>
+                            </div>
+                        </div>
+                        {/* TODO CURRENT PRICE ? */}
+                        {/* <div className="w-full self-center pt-4 lg:w-1/6 lg:pt-0">
+                            <div className="ml-1">
+                                <div className="text-xl font-extrabold leading-5 tracking-tight">
+                                    <span className="align-middle">
+                                        {box.currentPrice} SOL
+                                    </span>
+                                    {box.currentPrice - box.price > 0 ? (
+                                        <span className="text-[8px] ml-2 rounded bg-green-600 px-2 py-1 align-middle font-bold uppercase text-white">
+                                            Profit
+                                        </span>
+                                    ) : (
+                                        <span className="text-[8px] ml-2 rounded bg-red-600 px-2 py-1 align-middle font-bold uppercase text-white">
+                                            Loss
+                                        </span>
+                                    )}
+                                </div>
+                                <div className="text-sm text-slate-500">
+                                    Current price{' '}
+                                    {(box.currentPrice * solanaPrice).toFixed(
+                                        2
+                                    )}{' '}
+                                    USD
+                                </div>
+                            </div>
+                        </div> */}
+
+                        {/* <div className="w-full self-center px-1 pt-4 pb-2 lg:w-1/6 lg:px-0 lg:pt-0 lg:pb-0">
+                            <div className="text-base font-bold leading-4 tracking-tight">
+                                Risk level
+                            </div>
+                            <div className="status-bars w-full pt-2">
+                                <div className="flex flex-row lg:pr-6">
+                                    <div className="max-w-6 h-1 w-1/5 rounded bg-green-500"></div>
+                                    <div className="max-w-6 ml-1 h-1 w-1/5 rounded bg-amber-500"></div>
+                                    <div className="max-w-6 ml-1 h-1 w-1/5 rounded bg-red-500"></div>
+
+                                    <div className="max-w-6 ml-1 h-1 w-1/5 rounded bg-slate-400 bg-opacity-25 dark:bg-slate-600"></div>
+                                    <div className="max-w-6 ml-1 h-1 w-1/5 rounded bg-slate-400 bg-opacity-25 dark:bg-slate-600"></div>
+                                    <div className="max-w-6 ml-1 h-1 w-1/5 rounded bg-slate-400 bg-opacity-25 dark:bg-slate-600"></div>
+                                </div>
+                            </div>
+                        </div> */}
                     </div>
-                )
-            })}
+                ))}
+            </div>
         </div>
     )
 }
