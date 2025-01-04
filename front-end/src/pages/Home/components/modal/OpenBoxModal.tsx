@@ -7,6 +7,7 @@ import {
     Modal,
     ModalBody,
     ModalContent,
+    ModalFooter,
     ModalTrigger,
 } from '../../../../components/ui/AnimatedModal'
 import questionMark from '../../../../assets/elements/question_mark.png'
@@ -27,18 +28,18 @@ import { SOLANA_EXPLORER_URL } from '../../../../libs/constants'
 export function OpenBoxModal({
     boxId,
     hiddenTrigger,
+    setHasPendingTransaction,
 }: {
     boxId?: string
     hiddenTrigger?: boolean
+    setHasPendingTransaction?: (value: boolean) => void
 }) {
-    const { publicKey, sendTransaction } = useWallet()
-    const [hasPendingTransaction, setHasPendingTransaction] = useState(false)
-    const { connection } = useConnection()
+    const { publicKey } = useWallet()
     const { networkConfiguration } = useNetworkConfiguration()
-    const [step, setStep] = useState(0)
-    const [latestTxSignature, setLatestTxSignature] = useState<string>('')
+
     const jwtToken = sessionStorage.getItem('jwtToken')
     const [mysteryBox, setMysteryBox] = useState<MysteryBox>()
+    const [closeModal, setCloseModal] = useState(false)
 
     async function openBoughtBox(boxId: string) {
         try {
@@ -46,7 +47,7 @@ export function OpenBoxModal({
                 toast.prototype('Plase reconnect your wallet')
                 throw new Error('JWT Token not found')
             }
-
+            setHasPendingTransaction && setHasPendingTransaction(true)
             const response = await fetch(
                 `${VITE_ENV_BACKEND_URL}/boxes/box/${boxId}/claim`,
                 {
@@ -59,11 +60,14 @@ export function OpenBoxModal({
             )
 
             const data = await response.json()
-            console.log('data', data)
+
+            if (data.message) {
+                toast.error(data.message)
+                setCloseModal(true)
+                throw new Error(data.message)
+            }
             const box = data.box
             setMysteryBox(box)
-
-            await sleep(1000)
 
             const images = box.boxContents.map((memeCoin: BoxContent) => ({
                 src: memeCoin.token.image,
@@ -74,7 +78,8 @@ export function OpenBoxModal({
             await confetti({
                 zIndex: 1100,
                 spread: 360,
-                ticks: 150,
+                ticks: 200,
+
                 gravity: 0.8,
                 decay: 0.8,
                 startVelocity: 30,
@@ -87,6 +92,9 @@ export function OpenBoxModal({
             })
         } catch (error) {
             console.error('Error opening the box transaction:', error)
+        } finally {
+            setHasPendingTransaction && setHasPendingTransaction(false)
+            setCloseModal(false)
         }
     }
 
@@ -114,29 +122,33 @@ export function OpenBoxModal({
                         </>
                     )}
                 </ModalTrigger>
-                <ModalBody className="z-[200] bg-background-dark w-full shadow-inner rounded-t-xl  shadow-cyan-600">
-                    {!mysteryBox ? (
-                        <div className="text-center text-accent/80 text-lg mt-2 font-light">
-                            Do not close this window or refresh page!
-                        </div>
-                    ) : (
-                        <div className="text-center text-accent/80 text-lg mt-2 font-light">
-                            Congratulations! You've unlocked these meme
-                            treasures
-                        </div>
-                    )}
+                <ModalBody
+                    closeModal={closeModal}
+                    className="z-[200] bg-background-dark w-full shadow-inner rounded-t-xl  shadow-cyan-600 py-4 "
+                >
+                    <div className="text-center text-accent/80 text-lg mt-2 font-light w-[80%] mx-auto">
+                        {!mysteryBox ? (
+                            <span>
+                                Do not close this window or refresh page!
+                            </span>
+                        ) : (
+                            <span>
+                                Congratulations! You've unlocked these meme
+                                treasures
+                            </span>
+                        )}{' '}
+                    </div>
                     <ModalContent className="">
-                        <div className="w-full h-full flex flex-col items-center justify-center m-auto">
-                            {' '}
+                        <div className="w-full h-full flex flex-col items-center justify-center m-auto p-4 max-h-[40rem] overflow-y-auto">
                             {!mysteryBox ? (
-                                <>
+                                <div className="flex items-center justify-center h-96">
                                     <img
                                         src={questionMark}
                                         className="animate-ping w-32"
                                     />
-                                </>
+                                </div>
                             ) : (
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 ">
                                     {mysteryBox?.boxContents.map((content) => (
                                         <div
                                             onClick={() =>
@@ -180,12 +192,12 @@ export function OpenBoxModal({
                                                 </div>
                                             </div>
                                         </div>
-                                    ))}
+                                    ))}{' '}
                                 </div>
                             )}
                         </div>
-                    </ModalContent>
-                </ModalBody>
+                    </ModalContent>{' '}
+                </ModalBody>{' '}
             </Modal>
         </div>
     )

@@ -10,9 +10,10 @@ import { memeCoinType, MysteryBox } from '../../../libs/interfaces'
 import { AnimatedTooltip } from '../../../components/ui/AnimatedTooltip'
 interface HistoryItem {
     price: number
-    totalPaidUSD: number
+    initialUsdValue: number
     roi: number
     date: Date
+    claimUsdValue: number
 
     boxType: string
     boxContent: memeCoinType[]
@@ -20,7 +21,9 @@ interface HistoryItem {
     buyer: string
 }
 
-const HistorySection: React.FC = () => {
+const HistorySection: React.FC<{
+    hasPendingTransaction: boolean
+}> = ({ hasPendingTransaction }) => {
     const [historyData, setHistoryData] = React.useState<HistoryItem[]>([])
 
     useEffect(() => {
@@ -39,7 +42,8 @@ const HistorySection: React.FC = () => {
         }
 
         fetchMyBoxes()
-    }, [])
+    }, [hasPendingTransaction])
+
     const transformToHistoryItems = (
         mysteryBoxes: MysteryBox[]
     ): HistoryItem[] => {
@@ -49,11 +53,7 @@ const HistorySection: React.FC = () => {
             ),
             ///TODO CHECK THE TOTAL PAID USD ? do I need to compute that ?
 
-            totalPaidUSD: parseFloat(
-                (
-                    box.solPrice * lamportsToSol(box.boxType.amountLamports)
-                ).toFixed(2)
-            ),
+            initialUsdValue: parseFloat(box.initialUsdValue?.toFixed(2)),
 
             // parseFloat(
             //     (
@@ -66,6 +66,7 @@ const HistorySection: React.FC = () => {
             //         box.boxContents[0].solPrice
             //     ).toFixed(4)
             // ),
+            claimUsdValue: parseFloat(box.claimUsdValue?.toFixed(2)),
             roi: parseFloat(
                 (
                     (box.boxContents.reduce(
@@ -92,7 +93,7 @@ const HistorySection: React.FC = () => {
     }
 
     return (
-        <div className="relative flex flex-col justify-start items-center w-full max-w-screen-xl mx-auto px-4 md:px-16 py-12">
+        <div className="relative flex flex-col justify-start items-center w-full max-w-screen-xl mx-auto px-4 xl:px-16 py-12">
             <div className="flex justify-start items-start w-full">
                 <span className="text-2xl font-bold bg-gradient-to-r from-accent to-accent-light bg-clip-text text-transparent mb-4 italic">
                     Professional degenes bought
@@ -148,29 +149,21 @@ const HistorySection: React.FC = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="w-full self-center pt-4 lg:w-1/6 lg:pt-0">
-                            <div className="ml-1">
-                                <div className="text-xl font-extrabold leading-5 tracking-tight">
-                                    <span className="align-middle">
-                                        {box.price} SOL
-                                    </span>
-                                    <span className="text-[8px] ml-2 rounded bg-green-600 px-2 py-1 align-middle font-bold uppercase text-white">
-                                        Paid
-                                    </span>
-                                </div>
-                                <div className="text-sm text-slate-500">
-                                    Total Paid {box.totalPaidUSD} USD
-                                </div>
-                            </div>
-                        </div>
-                        {/* TODO CURRENT PRICE ? */}
-                        {/* <div className="w-full self-center pt-4 lg:w-1/6 lg:pt-0">
-                            <div className="ml-1">
-                                <div className="text-xl font-extrabold leading-5 tracking-tight">
-                                    <span className="align-middle">
-                                        {box.currentPrice} SOL
-                                    </span>
-                                    {box.currentPrice - box.price > 0 ? (
+                        <div className="w-full self-center pt-4 lg:w-1/6 lg:pt-0 flex">
+                            <div className="text-xl font-extrabold leading-5 tracking-tight flex-col flex">
+                                <span className="align-middle">
+                                    {box.price}
+                                    SOL
+                                </span>
+                                <span className="text-sm font-normal text-slate-500">
+                                    ~ {box.initialUsdValue.toFixed(2)} $
+                                </span>{' '}
+                            </div>{' '}
+                            {box.claimUsdValue && (
+                                <div className="ml-1 flex flex-col items-center justify-center        ">
+                                    {' '}
+                                    {box.initialUsdValue <=
+                                    box.claimUsdValue ? (
                                         <span className="text-[8px] ml-2 rounded bg-green-600 px-2 py-1 align-middle font-bold uppercase text-white">
                                             Profit
                                         </span>
@@ -179,33 +172,17 @@ const HistorySection: React.FC = () => {
                                             Loss
                                         </span>
                                     )}
+                                    <span className="text-sm font-normal text-slate-500">
+                                        {' '}
+                                        {(
+                                            box.claimUsdValue -
+                                            box.initialUsdValue
+                                        ).toFixed(2)}{' '}
+                                        $
+                                    </span>
                                 </div>
-                                <div className="text-sm text-slate-500">
-                                    Current price{' '}
-                                    {(box.currentPrice * solanaPrice).toFixed(
-                                        2
-                                    )}{' '}
-                                    USD
-                                </div>
-                            </div>
-                        </div> */}
-
-                        {/* <div className="w-full self-center px-1 pt-4 pb-2 lg:w-1/6 lg:px-0 lg:pt-0 lg:pb-0">
-                            <div className="text-base font-bold leading-4 tracking-tight">
-                                Risk level
-                            </div>
-                            <div className="status-bars w-full pt-2">
-                                <div className="flex flex-row lg:pr-6">
-                                    <div className="max-w-6 h-1 w-1/5 rounded bg-green-500"></div>
-                                    <div className="max-w-6 ml-1 h-1 w-1/5 rounded bg-amber-500"></div>
-                                    <div className="max-w-6 ml-1 h-1 w-1/5 rounded bg-red-500"></div>
-
-                                    <div className="max-w-6 ml-1 h-1 w-1/5 rounded bg-slate-400 bg-opacity-25 dark:bg-slate-600"></div>
-                                    <div className="max-w-6 ml-1 h-1 w-1/5 rounded bg-slate-400 bg-opacity-25 dark:bg-slate-600"></div>
-                                    <div className="max-w-6 ml-1 h-1 w-1/5 rounded bg-slate-400 bg-opacity-25 dark:bg-slate-600"></div>
-                                </div>
-                            </div>
-                        </div> */}
+                            )}
+                        </div>
                     </div>
                 ))}
             </div>

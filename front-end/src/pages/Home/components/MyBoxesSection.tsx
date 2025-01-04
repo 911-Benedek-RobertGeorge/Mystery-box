@@ -11,7 +11,15 @@ import questionMark from '../../../assets/elements/question_mark.png'
 import { FaExternalLinkAlt } from 'react-icons/fa'
 import key from '../../../assets/boxes/key.png'
 
-const MyBoxesSection: React.FC = () => {
+interface MyBoxesSectionProps {
+    hasPendingTransaction: boolean
+    setHasPendingTransaction: (hasPendingTransaction: boolean) => void
+}
+
+const MyBoxesSection: React.FC<MyBoxesSectionProps> = ({
+    hasPendingTransaction,
+    setHasPendingTransaction,
+}) => {
     const [myBoxes, setMyBoxes] = React.useState<MysteryBox[]>()
     const { publicKey } = useWallet()
     const [selectedBoxId, setSelectedBoxId] = React.useState<string>('')
@@ -41,7 +49,7 @@ const MyBoxesSection: React.FC = () => {
             }
         }
         fetchMyBoxes()
-    }, [publicKey, jwtToken])
+    }, [publicKey, jwtToken, hasPendingTransaction])
 
     const displayedBoxes = showAll ? myBoxes : myBoxes?.slice(0, 3)
 
@@ -50,7 +58,6 @@ const MyBoxesSection: React.FC = () => {
         if (button) {
             button.click()
         }
-        console.log('open box modal', selectedBoxId)
     }
 
     useEffect(() => {
@@ -66,7 +73,7 @@ const MyBoxesSection: React.FC = () => {
             ) : (
                 <div
                     id="my-boxes"
-                    className="flex flex-col justify-start items-center p-10 md:px-64 pb-64"
+                    className="flex flex-col justify-start items-center p-10 xl:px-64 pb-64"
                 >
                     <div className="flex justify-start items-start w-full">
                         <span className="text-3xl font-bold text-accent p-2 mb-4">
@@ -80,23 +87,21 @@ const MyBoxesSection: React.FC = () => {
                                     return (
                                         <div
                                             key={index}
-                                            className=" z-[55] mb-3  flex w-full max-w-screen transform cursor-pointer flex-col justify-between items-start md:items-center rounded-md bg-background-light bg-opacity-75 p-6 text-accent transition duration-500 ease-in-out hover:-translate-y-1 hover:shadow-lg hover:shadow-accent-dark md:flex-row md:p-4"
+                                            className=" z-[55] mb-3  flex w-full max-w-screen transform   flex-col justify-between items-start md:items-center rounded-md bg-background-light bg-opacity-75 p-6 text-accent transition duration-500 ease-in-out hover:-translate-y-1 hover:shadow-lg hover:shadow-accent-dark md:flex-row md:p-4"
                                         >
                                             <div className="flex flex-col md:flex-row space-x-4">
                                                 {' '}
-                                                <div className="flex flex-row items-center justify-start md:justify-center">
+                                                <div className="flex flex-row items-center justify-start md:justify-center ">
                                                     <img
                                                         src={cyanBox}
                                                         alt="Box"
-                                                        className="w-10 h-10 md:w-16 md:h-16 mr-4 rounded-full "
+                                                        className=" mr-4  h-12 w-12 rounded-full object-cover "
                                                     />
-                                                    <div className="flex flex-col items-start justify-center">
-                                                        <div className="w-full truncate text-xl font-extrabold leading-5 tracking-tight">
+                                                    <div className="flex flex-col items-start justify-center space-y-2">
+                                                        <div className="w-full truncate text-xl font-extrabold leading-5 tracking-tight ">
                                                             {box.boxType.name}
                                                         </div>
-                                                        <p className="text-sm text-slate-500">
-                                                            {box._id}
-                                                        </p>{' '}
+
                                                         <div
                                                             className="flex flex-row space-x-2 cursor-pointer"
                                                             onClick={() =>
@@ -112,7 +117,7 @@ const MyBoxesSection: React.FC = () => {
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div className=" w-72 mt-4 md:mt-0 flex  items-center justify-start md:justify-center  ">
+                                                <div className="w-72 mt-4 md:mt-0 flex  items-center justify-start md:justify-center  ">
                                                     {box.status ==
                                                     BoxStatus.CLAIMED ? (
                                                         <AnimatedTooltip
@@ -168,44 +173,55 @@ const MyBoxesSection: React.FC = () => {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className="w-full self-center pt-4 lg:w-1/6 lg:pt-0">
-                                                <div className="ml-1">
-                                                    <div className="text-xl font-extrabold leading-5 tracking-tight">
-                                                        <span className="align-middle">
-                                                            {parseFloat(
-                                                                lamportsToSol(
-                                                                    box.boxType
-                                                                        .amountLamports
-                                                                ).toFixed(4)
-                                                            )}{' '}
-                                                            SOL
-                                                        </span>
-                                                        <span className="text-[8px] ml-2 rounded bg-green-600 px-2 py-1 align-middle font-bold uppercase text-white">
-                                                            Paid
-                                                        </span>
-                                                    </div>
-                                                    <div className="text-sm text-slate-500">
-                                                        Total Paid{' '}
-                                                        {(
-                                                            box.solPrice *
+                                            <div className="w-full self-center pt-4 lg:w-1/6 lg:pt-0 flex">
+                                                <div className="text-xl font-extrabold leading-5 tracking-tight flex-col flex">
+                                                    <span className="align-middle">
+                                                        {parseFloat(
                                                             lamportsToSol(
                                                                 box.boxType
                                                                     .amountLamports
-                                                            )
-                                                        ).toFixed(2)}
-                                                        USD
+                                                            ).toFixed(4)
+                                                        )}{' '}
+                                                        SOL
+                                                    </span>
+                                                    <span className="text-sm font-normal text-slate-500">
+                                                        ~{' '}
+                                                        {box.initialUsdValue.toFixed(
+                                                            2
+                                                        )}{' '}
+                                                        $
+                                                    </span>{' '}
+                                                </div>{' '}
+                                                {box.claimUsdValue && (
+                                                    <div className="ml-1 flex flex-col items-center justify-center        ">
+                                                        {' '}
+                                                        {box.initialUsdValue <=
+                                                        box.claimUsdValue ? (
+                                                            <span className="text-[8px] ml-2 rounded bg-green-600 px-2 py-1 align-middle font-bold uppercase text-white">
+                                                                Profit
+                                                            </span>
+                                                        ) : (
+                                                            <span className="text-[8px] ml-2 rounded bg-red-600 px-2 py-1 align-middle font-bold uppercase text-white">
+                                                                Loss
+                                                            </span>
+                                                        )}
+                                                        <span className="text-sm font-normal text-slate-500">
+                                                            {' '}
+                                                            {(
+                                                                box.claimUsdValue -
+                                                                box.initialUsdValue
+                                                            ).toFixed(2)}{' '}
+                                                            $
+                                                        </span>
                                                     </div>
-                                                </div>
+                                                )}
                                             </div>
-                                            <div className="w-24">
+                                            <div className="w-24 items-center justify-center flex">
                                                 {box.status ==
-                                                    BoxStatus.BOUGHT && (
+                                                BoxStatus.BOUGHT ? (
                                                     <button
                                                         id=""
                                                         onClick={() => {
-                                                            console.log(
-                                                                'button'
-                                                            )
                                                             setSelectedBoxId(
                                                                 box._id
                                                             )
@@ -225,7 +241,12 @@ const MyBoxesSection: React.FC = () => {
                                                             />
                                                         </div>
                                                     </button>
+                                                ) : (
                                                     // <OpenBoxModal boxId={box._id} />
+                                                    <img
+                                                        src={key}
+                                                        className="h-12 hidden md:block hover:animate-fifth transition-all  ease-in-out cursor-pointer"
+                                                    />
                                                 )}
                                             </div>
                                         </div>
@@ -250,7 +271,11 @@ const MyBoxesSection: React.FC = () => {
                             </div>
                         )}
                     </div>
-                    <OpenBoxModal hiddenTrigger={true} boxId={selectedBoxId} />
+                    <OpenBoxModal
+                        setHasPendingTransaction={setHasPendingTransaction}
+                        hiddenTrigger={true}
+                        boxId={selectedBoxId}
+                    />
                 </div>
             )}
         </>

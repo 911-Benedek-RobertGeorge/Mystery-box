@@ -63,12 +63,13 @@ export const ModalTrigger = ({
 export const ModalBody = ({
     children,
     className,
+    closeModal,
 }: {
     children: ReactNode
     className?: string
+    closeModal?: boolean
 }) => {
     const { open } = useModal()
-
     useEffect(() => {
         if (open) {
             document.body.style.overflow = 'hidden'
@@ -79,6 +80,8 @@ export const ModalBody = ({
 
     const modalRef = useRef(null)
     const { setOpen } = useModal()
+    if (closeModal) setOpen(false)
+
     // useOutsideClick(modalRef, () => setOpen(false))
 
     return (
@@ -166,10 +169,7 @@ export const ModalFooter = ({
     return (
         <div
             onClick={() => shouldClose && setOpen(false)}
-            className={cn(
-                'flex justify-end p-4 bg-gray-100 dark:bg-neutral-900',
-                className
-            )}
+            className={cn('flex justify-end p-4 bg-neutral-900', className)}
         >
             {children}
         </div>
@@ -199,7 +199,9 @@ const CloseIcon = () => {
     const { setOpen } = useModal()
     return (
         <button
-            onClick={() => setOpen(false)}
+            onClick={() => {
+                setOpen(false)
+            }}
             className="absolute top-4 right-4 group"
         >
             <svg
@@ -212,7 +214,7 @@ const CloseIcon = () => {
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="text-accent   h-4 w-4 group-hover:scale-125 group-hover:rotate-90 transition duration-200"
+                className="text-accent   h-6 w-6 group-hover:scale-125 group-hover:rotate-90 transition duration-200"
             >
                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                 <path d="M18 6l-12 12" />

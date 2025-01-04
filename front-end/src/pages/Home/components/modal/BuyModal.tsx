@@ -23,16 +23,20 @@ import { BoxType } from '../../../../libs/interfaces'
 import { lamportsToSol, scrollToSection } from '../../../../libs/utils'
 import { FaCheckCircle } from 'react-icons/fa'
 import { useSelector } from 'react-redux'
-import { OpenBoxModal } from './OpenBoxModal'
 
-export function BuyModal({ box }: { box: BoxType | null }) {
+export function BuyModal({
+    box,
+    setHasPendingTransaction,
+}: {
+    box: BoxType | null
+    setHasPendingTransaction: (value: boolean) => void
+}) {
     const images = [cyanBox]
 
     const solanaPrice = useSelector(
         (state: { solana: { price: number } }) => state.solana.price
     )
     const { publicKey, sendTransaction } = useWallet()
-    const [hasPendingTransaction, setHasPendingTransaction] = useState(false)
     const { connection } = useConnection()
     const { networkConfiguration } = useNetworkConfiguration()
     const [step, setStep] = useState(0)
@@ -221,7 +225,7 @@ export function BuyModal({ box }: { box: BoxType | null }) {
                 <Modal>
                     <ModalTrigger
                         className="bg-muted shadow-inner shadow-accent-dark text-accent
-                scale-75 md:scale-100 items-center relative rounded-full flex justify-center group/modal-btn"
+                scale-90 md:scale-100 items-center relative rounded-full flex justify-center group/modal-btn"
                     >
                         <span className="group-hover/modal-btn:translate-x-40 text-center transition duration-500 ">
                             Buy memebox
@@ -275,10 +279,10 @@ export function BuyModal({ box }: { box: BoxType | null }) {
                                         {!boughtBoxId && step <= 0 ? (
                                             <div className="flex flex-col  ">
                                                 <p className="text-sm text-gray-400 mb-2">
-                                                    Unlock a random selection of
-                                                    meme coins and join the fun.
-                                                    Rewards are completely
-                                                    random!
+                                                    Unlock a curated bundle of
+                                                    hand picked meme coins and
+                                                    join the excitement of the
+                                                    bull run!
                                                 </p>
                                                 <div className="flex flex-col   items-start justify-start text-sm">
                                                     <div>

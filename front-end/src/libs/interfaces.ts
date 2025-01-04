@@ -68,6 +68,8 @@ export interface MysteryBox {
     claimSignature?: string
     buySignature?: string
     solPrice: number
+    initialUsdValue: number
+    claimUsdValue: number
 }
 
 export type memeCoinType = {
