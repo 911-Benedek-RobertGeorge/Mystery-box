@@ -15,6 +15,7 @@ const MyBoxesSection: React.FC = () => {
     const { publicKey } = useWallet()
     const [selectedBoxId, setSelectedBoxId] = React.useState<string>('')
     const jwtToken = sessionStorage.getItem('jwtToken')
+    const [showAll, setShowAll] = useState(false)
 
     useEffect(() => {
         const fetchMyBoxes = async () => {
@@ -40,6 +41,8 @@ const MyBoxesSection: React.FC = () => {
         }
         fetchMyBoxes()
     }, [publicKey, jwtToken])
+
+    const displayedBoxes = showAll ? myBoxes : myBoxes?.slice(0, 3)
 
     const handleOpenBoxModal = () => {
         const button = document.getElementById('open-box-modal-button')
@@ -69,26 +72,20 @@ const MyBoxesSection: React.FC = () => {
                             My boxes ({myBoxes?.length})
                         </span>
                     </div>
-                    <div className="flex flex-col w-full items-start justify-start max-h-[40rem] overflow-y-auto pr-4 md:pr-12 md:pt-8">
-                        {myBoxes && myBoxes.length > 0 ? (
-                            myBoxes?.map((box, index) => {
-                                return (
-                                    <div
-                                        key={index}
-                                        className=" z-[55] mb-3  flex w-full max-w-screen transform cursor-pointer flex-col justify-between items-start md:items-center rounded-md bg-background-light bg-opacity-75 p-6 text-accent transition duration-500 ease-in-out hover:-translate-y-1 hover:shadow-lg hover:shadow-accent-dark md:flex-row md:p-4"
-                                    >
-                                        <div className="flex flex-row justify-center space-x-4   ">
+                    <div className="flex flex-col w-full items-start justify-start">
+                        {displayedBoxes && displayedBoxes.length > 0 ? (
+                            <>
+                                {displayedBoxes.map((box, index) => {
+                                    return (
+                                        <div
+                                            key={index}
+                                            className=" z-[55] mb-3  flex w-full max-w-screen transform cursor-pointer flex-col justify-between items-start md:items-center rounded-md bg-background-light bg-opacity-75 p-6 text-accent transition duration-500 ease-in-out hover:-translate-y-1 hover:shadow-lg hover:shadow-accent-dark md:flex-row md:p-4"
+                                        >
                                             <img
                                                 src={cyanBox}
-                                                className="z-10 h-12 w-12 rounded-full object-cover shadow hover:shadow-xl"
-                                                alt="mistery box"
+                                                alt="Box"
+                                                className="w-16 h-16 md:w-24 md:h-24 mr-4"
                                             />
-                                            {box.status == BoxStatus.BOUGHT && (
-                                                <span className="absolute right-0 top-0 z-20 flex h-3 w-3">
-                                                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75"></span>
-                                                    <span className="relative inline-flex h-3 w-3 rounded-full bg-accent-light"></span>
-                                                </span>
-                                            )}{' '}
                                             <div className="flex flex-col items-start justify-center">
                                                 <div className="w-full truncate text-xl font-extrabold leading-5 tracking-tight">
                                                     {box.boxType.name}
@@ -110,102 +107,137 @@ const MyBoxesSection: React.FC = () => {
                                                     <FaExternalLinkAlt />
                                                 </div>
                                             </div>
-                                        </div>
 
-                                        {box.status == BoxStatus.CLAIMED ? (
-                                            <div className="mt-4 md:mt-0 flex flex-row items-center justify-start md:justify-center  ">
-                                                <AnimatedTooltip
-                                                    items={box.boxContents.map(
-                                                        (object) => ({
-                                                            name: object.token
-                                                                .name,
-                                                            mintAddress:
-                                                                object.token
-                                                                    .mint,
-                                                            image: object.token
-                                                                .image,
-                                                        })
-                                                    )}
-                                                />
-                                            </div>
-                                        ) : (
-                                            <div className="w-72 mt-4 md:mt-0 flex flex-row items-center justify-start md:justify-center">
+                                            {box.status == BoxStatus.CLAIMED ? (
+                                                <div className="mt-4 md:mt-0 flex flex-row items-center justify-start md:justify-center  ">
+                                                    <AnimatedTooltip
+                                                        items={box.boxContents.map(
+                                                            (object) => ({
+                                                                name: object
+                                                                    .token.name,
+                                                                mintAddress:
+                                                                    object.token
+                                                                        .mint,
+                                                                image: object
+                                                                    .token
+                                                                    .image,
+                                                            })
+                                                        )}
+                                                    />
+                                                </div>
+                                            ) : (
                                                 <img
                                                     className=" h-16"
                                                     src={questionMark}
                                                 />
-                                            </div>
-                                        )}
-
-                                        <div className="w-full self-center pt-4 lg:w-1/6 lg:pt-0">
-                                            <div className="ml-1">
-                                                <div className="text-xl font-extrabold leading-5 tracking-tight">
-                                                    {new Date(
-                                                        box.updatedAt
-                                                    ).toLocaleDateString()}
-                                                </div>
-                                                <div className="text-sm text-slate-500">
-                                                    {timeDifferenceFromNow(
-                                                        new Date(box.updatedAt)
-                                                    ).hours > 0
-                                                        ? timeDifferenceFromNow(
-                                                              new Date(
-                                                                  box.updatedAt
-                                                              )
-                                                          ).hours + ' hours ago'
-                                                        : timeDifferenceFromNow(
-                                                              new Date(
-                                                                  box.updatedAt
-                                                              )
-                                                          ).minutes +
-                                                          ' minutes ago'}
-                                                </div>
-                                            </div>
+                                            )}
+                                            {/* {box._id}
+                                        <div>
+                                            {box._id == selectedBoxId &&
+                                                'SELECTED'}
                                         </div>
-                                        <div className="w-full self-center pt-4 lg:w-1/6 lg:pt-0">
-                                            <div className="ml-1">
-                                                <div className="text-xl font-extrabold leading-5 tracking-tight">
-                                                    <span className="align-middle">
-                                                        {parseFloat(
+                                        <button
+                                            onClick={() => {
+                                                setSelectedBoxId(box._id)
+                                            }}
+                                            className="z-[100] mt-4 px-4 py-2 bg-accent text-white rounded-md hover:bg-accent-dark"
+                                        >
+                                            Select Box
+                                        </button> */}
+                                            <div className="w-full self-center pt-4 lg:w-1/6 lg:pt-0">
+                                                <div className="ml-1">
+                                                    <div className="text-xl font-extrabold leading-5 tracking-tight">
+                                                        {new Date(
+                                                            box.updatedAt
+                                                        ).toLocaleDateString()}
+                                                    </div>
+                                                    <div className="text-sm text-slate-500">
+                                                        {timeDifferenceFromNow(
+                                                            new Date(
+                                                                box.updatedAt
+                                                            )
+                                                        ).hours > 0
+                                                            ? timeDifferenceFromNow(
+                                                                  new Date(
+                                                                      box.updatedAt
+                                                                  )
+                                                              ).hours +
+                                                              ' hours ago'
+                                                            : timeDifferenceFromNow(
+                                                                  new Date(
+                                                                      box.updatedAt
+                                                                  )
+                                                              ).minutes +
+                                                              ' minutes ago'}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="w-full self-center pt-4 lg:w-1/6 lg:pt-0">
+                                                <div className="ml-1">
+                                                    <div className="text-xl font-extrabold leading-5 tracking-tight">
+                                                        <span className="align-middle">
+                                                            {parseFloat(
+                                                                lamportsToSol(
+                                                                    box.boxType
+                                                                        .amountLamports
+                                                                ).toFixed(4)
+                                                            )}{' '}
+                                                            SOL
+                                                        </span>
+                                                        <span className="text-[8px] ml-2 rounded bg-green-600 px-2 py-1 align-middle font-bold uppercase text-white">
+                                                            Paid
+                                                        </span>
+                                                    </div>
+                                                    <div className="text-sm text-slate-500">
+                                                        Total Paid{' '}
+                                                        {(
+                                                            box.solPrice *
                                                             lamportsToSol(
                                                                 box.boxType
                                                                     .amountLamports
-                                                            ).toFixed(4)
-                                                        )}{' '}
-                                                        SOL
-                                                    </span>
-                                                    <span className="text-[8px] ml-2 rounded bg-green-600 px-2 py-1 align-middle font-bold uppercase text-white">
-                                                        Paid
-                                                    </span>
-                                                </div>
-                                                <div className="text-sm text-slate-500">
-                                                    Total Paid{' '}
-                                                    {(
-                                                        box.solPrice *
-                                                        lamportsToSol(
-                                                            box.boxType
-                                                                .amountLamports
-                                                        )
-                                                    ).toFixed(2)}
-                                                    USD
+                                                            )
+                                                        ).toFixed(2)}
+                                                        USD
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        {box.status == BoxStatus.BOUGHT && (
-                                            <button
-                                                id="open-box-button"
-                                                onClick={() => {
-                                                    setSelectedBoxId(box._id)
-                                                }}
-                                                className="bg-muted shadow-inner shadow-accent-dark text-accent
+                                            {box.status == BoxStatus.BOUGHT && (
+                                                <button
+                                                    id=""
+                                                    onClick={() => {
+                                                        console.log('button')
+                                                        setSelectedBoxId(
+                                                            box._id
+                                                        )
+                                                        handleOpenBoxModal()
+                                                    }}
+                                                    className="bg-muted shadow-inner shadow-accent-dark text-accent
                 scale-75 md:scale-100 items-center relative rounded-full flex justify-center group/modal-btn overflow-hidden p-2"
-                                            >
-                                                Open box
-                                            </button>
-                                        )}
-                                    </div>
-                                )
-                            })
+                                                >
+                                                    Open box
+                                                    {/* <div className="-translate-x-40 group-hover/modal-btn:translate-x-0 flex items-center justify-center absolute inset-0 transition duration-500 text-white z-20">
+                                                        <img
+                                                            className="w-8"
+                                                            src={questionMark}
+                                                        />
+                                                    </div> */}
+                                                </button>
+                                                // <OpenBoxModal boxId={box._id} />
+                                            )}
+                                        </div>
+                                    )
+                                })}
+                                {myBoxes && myBoxes.length > 3 && (
+                                    <button
+                                        onClick={() => setShowAll(!showAll)}
+                                        className="relative z-[60] w-full mt-4 py-2 text-accent border border-accent rounded-md hover:bg-accent hover:text-white transition-colors duration-300"
+                                    >
+                                        {showAll
+                                            ? 'Show Less'
+                                            : `Show All (${myBoxes.length})`}
+                                    </button>
+                                )}
+                            </>
                         ) : (
                             <div>
                                 <span className="text-accent text-xl">
