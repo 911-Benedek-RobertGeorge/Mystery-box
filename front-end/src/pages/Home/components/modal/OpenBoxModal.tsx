@@ -16,12 +16,12 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import toast from 'react-hot-toast'
 import { useNetworkConfiguration } from '../../../../context/Solana/SolNetworkConfigurationProvider'
 import { VITE_ENV_BACKEND_URL } from '../../../../libs/config'
-import { cn } from '../../../../libs/utils'
+import { cn, shortenAddress } from '../../../../libs/utils'
 
 import chillguy from '../../../../assets/coins/chill-guy.png'
 
 import { confetti } from '@tsparticles/confetti'
-import { MysteryBox } from '../../../../libs/interfaces'
+import { BoxContent, MysteryBox, Token } from '../../../../libs/interfaces'
 
 export function OpenBoxModal({
     boxId,
@@ -59,15 +59,21 @@ export function OpenBoxModal({
 
             const data = await response.json()
             console.log('data', data)
+            const box = data.box
+            setMysteryBox(box)
 
-            setMysteryBox(data.box)
+            await sleep(1000)
 
-            //    await sleep(1000)
+            const images = box.boxContents.map((memeCoin: BoxContent) => ({
+                src: memeCoin.token.image,
+                width: 32,
+                height: 32,
+            }))
 
             await confetti({
                 zIndex: 1100,
                 spread: 360,
-                ticks: 120,
+                ticks: 150,
                 gravity: 0.8,
                 decay: 0.8,
                 startVelocity: 30,
@@ -75,28 +81,7 @@ export function OpenBoxModal({
                 scalar: 3,
                 shapes: ['image'],
                 shapeOptions: {
-                    image: [
-                        {
-                            src: chillguy,
-                            width: 32,
-                            height: 32,
-                        },
-                        {
-                            src: chillguy,
-                            width: 32,
-                            height: 32,
-                        },
-                        {
-                            src: chillguy,
-                            width: 32,
-                            height: 32,
-                        },
-                        {
-                            src: chillguy,
-                            width: 32,
-                            height: 32,
-                        },
-                    ],
+                    image: images,
                 },
             })
         } catch (error) {
@@ -130,29 +115,50 @@ export function OpenBoxModal({
                 </ModalTrigger>
                 <ModalBody className="z-[200] bg-background-dark w-full shadow-inner rounded-t-xl  shadow-cyan-600">
                     <ModalContent className="">
-                        <div className="w-full h-full flex items-center justify-center m-auto">
+                        <div className="w-full h-full flex flex-col items-center justify-center m-auto">
                             {!mysteryBox ? (
                                 <img
                                     src={questionMark}
                                     className="animate-ping w-32"
                                 />
                             ) : (
-                                <>
-                                    <a href={mysteryBox?.claimSignature}>
-                                        {' '}
-                                        {mysteryBox?.claimSignature}{' '}
-                                    </a>
-                                    <img
-                                        src={
-                                            mysteryBox.boxContents[0].token
-                                                .image
-                                        }
-                                        className="w-32"
-                                    />
-                                    {mysteryBox.boxContents[0].token.name}
-                                    {mysteryBox.boxContents[0].token.symbol}
-                                    {mysteryBox.boxContents[0].token.mint}
-                                </>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+                                    {mysteryBox?.boxContents.map((content) => (
+                                        <div
+                                            key={content._id}
+                                            className="flex items-center bg-gradient-to-r from-accent-dark  via-background  to-transparent rounded-xl shadow-lg p-4 hover:scale-105 transition-transform duration-200"
+                                        >
+                                            <img
+                                                src={content.token.image}
+                                                alt={content.token.name}
+                                                className="w-12 h-12 rounded-full border-2 border-cyan-400 mr-4"
+                                            />
+                                            <div className="flex flex-col">
+                                                <div className="text-lg font-semibold text-white mb-1">
+                                                    {content.token.name}
+                                                </div>
+                                                <div className="text-sm text-cyan-200 font-medium">
+                                                    {content.token.symbol}
+                                                </div>
+                                                <div className="text-xs text-gray-300 truncate">
+                                                    <span className="font-semibold text-gray-400">
+                                                        Mint:
+                                                    </span>{' '}
+                                                    {shortenAddress(
+                                                        content.token.mint,
+                                                        6
+                                                    )}
+                                                </div>
+                                                <div className="text-xs text-gray-300">
+                                                    <span className="font-semibold text-gray-400">
+                                                        Percentage:
+                                                    </span>{' '}
+                                                    {content.percentage}%
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
                             )}
                         </div>
                     </ModalContent>

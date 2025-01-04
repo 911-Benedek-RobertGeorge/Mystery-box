@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import logo from '../../../assets/elements/logo.png'
+import cyanBox from '../../../assets/boxes/cyan_box.png'
 import {
     lamportsToSol,
     shortenAddress,
@@ -40,6 +40,7 @@ const HistorySection: React.FC = () => {
 
         fetchMyBoxes()
     }, [])
+
     const transformToHistoryItems = (
         mysteryBoxes: MysteryBox[]
     ): HistoryItem[] => {
@@ -50,7 +51,7 @@ const HistorySection: React.FC = () => {
 
             totalPaidUSD: parseFloat(
                 (
-                    box.solPrice * lamportsToSol(box.boxType.amountLamports)
+                    box?.solPrice * lamportsToSol(box.boxType.amountLamports)
                 ).toFixed(2)
             ),
 
@@ -85,7 +86,7 @@ const HistorySection: React.FC = () => {
                 image: content.token.image,
                 name: content.token.name,
             })),
-            image: logo,
+            image: cyanBox,
             buyer: box.buyer,
         }))
     }

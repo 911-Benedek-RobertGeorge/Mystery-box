@@ -4,7 +4,7 @@ import { BoxStatus, MysteryBox } from '../../../libs/interfaces'
 import { VITE_ENV_BACKEND_URL } from '../../../libs/config'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { OpenBoxModal } from './modal/OpenBoxModal'
-import cyanBox from '../../../assets/boxes/cyan_box-Photoroom.png'
+import cyanBox from '../../../assets/boxes/cyan_box.png'
 import { AnimatedTooltip } from '../../../components/ui/AnimatedTooltip'
 import { lamportsToSol, timeDifferenceFromNow } from '../../../libs/utils'
 import questionMark from '../../../assets/elements/question_mark.png'
@@ -77,30 +77,38 @@ const MyBoxesSection: React.FC = () => {
                                         key={index}
                                         className=" z-[55] mb-3  flex w-full max-w-screen transform cursor-pointer flex-col justify-between items-start md:items-center rounded-md bg-background-light bg-opacity-75 p-6 text-accent transition duration-500 ease-in-out hover:-translate-y-1 hover:shadow-lg hover:shadow-accent-dark md:flex-row md:p-4"
                                     >
-                                        <img
-                                            src={cyanBox}
-                                            alt="Box"
-                                            className="w-16 h-16 md:w-24 md:h-24 mr-4"
-                                        />
-                                        <div className="flex flex-col items-start justify-center">
-                                            <div className="w-full truncate text-xl font-extrabold leading-5 tracking-tight">
-                                                {box.boxType.name}
-                                            </div>
-                                            <p className="text-sm text-slate-500">
-                                                {box._id}
-                                            </p>{' '}
-                                            <div
-                                                className="flex flex-row space-x-2 cursor-pointer"
-                                                onClick={() =>
-                                                    window.open(
-                                                        `https://explorer.solana.com/tx/${box.claimSignature ? box.claimSignature : box.buySignature}`
-                                                    )
-                                                }
-                                            >
-                                                <span className="text-sm text-slate-400">
-                                                    {box.status}{' '}
+                                        <div className="flex flex-row justify-center space-x-4   ">
+                                            <img
+                                                src={cyanBox}
+                                                className="z-10 h-12 w-12 rounded-full object-cover shadow hover:shadow-xl"
+                                                alt="mistery box"
+                                            />
+                                            {box.status == BoxStatus.BOUGHT && (
+                                                <span className="absolute right-0 top-0 z-20 flex h-3 w-3">
+                                                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75"></span>
+                                                    <span className="relative inline-flex h-3 w-3 rounded-full bg-accent-light"></span>
                                                 </span>
-                                                <FaExternalLinkAlt />
+                                            )}{' '}
+                                            <div className="flex flex-col items-start justify-center">
+                                                <div className="w-full truncate text-xl font-extrabold leading-5 tracking-tight">
+                                                    {box.boxType.name}
+                                                </div>
+                                                <p className="text-sm text-slate-500">
+                                                    {box._id}
+                                                </p>{' '}
+                                                <div
+                                                    className="flex flex-row space-x-2 cursor-pointer"
+                                                    onClick={() =>
+                                                        window.open(
+                                                            `https://explorer.solana.com/tx/${box.claimSignature ? box.claimSignature : box.buySignature}`
+                                                        )
+                                                    }
+                                                >
+                                                    <span className="text-sm text-slate-400">
+                                                        {box.status}{' '}
+                                                    </span>
+                                                    <FaExternalLinkAlt />
+                                                </div>
                                             </div>
                                         </div>
 
