@@ -15,7 +15,10 @@ import toast, { LoaderIcon } from 'react-hot-toast'
 import { Buffer } from 'buffer'
 import { useNetworkConfiguration } from '../../../../context/Solana/SolNetworkConfigurationProvider'
 import { VITE_ENV_BACKEND_URL } from '../../../../libs/config'
-import { SOLANA_EXPLORER_URL } from '../../../../libs/constants'
+import {
+    SERVICE_TAX_PERCENTAGE,
+    SOLANA_EXPLORER_URL,
+} from '../../../../libs/constants'
 import { BoxType } from '../../../../libs/interfaces'
 import { lamportsToSol } from '../../../../libs/utils'
 import { FaCheckCircle } from 'react-icons/fa'
@@ -40,47 +43,65 @@ export function BuyModal({ box }: { box: BoxType | null }) {
 
     const buyMysteryBox = async () => {
         setStep(1)
+        let attempts = 0
+        const maxAttempts = 3
 
-        try {
-            if (!box || !box._id) throw new Error('Box not found')
-            if (!publicKey) throw new Error('Wallet not connected')
-            if (!jwtToken) throw new Error('JWT token not found, re-login')
+        while (attempts < maxAttempts) {
+            try {
+                if (!box || !box._id) throw new Error('Box not found')
+                if (!publicKey) throw new Error('Wallet not connected')
+                if (!jwtToken) throw new Error('JWT token not found, re-login')
 
-            const response = await fetch(
-                `${VITE_ENV_BACKEND_URL}/boxes/box-type/${box._id}/buy`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${jwtToken}`,
-                    },
-                }
-            )
-
-            if (!response.ok) {
-                throw new Error(
-                    'Failed to fetch the backend to get the transaction'
+                const response = await fetch(
+                    `${VITE_ENV_BACKEND_URL}/boxes/box-type/${box._id}/buy`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${jwtToken}`,
+                        },
+                    }
                 )
+
+                if (!response.ok) {
+                    throw new Error(
+                        'Failed to fetch the backend to get the transaction'
+                    )
+                }
+
+                const transactionEncoded = (await response.json())
+                    .transactionEncoded
+                setStep(2)
+                const transactionBuffer = Buffer.from(
+                    transactionEncoded,
+                    'base64'
+                )
+                const transactionObject = Transaction.from(transactionBuffer)
+
+                const txSignature = await sendAndConfirmTransaction({
+                    transaction: transactionObject,
+                })
+                if (!txSignature) return
+
+                await indexTransaction(txSignature)
+                setStep(6)
+                return
+            } catch (error) {
+                attempts++
+                if (error instanceof Error) {
+                    toast.error(`Attempt ${attempts} failed: ${error.message}`)
+                    console.error(`Attempt ${attempts} failed:`, error)
+                } else {
+                    toast.error(`Attempt ${attempts} failed: ${String(error)}`)
+                    console.error(`Attempt ${attempts} failed:`, String(error))
+                }
+                if (attempts >= maxAttempts) {
+                    setStep(-1)
+                    toast.error(
+                        'Error buying mystery box after multiple attempts'
+                    )
+                }
             }
-
-            const transactionEncoded = (await response.json())
-                .transactionEncoded
-            setStep(2)
-            const transactionBuffer = Buffer.from(transactionEncoded, 'base64')
-            const transactionObject = Transaction.from(transactionBuffer)
-
-            setStep(2)
-            const txSignature = await sendAndConfirmTransaction({
-                transaction: transactionObject,
-            })
-            if (!txSignature) return
-
-            await indexTransaction(txSignature)
-            setStep(6)
-        } catch (error) {
-            toast.error('Error buying mystery box' + error)
-            console.error('Error buying mystery box:', error)
-            setStep(-1)
         }
     }
 
@@ -139,20 +160,26 @@ export function BuyModal({ box }: { box: BoxType | null }) {
 
             const confirmationPromise = confirmTransaction(txSignature)
 
-            toast.promise(confirmationPromise, {
-                loading: 'Processing Transaction',
-                success: () => (
-                    <a
-                        href={`${SOLANA_EXPLORER_URL}/tx/${txSignature}?cluster=${networkConfiguration}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        style={{ textDecoration: 'underline' }}
-                    >
-                        View on Solana explorer
-                    </a>
-                ),
-                error: (err) => `Transaction failed: ${err.message}`,
-            })
+            toast.promise(
+                confirmationPromise,
+                {
+                    loading: 'Processing Transaction',
+                    success: () => (
+                        <a
+                            href={`${SOLANA_EXPLORER_URL}/tx/${txSignature}?cluster=${networkConfiguration}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            style={{ textDecoration: 'underline' }}
+                        >
+                            View on Solana explorer
+                        </a>
+                    ),
+                    error: (err) => `Transaction failed: ${err.message}`,
+                },
+                {
+                    duration: 10000,
+                }
+            )
 
             setStep(4)
             const result = await confirmationPromise
@@ -247,40 +274,73 @@ export function BuyModal({ box }: { box: BoxType | null }) {
                                     </div>
                                     <div className="py-10 flex flex-col  gap-y-6 items-start max-w-sm justify-start  mx-auto max-h-[20rem] md:max-h-[15rem]">
                                         {!boughtBoxId && step <= 0 ? (
-                                            <div className=" ">
+                                            <div className="flex flex-col  ">
                                                 <p className="text-sm text-gray-400 mb-2">
                                                     Unlock a random selection of
                                                     meme coins and join the fun.
                                                     Rewards are completely
                                                     random!
                                                 </p>
-                                                <div className="flex flex-row space-x-4  items-center justify-between">
+                                                <div className="flex flex-col   items-start justify-start text-sm">
+                                                    <div>
+                                                        <span className="text-neutral-200 dark:text-neutral-400 mr-3">
+                                                            Price:{' '}
+                                                            {lamportsToSol(
+                                                                box?.amountLamports ??
+                                                                    '0'
+                                                            ).toFixed(4)}{' '}
+                                                            SOL
+                                                        </span>
+                                                        <span className="text-sm text-gray-500">
+                                                            ~{' '}
+                                                            {(
+                                                                lamportsToSol(
+                                                                    box?.amountLamports ??
+                                                                        '0'
+                                                                ) * solanaPrice
+                                                            ).toFixed(2)}
+                                                            USD
+                                                        </span>
+                                                    </div>
                                                     <span className="text-neutral-200 dark:text-neutral-400">
-                                                        Price:{' '}
-                                                        {lamportsToSol(
-                                                            box?.amountLamports ??
-                                                                '0'
-                                                        ).toFixed(4)}{' '}
-                                                        SOL
-                                                    </span>
-                                                    <span>
-                                                        ~{' '}
+                                                        Commission :{' '}
                                                         {(
+                                                            SERVICE_TAX_PERCENTAGE *
                                                             lamportsToSol(
                                                                 box?.amountLamports ??
                                                                     '0'
-                                                            ) * solanaPrice
-                                                        ).toFixed(2)}{' '}
-                                                        USD{' '}
+                                                            )
+                                                        ).toFixed(4)}{' '}
+                                                        SOL
+                                                    </span>
+                                                    <span className="text-neutral-200 dark:text-neutral-400">
+                                                        There might be needed a
+                                                        small priority fee
+                                                    </span>
+                                                    <span className="text-neutral-200 dark:text-neutral-400">
+                                                        Create token accounts
+                                                        <a
+                                                            href="https://solana.com/docs/core/fees#rent"
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="text-accent underline ml-1"
+                                                        >
+                                                            rent
+                                                        </a>{' '}
+                                                        if not existing. <br />
+                                                    </span>{' '}
+                                                    <span className="text-xs text-gray-500">
+                                                        (Reimbursed if tokens
+                                                        are sold)
                                                     </span>
                                                 </div>
-                                                <p className="text-sm text-gray-400 mb-4">
+                                                {/* <p className="text-sm text-gray-400 mb-4">
                                                     Max Purchase Limit:{' '}
                                                     <span className="text-white">
                                                         {box?.maxBoxAmount}
                                                     </span>
-                                                </p>
-                                                <div className="text-xs text-left text-gray-400 mb-4">
+                                                </p> */}
+                                                <div className="text-xs text-left text-gray-400 my-4 ">
                                                     <p className="text-accent">
                                                         By signing the
                                                         transaction and
