@@ -7,20 +7,20 @@ export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))
 }
 
-export function hasBackendSignedTransaction(
-    partialTransaction: Transaction
-): boolean {
-    const backendPublicKey = new PublicKey(VITE_ENV_BACKEND_PUBLIC_KEY)
+// export function hasBackendSignedTransaction(
+//     partialTransaction: Transaction
+// ): boolean {
+//     const backendPublicKey = new PublicKey(VITE_ENV_BACKEND_PUBLIC_KEY)
 
-    return partialTransaction.signatures.some((signature, index) => {
-        if (signature.signature) {
-            const signerPublicKey =
-                partialTransaction.instructions[0].keys[index].pubkey
-            return signerPublicKey.equals(backendPublicKey)
-        }
-        return false
-    })
-}
+//     return partialTransaction.signatures.some((signature, index) => {
+//         if (signature.signature) {
+//             const signerPublicKey =
+//                 partialTransaction.instructions[0].keys[index].pubkey
+//             return signerPublicKey.equals(backendPublicKey)
+//         }
+//         return false
+//     })
+// }
 
 export function shortenAddress(address: string, visibleChars: number): string {
     if (address.length <= visibleChars) {

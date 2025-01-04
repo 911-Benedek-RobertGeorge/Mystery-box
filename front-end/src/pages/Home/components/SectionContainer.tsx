@@ -12,7 +12,7 @@ const SectionContainer: React.FC<SectionContainerProps> = ({ children }) => {
                 src={solanaImage}
             />{' '}
             <div className="bg-background-dark w-full h-full rounded-3xl shadow-inner shadow-cyan-600">
-                <div className=" relative z-[100] top-0 left-0 w-full h-full bg-neutral-900/80 rounded-3xl shadow-2xl">
+                <div className=" relative z-[50] top-0 left-0 w-full h-full bg-neutral-900/80 rounded-3xl shadow-2xl">
                     {children}
                 </div>
             </div>

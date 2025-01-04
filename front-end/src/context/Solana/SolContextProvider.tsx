@@ -18,7 +18,6 @@ import {
 
 import { type SolanaSignInInput } from '@solana/wallet-standard-features'
 import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom'
-import { useDispatch } from 'react-redux'
 import {
     VITE_ENV_BACKEND_URL,
     VITE_ENV_SOLANA_NETWORK_RPC,
@@ -35,7 +34,6 @@ const SolWalletContextProvider: FC<{ children: ReactNode }> = ({
             // Decode the Base64 payload
             const decodedPayload = JSON.parse(atob(payloadBase64))
 
-            // Extract timestamps (iat or exp)
             const issuedAt = decodedPayload.iat // Issued at timestamp
             const expiration = decodedPayload.exp // Expiration timestamp
 
@@ -62,6 +60,7 @@ const SolWalletContextProvider: FC<{ children: ReactNode }> = ({
                 return true
             }
         }
+
         // Fetch the signInInput from the backend
         const createResponse = await fetch(
             `${VITE_ENV_BACKEND_URL}/auth/sign-in`
@@ -94,7 +93,6 @@ const SolWalletContextProvider: FC<{ children: ReactNode }> = ({
         )
         const response = await verifyResponse.json()
         sessionStorage.setItem('jwtToken', response.jwt)
-        console.log('Sign In verification success:', response)
         if (!response) throw new Error('Sign In verification failed!')
 
         return false

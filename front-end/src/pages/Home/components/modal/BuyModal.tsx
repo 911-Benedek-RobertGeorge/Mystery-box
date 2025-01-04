@@ -10,97 +10,102 @@ import {
 import questionMark from '../../../../assets/elements/question_mark.png'
 import cyanBox from '../../../../assets/boxes/cyan_box.png'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
-import { Transaction, TransactionConfirmationStrategy } from '@solana/web3.js'
+import { Transaction } from '@solana/web3.js'
 import toast, { LoaderIcon } from 'react-hot-toast'
 import { Buffer } from 'buffer'
 import { useNetworkConfiguration } from '../../../../context/Solana/SolNetworkConfigurationProvider'
 import { VITE_ENV_BACKEND_URL } from '../../../../libs/config'
-import { SOLANA_EXPLORER_URL } from '../../../../libs/constants'
+import {
+    SERVICE_TAX_PERCENTAGE,
+    SOLANA_EXPLORER_URL,
+} from '../../../../libs/constants'
 import { BoxType } from '../../../../libs/interfaces'
-import { lamportsToSol } from '../../../../libs/utils'
+import { lamportsToSol, scrollToSection } from '../../../../libs/utils'
 import { FaCheckCircle } from 'react-icons/fa'
 import { useSelector } from 'react-redux'
 import { OpenBoxModal } from './OpenBoxModal'
 
 export function BuyModal({ box }: { box: BoxType | null }) {
     const images = [cyanBox]
-    const [readAndAgreeWithTerms, setReadAndAgreeWithTerms] =
-        useState<boolean>(false)
+
     const solanaPrice = useSelector(
         (state: { solana: { price: number } }) => state.solana.price
     )
     const { publicKey, sendTransaction } = useWallet()
-    const [openBuyBoxModal, setOpenBuyBoxModal] = useState(false)
     const [hasPendingTransaction, setHasPendingTransaction] = useState(false)
     const { connection } = useConnection()
     const { networkConfiguration } = useNetworkConfiguration()
     const [step, setStep] = useState(0)
     const [latestTxSignature, setLatestTxSignature] = useState<string>('')
     const jwtToken = sessionStorage.getItem('jwtToken')
-
     const [boughtBoxId, setBoughtBoxId] = useState<string | null>(null)
 
     const buyMysteryBox = async () => {
         setStep(1)
-        setOpenBuyBoxModal(true)
+        let attempts = 0
+        const maxAttempts = 3
 
-        try {
-            console.log('buyMysteryBox', box?._id)
-            if (!box || !box._id) throw new Error('Box not found')
-            if (!publicKey) throw new Error('Wallet not connected')
-            if (!jwtToken) throw new Error('JWT token not found, re-login')
+        while (attempts < maxAttempts) {
+            try {
+                if (!box || !box._id) throw new Error('Box not found')
+                if (!publicKey) throw new Error('Wallet not connected')
+                if (!jwtToken) throw new Error('JWT token not found, re-login')
 
-            const response = await fetch(
-                `${VITE_ENV_BACKEND_URL}/boxes/box-type/${box._id}/buy`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${jwtToken}`,
-                    },
-                }
-            )
-            console.log(response, 'response')
-
-            if (!response.ok) {
-                throw new Error(
-                    'Failed to fetch the backend to get the transaction'
+                const response = await fetch(
+                    `${VITE_ENV_BACKEND_URL}/boxes/box-type/${box._id}/buy`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${jwtToken}`,
+                        },
+                    }
                 )
+
+                if (!response.ok) {
+                    throw new Error(
+                        'Failed to fetch the backend to get the transaction'
+                    )
+                }
+
+                const transactionEncoded = (await response.json())
+                    .transactionEncoded
+                setStep(2)
+                const transactionBuffer = Buffer.from(
+                    transactionEncoded,
+                    'base64'
+                )
+                const transactionObject = Transaction.from(transactionBuffer)
+
+                const txSignature = await sendAndConfirmTransaction({
+                    transaction: transactionObject,
+                })
+                if (!txSignature) return
+
+                await indexTransaction(txSignature)
+                setStep(6)
+                return
+            } catch (error) {
+                attempts++
+                if (error instanceof Error) {
+                    toast.error(`Attempt ${attempts} failed: ${error.message}`)
+                    console.error(`Attempt ${attempts} failed:`, error)
+                } else {
+                    toast.error(`Attempt ${attempts} failed: ${String(error)}`)
+                    console.error(`Attempt ${attempts} failed:`, String(error))
+                }
+                if (attempts >= maxAttempts) {
+                    setStep(-1)
+                    toast.error(
+                        'Error buying mystery box after multiple attempts'
+                    )
+                }
             }
-
-            const transactionEncoded = (await response.json())
-                .transactionEncoded
-            console.log('transactionEncoded', transactionEncoded)
-            setStep(2)
-            const transactionBuffer = Buffer.from(transactionEncoded, 'base64')
-            const transactionObject = Transaction.from(transactionBuffer)
-
-            // if (!hasBackendSignedTransaction(transactionObject)) {
-            //     throw new Error(
-            //         'Backend has not partial signed the transaction'
-            //     )
-            // }
-
-            setStep(2)
-            const txSignature = await sendAndConfirmTransaction({
-                transaction: transactionObject,
-            })
-            if (!txSignature) return
-
-            await indexTransaction(txSignature)
-            setStep(6)
-            setOpenBuyBoxModal(false)
-        } catch (error) {
-            toast.error('Error buying mystery box' + error)
-            console.error('Error buying mystery box:', error)
-            setStep(-1)
-            setOpenBuyBoxModal(false)
         }
     }
 
     async function indexTransaction(signature: string) {
         try {
-            console.log('indexTransaction', signature)
             if (!jwtToken) throw new Error('JWT token not found ')
 
             const response = await fetch(`${VITE_ENV_BACKEND_URL}/index`, {
@@ -122,8 +127,6 @@ export function BuyModal({ box }: { box: BoxType | null }) {
                 console.error(result.message)
                 return
             }
-            console.log('indexTransaction result', result)
-            console.log(result.box)
             setBoughtBoxId(result.box._id)
         } catch (error) {
             if (error instanceof Error) {
@@ -153,43 +156,41 @@ export function BuyModal({ box }: { box: BoxType | null }) {
             setLatestTxSignature(txSignature)
 
             setStep(3)
-            const strategy: TransactionConfirmationStrategy = {
-                signature: txSignature,
-                blockhash: latestBlockhash.blockhash,
-                lastValidBlockHeight: latestBlockhash.lastValidBlockHeight,
-            }
-
-            console.log('strategy', strategy)
 
             const confirmationPromise = confirmTransaction(txSignature)
 
-            toast.promise(confirmationPromise, {
-                loading: 'Processing Transaction',
-                success: () => (
-                    <a
-                        href={`${SOLANA_EXPLORER_URL}/tx/${txSignature}?cluster=${networkConfiguration}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        style={{ textDecoration: 'underline' }}
-                    >
-                        View on Solana explorer
-                    </a>
-                ),
-                error: (err) => `Transaction failed: ${err.message}`,
-            })
+            toast.promise(
+                confirmationPromise,
+                {
+                    loading: 'Processing Transaction',
+                    success: () => (
+                        <a
+                            href={`${SOLANA_EXPLORER_URL}/tx/${txSignature}?cluster=${networkConfiguration}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            style={{ textDecoration: 'underline' }}
+                        >
+                            View on Solana explorer
+                        </a>
+                    ),
+                    error: (err) => `Transaction failed: ${err.message}`,
+                },
+                {
+                    duration: 10000,
+                }
+            )
 
             setStep(4)
             const result = await confirmationPromise
             setHasPendingTransaction(false)
 
             if (!result) {
-                throw new Error('Transaction not confirmed')
+                throw new Error('Transaction not confirmed' + result)
             }
 
             return txSignature
         } catch (error) {
             setHasPendingTransaction(false)
-            // toast.error('Error sending and confirming transaction:' + error)
             console.error('Error sending and confirming transaction:', error)
 
             throw error
@@ -206,7 +207,6 @@ export function BuyModal({ box }: { box: BoxType | null }) {
                 maxSupportedTransactionVersion: 0,
             })
             if (tx) {
-                console.log('tx', tx)
                 return tx
             }
             retryCount++
@@ -214,41 +214,6 @@ export function BuyModal({ box }: { box: BoxType | null }) {
         }
         throw new Error('Transaction not confirmed')
     }
-
-    // async function openBoughtBox(boxId: string) {
-    //     try {
-    //         const response = await fetch(
-    //             `${VITE_ENV_BACKEND_URL}/boxes/${boxId}/claim`,
-    //             {
-    //                 method: 'GET',
-    //                 headers: {
-    //                     'Content-Type': 'application/json',
-    //                     Authorization: `Bearer ${jwtToken}`,
-    //                 },
-    //             }
-    //         )
-    //         console.log((await response) + 'response claim')
-    //         const transactionEncoded = (await response.json())
-    //             .transactionEncoded
-
-    //         const transactionBuffer = Buffer.from(transactionEncoded, 'base64')
-    //         const transactionObject = Transaction.from(transactionBuffer)
-
-    //         // if (!hasBackendSignedTransaction(transactionObject)) {
-    //         //     throw new Error(
-    //         //         'Backend has not partial signed the transaction'
-    //         //     )
-    //         // }
-
-    //         const txSignature = await sendAndConfirmTransaction({
-    //             transaction: transactionObject,
-    //         })
-    //         console.log('OPEN BOX txSignature', txSignature)
-    //     } catch (error) {
-    //         setStep(0)
-    //         console.error('Error opening the box transaction:', error)
-    //     }
-    // }
 
     return (
         <div className="  flex items-center justify-center">
@@ -269,7 +234,7 @@ export function BuyModal({ box }: { box: BoxType | null }) {
                         <ModalContent className=" ">
                             <div className="">
                                 <div className="">
-                                    <h4 className="text-lg md:text-2xl text-accent-dark  font-bold text-center mb-8">
+                                    <h4 className="text-lg md:text-2xl text-accent-dark  font-bold text-center -mt-4 mb-4">
                                         {!boughtBoxId ? 'Buy ' : 'Open '}{' '}
                                         <span className="px-1 py-0.5 rounded-md bg-accent-dark/50 border border-accent text-accent">
                                             {box?.name}
@@ -306,42 +271,75 @@ export function BuyModal({ box }: { box: BoxType | null }) {
                                             </motion.div>
                                         ))}
                                     </div>
-                                    <div className="py-10 flex flex-col  gap-y-6 items-start max-w-sm justify-start  mx-auto max-h-[20rem] md:max-h-[15rem]">
+                                    <div className=" py-8 flex flex-col  gap-y-6 items-start max-w-sm justify-start  mx-auto max-h-[20rem] md:max-h-[15rem]">
                                         {!boughtBoxId && step <= 0 ? (
-                                            <div className=" ">
+                                            <div className="flex flex-col  ">
                                                 <p className="text-sm text-gray-400 mb-2">
                                                     Unlock a random selection of
                                                     meme coins and join the fun.
                                                     Rewards are completely
                                                     random!
                                                 </p>
-                                                <div className="flex flex-row space-x-4  items-center justify-between">
+                                                <div className="flex flex-col   items-start justify-start text-sm">
+                                                    <div>
+                                                        <span className="text-neutral-200 dark:text-neutral-400 mr-3">
+                                                            Price:{' '}
+                                                            {lamportsToSol(
+                                                                box?.amountLamports ??
+                                                                    '0'
+                                                            ).toFixed(4)}{' '}
+                                                            SOL
+                                                        </span>
+                                                        <span className="text-sm text-gray-500">
+                                                            ~{' '}
+                                                            {(
+                                                                lamportsToSol(
+                                                                    box?.amountLamports ??
+                                                                        '0'
+                                                                ) * solanaPrice
+                                                            ).toFixed(2)}
+                                                            USD
+                                                        </span>
+                                                    </div>
                                                     <span className="text-neutral-200 dark:text-neutral-400">
-                                                        Price:{' '}
-                                                        {lamportsToSol(
-                                                            box?.amountLamports ??
-                                                                '0'
-                                                        ).toFixed(4)}{' '}
-                                                        SOL
-                                                    </span>
-                                                    <span>
-                                                        ~{' '}
+                                                        Commission :{' '}
                                                         {(
+                                                            SERVICE_TAX_PERCENTAGE *
                                                             lamportsToSol(
                                                                 box?.amountLamports ??
                                                                     '0'
-                                                            ) * solanaPrice
-                                                        ).toFixed(2)}{' '}
-                                                        USD{' '}
+                                                            )
+                                                        ).toFixed(4)}{' '}
+                                                        SOL
+                                                    </span>
+                                                    <span className="text-neutral-200 dark:text-neutral-400">
+                                                        There might be needed a
+                                                        small priority fee
+                                                    </span>
+                                                    <span className="text-neutral-200 dark:text-neutral-400">
+                                                        Create token accounts
+                                                        <a
+                                                            href="https://solana.com/docs/core/fees#rent"
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="text-accent underline ml-1"
+                                                        >
+                                                            rent
+                                                        </a>{' '}
+                                                        if not existing. <br />
+                                                    </span>{' '}
+                                                    <span className="text-xs text-gray-500">
+                                                        (Reimbursed if tokens
+                                                        are sold)
                                                     </span>
                                                 </div>
-                                                <p className="text-sm text-gray-400 mb-4">
+                                                {/* <p className="text-sm text-gray-400 mb-4">
                                                     Max Purchase Limit:{' '}
                                                     <span className="text-white">
                                                         {box?.maxBoxAmount}
                                                     </span>
-                                                </p>
-                                                <div className="text-xs text-left text-gray-400 mb-4">
+                                                </p> */}
+                                                <div className="text-xs text-left text-gray-400 my-4 ">
                                                     <p className="text-accent">
                                                         By signing the
                                                         transaction and
@@ -378,35 +376,6 @@ export function BuyModal({ box }: { box: BoxType | null }) {
                                                         </li>
                                                     </ul>
                                                 </div>
-                                                {/* <div className="flex items-center justify-center">
-                                                    <input
-                                                        onChange={(e) =>
-                                                            setReadAndAgreeWithTerms(
-                                                                e.target.checked
-                                                            )
-                                                        }
-                                                        type="checkbox"
-                                                        id="terms"
-                                                        className="mr-2"
-                                                        checked={
-                                                            readAndAgreeWithTerms
-                                                        }
-                                                    />
-                                                    <label
-                                                        htmlFor="terms"
-                                                        className="text-neutral-200 dark:text-neutral-400 text-sm"
-                                                    >
-                                                        I have read and agree
-                                                        with the{' '}
-                                                        <a
-                                                            href="/terms-and-conditions"
-                                                            target="_blank"
-                                                            className="text-accent underline"
-                                                        >
-                                                            terms and conditions
-                                                        </a>
-                                                    </label>
-                                                </div> */}
                                             </div>
                                         ) : (
                                             <div className="flex flex-col items-center justify-center w-full ">
@@ -448,19 +417,19 @@ export function BuyModal({ box }: { box: BoxType | null }) {
                                 </div>
                             </div>
                         </ModalContent>
-                        <ModalFooter className="gap-4 bg-neutral-950 flex items-center justify-center h-16">
+                        <ModalFooter
+                            shouldClose={boughtBoxId ? true : false}
+                            className="gap-4 bg-neutral-950 flex items-center justify-center h-16"
+                        >
                             {boughtBoxId ? (
-                                // <button
-                                //     onClick={() =>
-                                //         openBoughtBox(boughtBoxId as string)
-                                //     }
-                                //     className=" text-sm px-2 py-1 rounded-md shadow-inner shadow-accent-dark border border-accent-dark  w-28 disabled:bg-muted disabled:border-0 disabled:cursor-not-allowed disabled:shadow-none "
-                                //     disabled={!readAndAgreeWithTerms}
-                                // >
-                                //     Open Box Now ! 🎉
-                                // </button>\
-                                <OpenBoxModal boxId={boughtBoxId} />
+                                <button
+                                    onClick={() => scrollToSection('my-boxes')}
+                                    className="text-sm px-2 py-1 rounded-md shadow-inner shadow-accent-dark border border-accent-dark   disabled:bg-muted disabled:border-0 disabled:cursor-not-allowed disabled:shadow-none "
+                                >
+                                    Go to my boxes
+                                </button>
                             ) : (
+                                // <OpenBoxModal boxId={boughtBoxId} />
                                 <button
                                     onClick={buyMysteryBox}
                                     className=" text-sm px-2 py-1 rounded-md shadow-inner shadow-accent-dark border border-accent-dark  w-28 disabled:bg-muted disabled:border-0 disabled:cursor-not-allowed disabled:shadow-none "
@@ -469,13 +438,6 @@ export function BuyModal({ box }: { box: BoxType | null }) {
                                     Buy box{' '}
                                 </button>
                             )}
-                            {/* <button
-                                onClick={() =>
-                                    indexTransaction(latestTxSignature)
-                                }
-                            >
-                                index transaction{' '}
-                            </button> */}
                         </ModalFooter>
                     </ModalBody>
                 </Modal>

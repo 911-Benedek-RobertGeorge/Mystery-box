@@ -16,13 +16,13 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import toast from 'react-hot-toast'
 import { useNetworkConfiguration } from '../../../../context/Solana/SolNetworkConfigurationProvider'
 import { VITE_ENV_BACKEND_URL } from '../../../../libs/config'
-import { cn } from '../../../../libs/utils'
-import key from '../../../../assets/boxes/key.png'
-import box from '../../../../assets/boxes/cyan_box-Photoroom.png'
+import { cn, shortenAddress } from '../../../../libs/utils'
+
 import chillguy from '../../../../assets/coins/chill-guy.png'
 
 import { confetti } from '@tsparticles/confetti'
-import { MysteryBox } from '../../../../libs/interfaces'
+import { BoxContent, MysteryBox, Token } from '../../../../libs/interfaces'
+import { SOLANA_EXPLORER_URL } from '../../../../libs/constants'
 
 export function OpenBoxModal({
     boxId,
@@ -31,11 +31,7 @@ export function OpenBoxModal({
     boxId?: string
     hiddenTrigger?: boolean
 }) {
-    const images = [cyanBox]
-    const [readAndAgreeWithTerms, setReadAndAgreeWithTerms] = useState(false)
-
     const { publicKey, sendTransaction } = useWallet()
-    const [openBuyBoxModal, setOpenBuyBoxModal] = useState(false)
     const [hasPendingTransaction, setHasPendingTransaction] = useState(false)
     const { connection } = useConnection()
     const { networkConfiguration } = useNetworkConfiguration()
@@ -64,15 +60,21 @@ export function OpenBoxModal({
 
             const data = await response.json()
             console.log('data', data)
+            const box = data.box
+            setMysteryBox(box)
 
-            setMysteryBox(data.box)
+            await sleep(1000)
 
-            //    await sleep(1000)
+            const images = box.boxContents.map((memeCoin: BoxContent) => ({
+                src: memeCoin.token.image,
+                width: 32,
+                height: 32,
+            }))
 
             await confetti({
                 zIndex: 1100,
                 spread: 360,
-                ticks: 120,
+                ticks: 150,
                 gravity: 0.8,
                 decay: 0.8,
                 startVelocity: 30,
@@ -80,28 +82,7 @@ export function OpenBoxModal({
                 scalar: 3,
                 shapes: ['image'],
                 shapeOptions: {
-                    image: [
-                        {
-                            src: chillguy,
-                            width: 32,
-                            height: 32,
-                        },
-                        {
-                            src: chillguy,
-                            width: 32,
-                            height: 32,
-                        },
-                        {
-                            src: chillguy,
-                            width: 32,
-                            height: 32,
-                        },
-                        {
-                            src: chillguy,
-                            width: 32,
-                            height: 32,
-                        },
-                    ],
+                    image: images,
                 },
             })
         } catch (error) {
@@ -118,56 +99,92 @@ export function OpenBoxModal({
                         hiddenTrigger ? 'hidden' : ''
                     )}
                 >
-                    <span
-                        id="open-box-modal-button"
-                        className="group-hover/modal-btn:translate-x-40 text-center transition duration-500"
-                        onClick={() => openBoughtBox(boxId ?? '')}
-                    >
-                        Open memebox
-                    </span>
-                    <div className="-translate-x-40 group-hover/modal-btn:translate-x-0 flex items-center justify-center absolute inset-0 transition duration-500 text-white z-20">
-                        <img className="w-8" src={questionMark} />
-                    </div>
+                    {boxId && (
+                        <>
+                            <span
+                                id="open-box-modal-button"
+                                className="group-hover/modal-btn:translate-x-40 text-center transition duration-500"
+                                onClick={() => openBoughtBox(boxId)}
+                            >
+                                Open memebox
+                            </span>
+                            <div className="-translate-x-40 group-hover/modal-btn:translate-x-0 flex items-center justify-center absolute inset-0 transition duration-500 text-white z-20">
+                                <img className="w-8" src={questionMark} />
+                            </div>
+                        </>
+                    )}
                 </ModalTrigger>
                 <ModalBody className="z-[200] bg-background-dark w-full shadow-inner rounded-t-xl  shadow-cyan-600">
+                    {!mysteryBox ? (
+                        <div className="text-center text-accent/80 text-lg mt-2 font-light">
+                            Do not close this window or refresh page!
+                        </div>
+                    ) : (
+                        <div className="text-center text-accent/80 text-lg mt-2 font-light">
+                            Congratulations! You've unlocked these meme
+                            treasures
+                        </div>
+                    )}
                     <ModalContent className="">
-                        <div className="w-full h-full flex items-center justify-center m-auto">
+                        <div className="w-full h-full flex flex-col items-center justify-center m-auto">
+                            {' '}
                             {!mysteryBox ? (
-                                <img
-                                    src={questionMark}
-                                    className="animate-ping w-32"
-                                />
-                            ) : (
                                 <>
-                                    <a href={mysteryBox?.claimSignature}>
-                                        {' '}
-                                        {mysteryBox?.claimSignature}{' '}
-                                    </a>
                                     <img
-                                        src={
-                                            mysteryBox.boxContents[0].token
-                                                .image
-                                        }
-                                        className="w-32"
+                                        src={questionMark}
+                                        className="animate-ping w-32"
                                     />
-                                    {mysteryBox.boxContents[0].token.name}
-                                    {mysteryBox.boxContents[0].token.symbol}
-                                    {mysteryBox.boxContents[0].token.mint}
                                 </>
+                            ) : (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                                    {mysteryBox?.boxContents.map((content) => (
+                                        <div
+                                            onClick={() =>
+                                                window.open(
+                                                    `${SOLANA_EXPLORER_URL + 'address/' + content.token.mint}?cluster=${networkConfiguration}`,
+                                                    '_blank'
+                                                )
+                                            }
+                                            key={content._id}
+                                            className="flex items-center hover:cursor-pointer border  border-accent-secondary/20 shadow-inner hover:shadow-accent/80 shadow-accent/40 rounded-xl p-4 hover:scale-105 transition-transform duration-200"
+                                        >
+                                            <div className="flex flex-col items-center justify-center mr-2">
+                                                <img
+                                                    src={content.token.image}
+                                                    alt={content.token.name}
+                                                    className="w-12 h-12 rounded-full border-2 border-cyan-400  "
+                                                />
+                                                <div className="text-sm text-cyan-200 font-normal">
+                                                    {content.token.symbol}
+                                                </div>
+                                            </div>
+                                            <div className="flex flex-col">
+                                                {' '}
+                                                <div className="text-lg font-semibold text-white mb-1">
+                                                    {content.token.name}
+                                                </div>
+                                                <div className="text-xs text-gray-300 truncate">
+                                                    <span className="font-semibold text-gray-400">
+                                                        Mint:
+                                                    </span>{' '}
+                                                    {shortenAddress(
+                                                        content.token.mint,
+                                                        6
+                                                    )}
+                                                </div>
+                                                <div className="text-xs text-gray-300">
+                                                    <span className="font-semibold text-gray-400">
+                                                        Percentage:
+                                                    </span>{' '}
+                                                    {content.percentage}%
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
                             )}
                         </div>
                     </ModalContent>
-                    {/* <ModalFooter className="gap-4 bg-neutral-950 flex items-center justify-center">
-                        {boxId && (
-                            <button
-                                onClick={() => openBoughtBox(boxId)}
-                                className="text-accent text-sm px-2 py-1 rounded-md shadow-inner shadow-accent-dark border border-accent-dark   disabled:bg-muted disabled:border-0 disabled:cursor-not-allowed disabled:shadow-none "
-                                disabled={!readAndAgreeWithTerms}
-                            >
-                                Open Box Now ! 🎉
-                            </button>
-                        )}
-                    </ModalFooter> */}
                 </ModalBody>
             </Modal>
         </div>
