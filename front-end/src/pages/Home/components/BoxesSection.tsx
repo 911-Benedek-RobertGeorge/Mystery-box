@@ -18,7 +18,7 @@ const BoxesSection: React.FC = () => {
 
             <div className="md:ml-96   -hue-rotate-60 ">
                 {boxTypes && (
-                    <BoxDetails comingSoon="Next week " box={boxTypes[1]} />
+                    <BoxDetails comingSoon="Next week " box={boxTypes[5]} />
                 )}
             </div>
         </div>

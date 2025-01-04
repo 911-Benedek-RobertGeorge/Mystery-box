@@ -129,10 +129,12 @@ const MyBoxesSection: React.FC = () => {
                                                 />
                                             </div>
                                         ) : (
-                                            <img
-                                                className=" h-16"
-                                                src={questionMark}
-                                            />
+                                            <div className="w-72 mt-4 md:mt-0 flex flex-row items-center justify-start md:justify-center">
+                                                <img
+                                                    className=" h-16"
+                                                    src={questionMark}
+                                                />
+                                            </div>
                                         )}
 
                                         <div className="w-full self-center pt-4 lg:w-1/6 lg:pt-0">

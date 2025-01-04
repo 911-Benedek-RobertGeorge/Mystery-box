@@ -117,10 +117,14 @@ export function OpenBoxModal({
                     <ModalContent className="">
                         <div className="w-full h-full flex flex-col items-center justify-center m-auto">
                             {!mysteryBox ? (
-                                <img
-                                    src={questionMark}
-                                    className="animate-ping w-32"
-                                />
+                                <>
+                                    {' '}
+                                    Do not close this window or refresh page!
+                                    <img
+                                        src={questionMark}
+                                        className="animate-ping w-32"
+                                    />
+                                </>
                             ) : (
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                                     {mysteryBox?.boxContents.map((content) => (

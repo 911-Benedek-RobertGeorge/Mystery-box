@@ -39,6 +39,7 @@ const Home: React.FC = () => {
     const containerRef = useRef<HTMLDivElement | null>(null)
     const [scrollPosition, setScrollPosition] = useState(0)
     const [memesImage, setMemesImage] = useState<MemeImage[]>()
+    const [hasPendingTransaction, setHasPendingTransaction] = useState(false)
 
     useEffect(() => {
         let memeImages = memeCoinImages.map((meme) => {

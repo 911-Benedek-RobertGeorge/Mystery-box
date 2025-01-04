@@ -20,7 +20,7 @@ import {
     SOLANA_EXPLORER_URL,
 } from '../../../../libs/constants'
 import { BoxType } from '../../../../libs/interfaces'
-import { lamportsToSol } from '../../../../libs/utils'
+import { lamportsToSol, scrollToSection } from '../../../../libs/utils'
 import { FaCheckCircle } from 'react-icons/fa'
 import { useSelector } from 'react-redux'
 import { OpenBoxModal } from './OpenBoxModal'
@@ -38,7 +38,6 @@ export function BuyModal({ box }: { box: BoxType | null }) {
     const [step, setStep] = useState(0)
     const [latestTxSignature, setLatestTxSignature] = useState<string>('')
     const jwtToken = sessionStorage.getItem('jwtToken')
-
     const [boughtBoxId, setBoughtBoxId] = useState<string | null>(null)
 
     const buyMysteryBox = async () => {
@@ -235,7 +234,7 @@ export function BuyModal({ box }: { box: BoxType | null }) {
                         <ModalContent className=" ">
                             <div className="">
                                 <div className="">
-                                    <h4 className="text-lg md:text-2xl text-accent-dark  font-bold text-center mb-8">
+                                    <h4 className="text-lg md:text-2xl text-accent-dark  font-bold text-center -mt-4 mb-4">
                                         {!boughtBoxId ? 'Buy ' : 'Open '}{' '}
                                         <span className="px-1 py-0.5 rounded-md bg-accent-dark/50 border border-accent text-accent">
                                             {box?.name}
@@ -272,7 +271,7 @@ export function BuyModal({ box }: { box: BoxType | null }) {
                                             </motion.div>
                                         ))}
                                     </div>
-                                    <div className="py-10 flex flex-col  gap-y-6 items-start max-w-sm justify-start  mx-auto max-h-[20rem] md:max-h-[15rem]">
+                                    <div className=" py-8 flex flex-col  gap-y-6 items-start max-w-sm justify-start  mx-auto max-h-[20rem] md:max-h-[15rem]">
                                         {!boughtBoxId && step <= 0 ? (
                                             <div className="flex flex-col  ">
                                                 <p className="text-sm text-gray-400 mb-2">
@@ -418,10 +417,19 @@ export function BuyModal({ box }: { box: BoxType | null }) {
                                 </div>
                             </div>
                         </ModalContent>
-                        <ModalFooter className="gap-4 bg-neutral-950 flex items-center justify-center h-16">
+                        <ModalFooter
+                            shouldClose={boughtBoxId ? true : false}
+                            className="gap-4 bg-neutral-950 flex items-center justify-center h-16"
+                        >
                             {boughtBoxId ? (
-                                <OpenBoxModal boxId={boughtBoxId} />
+                                <button
+                                    onClick={() => scrollToSection('my-boxes')}
+                                    className="text-sm px-2 py-1 rounded-md shadow-inner shadow-accent-dark border border-accent-dark   disabled:bg-muted disabled:border-0 disabled:cursor-not-allowed disabled:shadow-none "
+                                >
+                                    Go to my boxes
+                                </button>
                             ) : (
+                                // <OpenBoxModal boxId={boughtBoxId} />
                                 <button
                                     onClick={buyMysteryBox}
                                     className=" text-sm px-2 py-1 rounded-md shadow-inner shadow-accent-dark border border-accent-dark  w-28 disabled:bg-muted disabled:border-0 disabled:cursor-not-allowed disabled:shadow-none "

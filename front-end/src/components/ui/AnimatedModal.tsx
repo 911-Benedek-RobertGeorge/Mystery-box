@@ -155,12 +155,17 @@ export const ModalContent = ({
 export const ModalFooter = ({
     children,
     className,
+    shouldClose,
 }: {
     children: ReactNode
     className?: string
+    shouldClose?: boolean
 }) => {
+    const { setOpen } = useModal()
+
     return (
         <div
+            onClick={() => shouldClose && setOpen(false)}
             className={cn(
                 'flex justify-end p-4 bg-gray-100 dark:bg-neutral-900',
                 className
