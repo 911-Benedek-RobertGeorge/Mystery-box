@@ -22,6 +22,7 @@ import chillguy from '../../../../assets/coins/chill-guy.png'
 
 import { confetti } from '@tsparticles/confetti'
 import { BoxContent, MysteryBox, Token } from '../../../../libs/interfaces'
+import { SOLANA_EXPLORER_URL } from '../../../../libs/constants'
 
 export function OpenBoxModal({
     boxId,
@@ -114,35 +115,53 @@ export function OpenBoxModal({
                     )}
                 </ModalTrigger>
                 <ModalBody className="z-[200] bg-background-dark w-full shadow-inner rounded-t-xl  shadow-cyan-600">
+                    {!mysteryBox ? (
+                        <div className="text-center text-accent/80 text-lg mt-2 font-light">
+                            Do not close this window or refresh page!
+                        </div>
+                    ) : (
+                        <div className="text-center text-accent/80 text-lg mt-2 font-light">
+                            Congratulations! You've unlocked these meme
+                            treasures
+                        </div>
+                    )}
                     <ModalContent className="">
                         <div className="w-full h-full flex flex-col items-center justify-center m-auto">
+                            {' '}
                             {!mysteryBox ? (
                                 <>
-                                    {' '}
-                                    Do not close this window or refresh page!
                                     <img
                                         src={questionMark}
                                         className="animate-ping w-32"
                                     />
                                 </>
                             ) : (
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                                     {mysteryBox?.boxContents.map((content) => (
                                         <div
+                                            onClick={() =>
+                                                window.open(
+                                                    `${SOLANA_EXPLORER_URL + 'address/' + content.token.mint}?cluster=${networkConfiguration}`,
+                                                    '_blank'
+                                                )
+                                            }
                                             key={content._id}
-                                            className="flex items-center bg-gradient-to-r from-accent-dark  via-background  to-transparent rounded-xl shadow-lg p-4 hover:scale-105 transition-transform duration-200"
+                                            className="flex items-center hover:cursor-pointer border  border-accent-secondary/20 shadow-inner hover:shadow-accent/80 shadow-accent/40 rounded-xl p-4 hover:scale-105 transition-transform duration-200"
                                         >
-                                            <img
-                                                src={content.token.image}
-                                                alt={content.token.name}
-                                                className="w-12 h-12 rounded-full border-2 border-cyan-400 mr-4"
-                                            />
+                                            <div className="flex flex-col items-center justify-center mr-2">
+                                                <img
+                                                    src={content.token.image}
+                                                    alt={content.token.name}
+                                                    className="w-12 h-12 rounded-full border-2 border-cyan-400  "
+                                                />
+                                                <div className="text-sm text-cyan-200 font-normal">
+                                                    {content.token.symbol}
+                                                </div>
+                                            </div>
                                             <div className="flex flex-col">
+                                                {' '}
                                                 <div className="text-lg font-semibold text-white mb-1">
                                                     {content.token.name}
-                                                </div>
-                                                <div className="text-sm text-cyan-200 font-medium">
-                                                    {content.token.symbol}
                                                 </div>
                                                 <div className="text-xs text-gray-300 truncate">
                                                     <span className="font-semibold text-gray-400">
