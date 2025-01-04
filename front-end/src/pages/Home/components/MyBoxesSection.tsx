@@ -18,17 +18,15 @@ const MyBoxesSection: React.FC = () => {
     const [selectedBoxId, setSelectedBoxId] = React.useState<string>('')
     const jwtToken = sessionStorage.getItem('jwtToken')
     const [visibleItems, setVisibleItems] = useState(ITEMS_PER_PAGE)
-    const [showAll, setShowAll] = useState(false)
 
-    // Function to toggle between showing all items and initial view
-    const toggleShowAll = () => {
-        if (showAll) {
-            setVisibleItems(ITEMS_PER_PAGE)
-            setShowAll(false)
-        } else {
-            setVisibleItems(myBoxes?.length || 0)
-            setShowAll(true)
-        }
+    // Function to handle showing more items
+    const showMore = () => {
+        setVisibleItems((prev) => prev + ITEMS_PER_PAGE)
+    }
+
+    // Function to handle showing less items
+    const showLess = () => {
+        setVisibleItems(ITEMS_PER_PAGE)
     }
 
     useEffect(() => {
@@ -212,10 +210,18 @@ const MyBoxesSection: React.FC = () => {
                                 <div className="flex justify-center gap-4 mt-6">
                                     {visibleItems < (myBoxes?.length || 0) && (
                                         <button
-                                            onClick={toggleShowAll}
+                                            onClick={showMore}
                                             className="px-4 py-2 text-accent border border-accent rounded-md hover:bg-accent hover:text-white transition-colors duration-300 z-[60]"
                                         >
-                                            {showAll ? 'Show Less' : 'Show All'}
+                                            Show More
+                                        </button>
+                                    )}
+                                    {visibleItems > ITEMS_PER_PAGE && (
+                                        <button
+                                            onClick={showLess}
+                                            className="px-4 py-2 text-accent border border-accent rounded-md hover:bg-accent hover:text-white transition-colors duration-300 z-[60]"
+                                        >
+                                            Show Less
                                         </button>
                                     )}
                                 </div>
