@@ -11,7 +11,15 @@ import questionMark from '../../../assets/elements/question_mark.png'
 import { FaExternalLinkAlt } from 'react-icons/fa'
 import key from '../../../assets/boxes/key.png'
 
-const MyBoxesSection: React.FC = () => {
+interface MyBoxesSectionProps {
+    hasPendingTransaction: boolean
+    setHasPendingTransaction: (hasPendingTransaction: boolean) => void
+}
+
+const MyBoxesSection: React.FC<MyBoxesSectionProps> = ({
+    hasPendingTransaction,
+    setHasPendingTransaction,
+}) => {
     const [myBoxes, setMyBoxes] = React.useState<MysteryBox[]>()
     const { publicKey } = useWallet()
     const [selectedBoxId, setSelectedBoxId] = React.useState<string>('')
@@ -42,7 +50,7 @@ const MyBoxesSection: React.FC = () => {
             }
         }
         fetchMyBoxes()
-    }, [publicKey, jwtToken])
+    }, [publicKey, jwtToken, hasPendingTransaction])
 
     const displayedBoxes = showAll ? myBoxes : myBoxes?.slice(0, 3)
 
@@ -265,7 +273,11 @@ const MyBoxesSection: React.FC = () => {
                             </div>
                         )}
                     </div>
-                    <OpenBoxModal hiddenTrigger={true} boxId={selectedBoxId} />
+                    <OpenBoxModal
+                        setHasPendingTransaction={setHasPendingTransaction}
+                        hiddenTrigger={true}
+                        boxId={selectedBoxId}
+                    />
                 </div>
             )}
         </>

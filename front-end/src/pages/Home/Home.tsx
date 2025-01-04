@@ -240,13 +240,18 @@ const Home: React.FC = () => {
                 >
                     <img src={waveTape} alt="Fluid Tape" />
                 </motion.div>
-                <BoxesSection />
+                <BoxesSection
+                    setHasPendingTransaction={setHasPendingTransaction}
+                />
             </div>{' '}
             <HistorySection />
             {/* <div className="relative w-32 ">
                 <img src={smile} />{' '}
             </div> */}
-            <MyBoxesSection />
+            <MyBoxesSection
+                hasPendingTransaction={hasPendingTransaction}
+                setHasPendingTransaction={setHasPendingTransaction}
+            />
             <div className="flex flex-col w-screen h-full">
                 <div className="flex flex-col -mt-96 relative justify-center items-center w-full md:w-1/2 h-96  ml-auto text-white p-8">
                     <div className="absolute inset-0 w-full h-screen z-0   ">

@@ -28,16 +28,15 @@ import { SOLANA_EXPLORER_URL } from '../../../../libs/constants'
 export function OpenBoxModal({
     boxId,
     hiddenTrigger,
+    setHasPendingTransaction,
 }: {
     boxId?: string
     hiddenTrigger?: boolean
+    setHasPendingTransaction?: (value: boolean) => void
 }) {
-    const { publicKey, sendTransaction } = useWallet()
-    const [hasPendingTransaction, setHasPendingTransaction] = useState(false)
-    const { connection } = useConnection()
+    const { publicKey } = useWallet()
     const { networkConfiguration } = useNetworkConfiguration()
-    const [step, setStep] = useState(0)
-    const [latestTxSignature, setLatestTxSignature] = useState<string>('')
+
     const jwtToken = sessionStorage.getItem('jwtToken')
     const [mysteryBox, setMysteryBox] = useState<MysteryBox>()
 
@@ -47,7 +46,7 @@ export function OpenBoxModal({
                 toast.prototype('Plase reconnect your wallet')
                 throw new Error('JWT Token not found')
             }
-
+            setHasPendingTransaction && setHasPendingTransaction(true)
             const response = await fetch(
                 `${VITE_ENV_BACKEND_URL}/boxes/box/${boxId}/claim`,
                 {
@@ -60,22 +59,21 @@ export function OpenBoxModal({
             )
 
             const data = await response.json()
-            console.log('data', data)
             const box = data.box
             setMysteryBox(box)
-
-            await sleep(1000)
 
             const images = box.boxContents.map((memeCoin: BoxContent) => ({
                 src: memeCoin.token.image,
                 width: 32,
                 height: 32,
+                rounded: true,
             }))
 
             await confetti({
                 zIndex: 1100,
                 spread: 360,
                 ticks: 150,
+
                 gravity: 0.8,
                 decay: 0.8,
                 startVelocity: 30,
@@ -88,6 +86,8 @@ export function OpenBoxModal({
             })
         } catch (error) {
             console.error('Error opening the box transaction:', error)
+        } finally {
+            setHasPendingTransaction && setHasPendingTransaction(false)
         }
     }
 
@@ -131,12 +131,12 @@ export function OpenBoxModal({
                     <ModalContent className="">
                         <div className="w-full h-full flex flex-col items-center justify-center m-auto p-4 max-h-[40rem] overflow-y-auto">
                             {!mysteryBox ? (
-                                <>
+                                <div className="flex items-center justify-center h-96">
                                     <img
                                         src={questionMark}
                                         className="animate-ping w-32"
                                     />
-                                </>
+                                </div>
                             ) : (
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 ">
                                     {mysteryBox?.boxContents.map((content) => (
@@ -183,94 +183,6 @@ export function OpenBoxModal({
                                             </div>
                                         </div>
                                     ))}{' '}
-                                    {mysteryBox?.boxContents.map((content) => (
-                                        <div
-                                            onClick={() =>
-                                                window.open(
-                                                    `${SOLANA_EXPLORER_URL + 'address/' + content.token.mint}?cluster=${networkConfiguration}`,
-                                                    '_blank'
-                                                )
-                                            }
-                                            key={content._id}
-                                            className="flex items-center hover:cursor-pointer border  border-accent-secondary/20 shadow-inner hover:shadow-accent/80 shadow-accent/40 rounded-xl p-4 hover:scale-105 transition-transform duration-200"
-                                        >
-                                            <div className="flex flex-col items-center justify-center mr-2">
-                                                <img
-                                                    src={content.token.image}
-                                                    alt={content.token.name}
-                                                    className="w-12 h-12 rounded-full border-2 border-cyan-400  "
-                                                />
-                                                <div className="text-sm text-cyan-200 font-normal">
-                                                    {content.token.symbol}
-                                                </div>
-                                            </div>
-                                            <div className="flex flex-col">
-                                                {' '}
-                                                <div className="text-lg font-semibold text-white mb-1">
-                                                    {content.token.name}
-                                                </div>
-                                                <div className="text-xs text-gray-300 truncate">
-                                                    <span className="font-semibold text-gray-400">
-                                                        Mint:
-                                                    </span>{' '}
-                                                    {shortenAddress(
-                                                        content.token.mint,
-                                                        6
-                                                    )}
-                                                </div>
-                                                <div className="text-xs text-gray-300">
-                                                    <span className="font-semibold text-gray-400">
-                                                        Percentage:
-                                                    </span>{' '}
-                                                    {content.percentage}%
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}{' '}
-                                    {mysteryBox?.boxContents.map((content) => (
-                                        <div
-                                            onClick={() =>
-                                                window.open(
-                                                    `${SOLANA_EXPLORER_URL + 'address/' + content.token.mint}?cluster=${networkConfiguration}`,
-                                                    '_blank'
-                                                )
-                                            }
-                                            key={content._id}
-                                            className="flex items-center hover:cursor-pointer border  border-accent-secondary/20 shadow-inner hover:shadow-accent/80 shadow-accent/40 rounded-xl p-4 hover:scale-105 transition-transform duration-200"
-                                        >
-                                            <div className="flex flex-col items-center justify-center mr-2">
-                                                <img
-                                                    src={content.token.image}
-                                                    alt={content.token.name}
-                                                    className="w-12 h-12 rounded-full border-2 border-cyan-400  "
-                                                />
-                                                <div className="text-sm text-cyan-200 font-normal">
-                                                    {content.token.symbol}
-                                                </div>
-                                            </div>
-                                            <div className="flex flex-col">
-                                                {' '}
-                                                <div className="text-lg font-semibold text-white mb-1">
-                                                    {content.token.name}
-                                                </div>
-                                                <div className="text-xs text-gray-300 truncate">
-                                                    <span className="font-semibold text-gray-400">
-                                                        Mint:
-                                                    </span>{' '}
-                                                    {shortenAddress(
-                                                        content.token.mint,
-                                                        6
-                                                    )}
-                                                </div>
-                                                <div className="text-xs text-gray-300">
-                                                    <span className="font-semibold text-gray-400">
-                                                        Percentage:
-                                                    </span>{' '}
-                                                    {content.percentage}%
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}
                                 </div>
                             )}
                         </div>

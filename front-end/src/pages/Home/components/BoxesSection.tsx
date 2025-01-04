@@ -5,7 +5,9 @@ import cyanBox from '../../../assets/boxes/cyan_box-Photoroom.png'
 import chillguy from '../../../assets/coins/chill-guy.png'
 import { BuyModal } from './modal/BuyModal'
 
-const BoxesSection: React.FC = () => {
+const BoxesSection: React.FC<{
+    setHasPendingTransaction: (value: boolean) => void
+}> = ({ setHasPendingTransaction }) => {
     const boxTypes: BoxType[] = useSelector(
         (state: { box: { types: BoxType[] } }) => state.box.types
     )
@@ -13,22 +15,32 @@ const BoxesSection: React.FC = () => {
     return (
         <div className=" relative flex flex-col md:flex-row justify-center items-center w-full space-y-32 md:space-y-0 pt-32">
             <div className="md:ml-32">
-                {boxTypes && <BoxDetails box={boxTypes[0]} />}
+                {boxTypes && (
+                    <BoxDetails
+                        box={boxTypes[0]}
+                        setHasPendingTransaction={setHasPendingTransaction}
+                    />
+                )}
             </div>
 
             <div className="md:ml-96   -hue-rotate-60 ">
                 {boxTypes && (
-                    <BoxDetails comingSoon="Next week " box={boxTypes[5]} />
+                    <BoxDetails
+                        comingSoon="Next week "
+                        setHasPendingTransaction={setHasPendingTransaction}
+                        box={boxTypes[5]}
+                    />
                 )}
             </div>
         </div>
     )
 }
 
-const BoxDetails: React.FC<{ box: BoxType; comingSoon?: string }> = ({
-    box,
-    comingSoon,
-}) => {
+const BoxDetails: React.FC<{
+    box: BoxType
+    comingSoon?: string
+    setHasPendingTransaction: (value: boolean) => void
+}> = ({ box, comingSoon, setHasPendingTransaction }) => {
     return (
         <div className="relative max-w-md items-center justify-center p-6 md:p-0 z-[101]">
             <img
@@ -90,7 +102,12 @@ const BoxDetails: React.FC<{ box: BoxType; comingSoon?: string }> = ({
                     </div>
                     <div className="flex justify-center w-full mt-8 ">
                         {box?.availableBoxes > 0 ? (
-                            <BuyModal box={box} />
+                            <BuyModal
+                                box={box}
+                                setHasPendingTransaction={
+                                    setHasPendingTransaction
+                                }
+                            />
                         ) : (
                             <span className="text-accent-secondary font-bold">
                                 Boxes sold out, come back later!

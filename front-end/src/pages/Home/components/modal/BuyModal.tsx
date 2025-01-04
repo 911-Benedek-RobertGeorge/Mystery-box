@@ -23,16 +23,20 @@ import { BoxType } from '../../../../libs/interfaces'
 import { lamportsToSol, scrollToSection } from '../../../../libs/utils'
 import { FaCheckCircle } from 'react-icons/fa'
 import { useSelector } from 'react-redux'
-import { OpenBoxModal } from './OpenBoxModal'
 
-export function BuyModal({ box }: { box: BoxType | null }) {
+export function BuyModal({
+    box,
+    setHasPendingTransaction,
+}: {
+    box: BoxType | null
+    setHasPendingTransaction: (value: boolean) => void
+}) {
     const images = [cyanBox]
 
     const solanaPrice = useSelector(
         (state: { solana: { price: number } }) => state.solana.price
     )
     const { publicKey, sendTransaction } = useWallet()
-    const [hasPendingTransaction, setHasPendingTransaction] = useState(false)
     const { connection } = useConnection()
     const { networkConfiguration } = useNetworkConfiguration()
     const [step, setStep] = useState(0)
@@ -278,7 +282,7 @@ export function BuyModal({ box }: { box: BoxType | null }) {
                                                     Unlock a curated bundle of
                                                     hand picked meme coins and
                                                     join the excitement of the
-                                                    bull run
+                                                    bull run!
                                                 </p>
                                                 <div className="flex flex-col   items-start justify-start text-sm">
                                                     <div>
