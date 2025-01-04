@@ -271,7 +271,7 @@ const Home: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="flex flex-col relative justify-center items-center w-full h-full text-white p-8">
+                <div className="flex flex-col relative justify-center items-center w-full h-full text-white p-8 mb-32">
                     <div className="flex flex-col justify-center items-center w-full h-full  text-white p-8 z-[51]">
                         {' '}
                         <h2 className="text-4xl font-bold mb-4">
@@ -312,7 +312,7 @@ const Home: React.FC = () => {
 
                 <SectionContainer key={2}>
                     <div className="flex flex-col justify-center items-center w-full h-full  text-stone-300 ">
-                        <div className=" absolute z-[1] flex flex-col  w-full h-full ">
+                        <div className=" -left-32 md:left-0 -top-4 md:top-0 absolute z-[1] flex flex-col  w-full h-full ">
                             {' '}
                             <img
                                 src={leafes}
@@ -323,8 +323,8 @@ const Home: React.FC = () => {
                                 className="absolute rotate-90 -ml-8 h-[600px] left-0 -top-64 opacity-40"
                             />
                         </div>
-                        <div className="flex flex-col justify-center items-center -top-[32] p-4">
-                            <h2 className="text-4xl font-bold mb-16">
+                        <div className="flex flex-col justify-center items-center    md:-top-[32] p-4">
+                            <h2 className="text-4xl font-bold mb-4 md:mb-16">
                                 About Us
                             </h2>
                             <p className="text-lg text-center max-w-2xl mb-4">

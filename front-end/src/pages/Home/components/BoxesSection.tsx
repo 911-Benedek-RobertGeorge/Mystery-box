@@ -70,18 +70,15 @@ const BoxDetails: React.FC<{ box: BoxType; comingSoon?: string }> = ({
                         </p>
                     </div>
                     <p className="text-lg mt-2"></p>
-                    <h2 className="text-2xl font-bold text-cyan-500 mt-4">
+                    <h2 className="text-lg font-bold text-cyan-500 mt-4">
                         Meme Artifacts
                     </h2>
                     <p className="">
                         {' '}
-                        With the highest volume and trending score
+                        Each box is pre-purchased, ensuring you receive curated
+                        and selected memes
                     </p>
                     <div className="mt-6 text-gray-300 max-w-md">
-                        <h2 className="text-xl font-bold text-cyan-500">
-                            Why Buy a Memebox?
-                        </h2>
-
                         <p className="mt-2">
                             Diversify your portfolio and get a chance to win
                             <span className="text-cyan-500 font-bold">
@@ -113,7 +110,7 @@ const BoxDetails: React.FC<{ box: BoxType; comingSoon?: string }> = ({
                         crypto adventure!
                     </p>
                     <div className="mt-6">
-                        <span className="px-6 py-3   text-white font-bold rounded-full shadow-xl hover:from-green-600 hover:to-green-800 transition duration-300 transform hover:scale-110">
+                        <span className="px-6 py-3 border border-accent/30  text-white font-bold rounded-full shadow-xl hover:from-green-600 hover:to-green-800 transition duration-300 transform hover:scale-110">
                             Coming Soon 🚀
                         </span>
                     </div>

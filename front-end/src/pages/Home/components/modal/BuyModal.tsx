@@ -275,10 +275,10 @@ export function BuyModal({ box }: { box: BoxType | null }) {
                                         {!boughtBoxId && step <= 0 ? (
                                             <div className="flex flex-col  ">
                                                 <p className="text-sm text-gray-400 mb-2">
-                                                    Unlock a random selection of
-                                                    meme coins and join the fun.
-                                                    Rewards are completely
-                                                    random!
+                                                    Unlock a curated bundle of
+                                                    hand picked meme coins and
+                                                    join the excitement of the
+                                                    bull run
                                                 </p>
                                                 <div className="flex flex-col   items-start justify-start text-sm">
                                                     <div>

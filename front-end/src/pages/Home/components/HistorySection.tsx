@@ -10,9 +10,10 @@ import { memeCoinType, MysteryBox } from '../../../libs/interfaces'
 import { AnimatedTooltip } from '../../../components/ui/AnimatedTooltip'
 interface HistoryItem {
     price: number
-    totalPaidUSD: number
+    initialUsdValue: number
     roi: number
     date: Date
+    claimUsdValue: number
 
     boxType: string
     boxContent: memeCoinType[]
@@ -32,6 +33,7 @@ const HistorySection: React.FC = () => {
                 const data: MysteryBox[] = await response.json()
 
                 const historyItems = transformToHistoryItems(data)
+                console.log('GDSA ', historyItems)
                 setHistoryData(historyItems)
             } catch (error) {
                 console.error('fetchMyBoxes: ', error)
@@ -49,11 +51,7 @@ const HistorySection: React.FC = () => {
                 lamportsToSol(box.boxType.amountLamports).toFixed(4)
             ),
 
-            totalPaidUSD: parseFloat(
-                (
-                    box?.solPrice * lamportsToSol(box.boxType.amountLamports)
-                ).toFixed(2)
-            ),
+            initialUsdValue: parseFloat(box.initialUsdValue?.toFixed(2)),
 
             // parseFloat(
             //     (
@@ -66,6 +64,7 @@ const HistorySection: React.FC = () => {
             //         box.boxContents[0].solPrice
             //     ).toFixed(4)
             // ),
+            claimUsdValue: parseFloat(box.claimUsdValue?.toFixed(2)),
             roi: parseFloat(
                 (
                     (box.boxContents.reduce(
@@ -92,18 +91,17 @@ const HistorySection: React.FC = () => {
     }
 
     return (
-        <div className="z-[100] flex flex-col justify-center items-center p-10 md:p-64 ">
+        <div className="z-[100] flex flex-col justify-center items-center p-10 xl:p-64 ">
             <div className="flex justify-start items-start w-full ">
                 <span className="text-3xl font-bold text-accent p-2 mb-4 ">
                     Latest Boxes sold
                 </span>
             </div>
-
             {historyData.slice(0, 5).map((box, index) => {
                 return (
                     <div
                         key={index}
-                        className="mb-3 flex w-full max-w-screen transform cursor-pointer flex-col justify-between rounded-md bg-background-light bg-opacity-75 p-6 text-accent transition duration-500 ease-in-out hover:-translate-y-1 hover:shadow-2xl hover:shadow-accent-dark md:flex-row md:p-4"
+                        className="mb-3 flex w-full max-w-screen transform   flex-col justify-between rounded-md bg-background-light bg-opacity-75 p-6 text-accent transition duration-500 ease-in-out hover:-translate-y-1 hover:shadow-2xl hover:shadow-accent-dark md:flex-row md:p-4"
                     >
                         <div className="flex w-full flex-row md:w-3/12">
                             <div className="relative flex flex-col">
@@ -148,20 +146,39 @@ const HistorySection: React.FC = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="w-full self-center pt-4 lg:w-1/6 lg:pt-0">
-                            <div className="ml-1">
-                                <div className="text-xl font-extrabold leading-5 tracking-tight">
-                                    <span className="align-middle">
-                                        {box.price} SOL
-                                    </span>
-                                    <span className="text-[8px] ml-2 rounded bg-green-600 px-2 py-1 align-middle font-bold uppercase text-white">
-                                        Paid
+                        <div className="w-full self-center pt-4 lg:w-1/6 lg:pt-0 flex">
+                            <div className="text-xl font-extrabold leading-5 tracking-tight flex-col flex">
+                                <span className="align-middle">
+                                    {box.price}
+                                    SOL
+                                </span>
+                                <span className="text-sm font-normal text-slate-500">
+                                    ~ {box.initialUsdValue.toFixed(2)} $
+                                </span>{' '}
+                            </div>{' '}
+                            {box.claimUsdValue && (
+                                <div className="ml-1 flex flex-col items-center justify-center        ">
+                                    {' '}
+                                    {box.initialUsdValue <=
+                                    box.claimUsdValue ? (
+                                        <span className="text-[8px] ml-2 rounded bg-green-600 px-2 py-1 align-middle font-bold uppercase text-white">
+                                            Profit
+                                        </span>
+                                    ) : (
+                                        <span className="text-[8px] ml-2 rounded bg-red-600 px-2 py-1 align-middle font-bold uppercase text-white">
+                                            Loss
+                                        </span>
+                                    )}
+                                    <span className="text-sm font-normal text-slate-500">
+                                        {' '}
+                                        {(
+                                            box.claimUsdValue -
+                                            box.initialUsdValue
+                                        ).toFixed(2)}{' '}
+                                        $
                                     </span>
                                 </div>
-                                <div className="text-sm text-slate-500">
-                                    Total Paid {box.totalPaidUSD} USD
-                                </div>
-                            </div>
+                            )}
                         </div>
                     </div>
                 )

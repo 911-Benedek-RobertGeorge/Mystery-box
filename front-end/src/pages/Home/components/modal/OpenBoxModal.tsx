@@ -7,6 +7,7 @@ import {
     Modal,
     ModalBody,
     ModalContent,
+    ModalFooter,
     ModalTrigger,
 } from '../../../../components/ui/AnimatedModal'
 import questionMark from '../../../../assets/elements/question_mark.png'
@@ -114,20 +115,21 @@ export function OpenBoxModal({
                         </>
                     )}
                 </ModalTrigger>
-                <ModalBody className="z-[200] bg-background-dark w-full shadow-inner rounded-t-xl  shadow-cyan-600">
-                    {!mysteryBox ? (
-                        <div className="text-center text-accent/80 text-lg mt-2 font-light">
-                            Do not close this window or refresh page!
-                        </div>
-                    ) : (
-                        <div className="text-center text-accent/80 text-lg mt-2 font-light">
-                            Congratulations! You've unlocked these meme
-                            treasures
-                        </div>
-                    )}
+                <ModalBody className="z-[200] bg-background-dark w-full shadow-inner rounded-t-xl  shadow-cyan-600 py-4 ">
+                    <div className="text-center text-accent/80 text-lg mt-2 font-light w-[80%] mx-auto">
+                        {!mysteryBox ? (
+                            <span>
+                                Do not close this window or refresh page!
+                            </span>
+                        ) : (
+                            <span>
+                                Congratulations! You've unlocked these meme
+                                treasures
+                            </span>
+                        )}{' '}
+                    </div>
                     <ModalContent className="">
-                        <div className="w-full h-full flex flex-col items-center justify-center m-auto">
-                            {' '}
+                        <div className="w-full h-full flex flex-col items-center justify-center m-auto p-4 max-h-[40rem] overflow-y-auto">
                             {!mysteryBox ? (
                                 <>
                                     <img
@@ -136,7 +138,95 @@ export function OpenBoxModal({
                                     />
                                 </>
                             ) : (
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 ">
+                                    {mysteryBox?.boxContents.map((content) => (
+                                        <div
+                                            onClick={() =>
+                                                window.open(
+                                                    `${SOLANA_EXPLORER_URL + 'address/' + content.token.mint}?cluster=${networkConfiguration}`,
+                                                    '_blank'
+                                                )
+                                            }
+                                            key={content._id}
+                                            className="flex items-center hover:cursor-pointer border  border-accent-secondary/20 shadow-inner hover:shadow-accent/80 shadow-accent/40 rounded-xl p-4 hover:scale-105 transition-transform duration-200"
+                                        >
+                                            <div className="flex flex-col items-center justify-center mr-2">
+                                                <img
+                                                    src={content.token.image}
+                                                    alt={content.token.name}
+                                                    className="w-12 h-12 rounded-full border-2 border-cyan-400  "
+                                                />
+                                                <div className="text-sm text-cyan-200 font-normal">
+                                                    {content.token.symbol}
+                                                </div>
+                                            </div>
+                                            <div className="flex flex-col">
+                                                {' '}
+                                                <div className="text-lg font-semibold text-white mb-1">
+                                                    {content.token.name}
+                                                </div>
+                                                <div className="text-xs text-gray-300 truncate">
+                                                    <span className="font-semibold text-gray-400">
+                                                        Mint:
+                                                    </span>{' '}
+                                                    {shortenAddress(
+                                                        content.token.mint,
+                                                        6
+                                                    )}
+                                                </div>
+                                                <div className="text-xs text-gray-300">
+                                                    <span className="font-semibold text-gray-400">
+                                                        Percentage:
+                                                    </span>{' '}
+                                                    {content.percentage}%
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}{' '}
+                                    {mysteryBox?.boxContents.map((content) => (
+                                        <div
+                                            onClick={() =>
+                                                window.open(
+                                                    `${SOLANA_EXPLORER_URL + 'address/' + content.token.mint}?cluster=${networkConfiguration}`,
+                                                    '_blank'
+                                                )
+                                            }
+                                            key={content._id}
+                                            className="flex items-center hover:cursor-pointer border  border-accent-secondary/20 shadow-inner hover:shadow-accent/80 shadow-accent/40 rounded-xl p-4 hover:scale-105 transition-transform duration-200"
+                                        >
+                                            <div className="flex flex-col items-center justify-center mr-2">
+                                                <img
+                                                    src={content.token.image}
+                                                    alt={content.token.name}
+                                                    className="w-12 h-12 rounded-full border-2 border-cyan-400  "
+                                                />
+                                                <div className="text-sm text-cyan-200 font-normal">
+                                                    {content.token.symbol}
+                                                </div>
+                                            </div>
+                                            <div className="flex flex-col">
+                                                {' '}
+                                                <div className="text-lg font-semibold text-white mb-1">
+                                                    {content.token.name}
+                                                </div>
+                                                <div className="text-xs text-gray-300 truncate">
+                                                    <span className="font-semibold text-gray-400">
+                                                        Mint:
+                                                    </span>{' '}
+                                                    {shortenAddress(
+                                                        content.token.mint,
+                                                        6
+                                                    )}
+                                                </div>
+                                                <div className="text-xs text-gray-300">
+                                                    <span className="font-semibold text-gray-400">
+                                                        Percentage:
+                                                    </span>{' '}
+                                                    {content.percentage}%
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}{' '}
                                     {mysteryBox?.boxContents.map((content) => (
                                         <div
                                             onClick={() =>
@@ -184,8 +274,8 @@ export function OpenBoxModal({
                                 </div>
                             )}
                         </div>
-                    </ModalContent>
-                </ModalBody>
+                    </ModalContent>{' '}
+                </ModalBody>{' '}
             </Modal>
         </div>
     )

@@ -166,10 +166,7 @@ export const ModalFooter = ({
     return (
         <div
             onClick={() => shouldClose && setOpen(false)}
-            className={cn(
-                'flex justify-end p-4 bg-gray-100 dark:bg-neutral-900',
-                className
-            )}
+            className={cn('flex justify-end p-4   bg-neutral-900', className)}
         >
             {children}
         </div>
