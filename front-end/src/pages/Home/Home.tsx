@@ -226,13 +226,13 @@ const Home: React.FC = () => {
                             src={solanaImage}
                         /> */}
                         <MemeImagesFloating memesImage={memesImage ?? []} />
-                        <div className=" scale-75 md:scale-90 -top-24 relative z-[102] flex flex-col justify-center items-center">
+                        <div className=" scale-75 md:scale-90 md:-top-24 relative z-[102] flex flex-col justify-center items-center">
                             <img
                                 src={questionMark}
                                 className="w-[250px] z-[50] absolute -top-48 floating-object transition-transform duration-200 ease-out "
                                 style={{ transformStyle: 'preserve-3d' }}
                             ></img>{' '}
-                            <div className="absolute top-24 left-1/2 transform -translate-x-1/2 w-32 h-32 md:w-60 md:h-64 rounded-3xl shadow-cone"></div>
+                            <div className=" bg-transparent absolute top-24 left-1/2 transform -translate-x-1/2 w-32 h-32 md:w-60 md:h-64 rounded-3xl shadow-cone"></div>
                             <img
                                 src={simpleBox}
                                 className="w-[450px]  z-[40] hover:scale-110 transition-transform duration-[3000ms] ease-out"
@@ -297,7 +297,7 @@ const Home: React.FC = () => {
                 <div
                     className="absolute -rotate-12 w-96 z-[2]"
                     style={{
-                        transform: `translateX(${Math.min(-700 + scrollPosition, 250)}px) translateY(${Math.min(-700 + scrollPosition / 2.5, -330)}px)`,
+                        transform: `translateX(${Math.min(-700 + scrollPosition, 300)}px) translateY(${Math.min(-700 + scrollPosition / 2.5, -290)}px)`,
                         filter: `hue-rotate(${Math.max(-80, 10 - scrollPosition / 10)}deg)`,
                         transition:
                             'transform 0.2s ease-out, filter 0.2s ease-out',
@@ -334,11 +334,11 @@ const Home: React.FC = () => {
                         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background-dark to-accent-dark opacity-30 blur-3xl"></div>
                         <div className="absolute inset-0 opacity-40  top-96">
                             <img
-                                className="  z-[51] -hue-rotate-90 transition-all duration-1000  ease-out"
+                                className="z-[51] -hue-rotate-90 transition-all duration-1000  ease-out"
                                 src={ribbons}
                                 style={{
-                                    transform: `translateY(${-1000 + scrollPosition * 0.4}px)`,
-                                    rotate: `${180 - scrollPosition * 0.2}deg`,
+                                    transform: `translateY(${-1300 + scrollPosition * 0.42}px)`,
+                                    rotate: `${200 - scrollPosition * 0.2}deg`,
                                 }}
                             />
                         </div>{' '}
@@ -353,7 +353,7 @@ const Home: React.FC = () => {
                 </div>
 
                 <div className="flex flex-col relative justify-center items-center w-full h-full text-white p-8">
-                    <div className="  z-50 flex flex-col justify-center items-center w-full h-full  text-white p-8">
+                    <div className="flex flex-col justify-center items-center w-full h-full  text-white p-8 z-[101]">
                         {' '}
                         <h2 className="text-4xl font-bold mb-4">
                             How It Works
@@ -393,7 +393,7 @@ const Home: React.FC = () => {
 
                 <SectionContainer key={2}>
                     <div className="flex flex-col justify-center items-center w-full h-full  text-stone-300 ">
-                        <div className=" absolute z-[110] flex flex-col  w-full h-full    ">
+                        <div className=" absolute z-[1] flex flex-col  w-full h-full ">
                             {' '}
                             <img
                                 src={leafes}
@@ -404,7 +404,7 @@ const Home: React.FC = () => {
                                 className="absolute rotate-90 -ml-8 h-[600px] left-0 -top-64 opacity-40"
                             />
                         </div>
-                        <div className="flex flex-col justify-center items-center -top-[32]">
+                        <div className="flex flex-col justify-center items-center -top-[32] p-4">
                             <h2 className="text-4xl font-bold mb-16">
                                 About Us
                             </h2>

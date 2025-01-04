@@ -15,7 +15,7 @@ const MemeImagesFloating: React.FC<MemeImagesFloatingProps> = ({
                     <img
                         key={index}
                         src={src}
-                        className="floating-object rounded-full w-12 h-12 md:w-20 md:h-20 z-[40] top-64 absolute transition-transform duration-600 ease-out"
+                        className="floating-object rounded-full w-12 h-12 md:w-16 md:h-16 z-[40] top-64 absolute transition-transform duration-600 ease-out"
                         style={{
                             top: top,
                             left: left,
