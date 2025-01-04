@@ -113,7 +113,7 @@ const BoxDetails: React.FC<{ box: BoxType; comingSoon?: string }> = ({
                         crypto adventure!
                     </p>
                     <div className="mt-6">
-                        <span className="px-6 py-3 bg-gradient-to-t from-transparent via-accent/10 to-accent text-white font-bold rounded-full shadow-xl hover:from-green-600 hover:to-green-800 transition duration-300 transform hover:scale-110">
+                        <span className="px-6 py-3   text-white font-bold rounded-full shadow-xl hover:from-green-600 hover:to-green-800 transition duration-300 transform hover:scale-110">
                             Coming Soon 🚀
                         </span>
                     </div>

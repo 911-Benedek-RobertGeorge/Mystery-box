@@ -33,7 +33,7 @@ import BoxesSection from './components/BoxesSection'
 import MyBoxesSection from './components/MyBoxesSection'
 import { VITE_ENV_BACKEND_URL } from '../../libs/config'
 
-const memeCoinImages = [dogeCoin, chillGuy, bonk, boom, mow, pnut, popcat, wif]
+const memeCoinImages = [chillGuy, bonk, boom, mow, pnut, popcat, wif]
 
 const Home: React.FC = () => {
     const containerRef = useRef<HTMLDivElement | null>(null)
@@ -171,13 +171,18 @@ const Home: React.FC = () => {
                                 style={{ transformStyle: 'preserve-3d' }}
                             ></img>
                             <img
-                                src={dogeCoin}
-                                className="scale-[0.3] absolute top-64 left-12 z-[30] -rotate-12  "
+                                src={wif}
+                                className=" scale-[0.5] absolute top-[22rem] left-12 z-[30]  rotate-45  "
                                 style={{ transformStyle: 'preserve-3d' }}
                             ></img>{' '}
                             <img
-                                src={dogeCoin}
-                                className="scale-[0.3] absolute top-80 -left-32 z-[30] rotate-45"
+                                src={boom}
+                                className="scale-[0.5] absolute top-[19rem] left-64 z-[30] -rotate-12  "
+                                style={{ transformStyle: 'preserve-3d' }}
+                            ></img>{' '}
+                            <img
+                                src={mow}
+                                className=" w-24 absolute top-96 -left-16 z-[30] rotate-12"
                             ></img>{' '}
                             <img
                                 src={stand}
@@ -238,6 +243,9 @@ const Home: React.FC = () => {
                 <BoxesSection />
             </div>{' '}
             <HistorySection />
+            {/* <div className="relative w-32 ">
+                <img src={smile} />{' '}
+            </div> */}
             <MyBoxesSection />
             <div className="flex flex-col w-screen h-full">
                 <div className="flex flex-col -mt-96 relative justify-center items-center w-full md:w-1/2 h-96  ml-auto text-white p-8">
