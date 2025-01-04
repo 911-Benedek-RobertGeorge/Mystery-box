@@ -43,7 +43,6 @@ const MyBoxesSection: React.FC<MyBoxesSectionProps> = ({
                 if (response.status !== 200) {
                     throw new Error(data.message)
                 }
-                console.log(data)
                 setMyBoxes(data)
             } catch (error) {
                 console.error('fetchMyBoxes: ', error)
@@ -59,7 +58,6 @@ const MyBoxesSection: React.FC<MyBoxesSectionProps> = ({
         if (button) {
             button.click()
         }
-        console.log('open box modal', selectedBoxId)
     }
 
     useEffect(() => {

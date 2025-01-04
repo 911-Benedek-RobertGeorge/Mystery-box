@@ -39,6 +39,7 @@ export function OpenBoxModal({
 
     const jwtToken = sessionStorage.getItem('jwtToken')
     const [mysteryBox, setMysteryBox] = useState<MysteryBox>()
+    const [closeModal, setCloseModal] = useState(false)
 
     async function openBoughtBox(boxId: string) {
         try {
@@ -59,6 +60,12 @@ export function OpenBoxModal({
             )
 
             const data = await response.json()
+
+            if (data.message) {
+                toast.error(data.message)
+                setCloseModal(true)
+                throw new Error(data.message)
+            }
             const box = data.box
             setMysteryBox(box)
 
@@ -66,13 +73,12 @@ export function OpenBoxModal({
                 src: memeCoin.token.image,
                 width: 32,
                 height: 32,
-                rounded: true,
             }))
 
             await confetti({
                 zIndex: 1100,
                 spread: 360,
-                ticks: 150,
+                ticks: 200,
 
                 gravity: 0.8,
                 decay: 0.8,
@@ -88,6 +94,7 @@ export function OpenBoxModal({
             console.error('Error opening the box transaction:', error)
         } finally {
             setHasPendingTransaction && setHasPendingTransaction(false)
+            setCloseModal(false)
         }
     }
 
@@ -115,7 +122,10 @@ export function OpenBoxModal({
                         </>
                     )}
                 </ModalTrigger>
-                <ModalBody className="z-[200] bg-background-dark w-full shadow-inner rounded-t-xl  shadow-cyan-600 py-4 ">
+                <ModalBody
+                    closeModal={closeModal}
+                    className="z-[200] bg-background-dark w-full shadow-inner rounded-t-xl  shadow-cyan-600 py-4 "
+                >
                     <div className="text-center text-accent/80 text-lg mt-2 font-light w-[80%] mx-auto">
                         {!mysteryBox ? (
                             <span>

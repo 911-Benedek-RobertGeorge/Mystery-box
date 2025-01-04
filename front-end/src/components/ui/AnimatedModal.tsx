@@ -63,12 +63,13 @@ export const ModalTrigger = ({
 export const ModalBody = ({
     children,
     className,
+    closeModal,
 }: {
     children: ReactNode
     className?: string
+    closeModal?: boolean
 }) => {
     const { open } = useModal()
-
     useEffect(() => {
         if (open) {
             document.body.style.overflow = 'hidden'
@@ -79,6 +80,8 @@ export const ModalBody = ({
 
     const modalRef = useRef(null)
     const { setOpen } = useModal()
+    if (closeModal) setOpen(false)
+
     // useOutsideClick(modalRef, () => setOpen(false))
 
     return (

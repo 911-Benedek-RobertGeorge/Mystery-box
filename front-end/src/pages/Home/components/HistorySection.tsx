@@ -21,7 +21,9 @@ interface HistoryItem {
     buyer: string
 }
 
-const HistorySection: React.FC = () => {
+const HistorySection: React.FC<{
+    hasPendingTransaction: boolean
+}> = ({ hasPendingTransaction }) => {
     const [historyData, setHistoryData] = React.useState<HistoryItem[]>([])
 
     useEffect(() => {
@@ -33,7 +35,6 @@ const HistorySection: React.FC = () => {
                 const data: MysteryBox[] = await response.json()
 
                 const historyItems = transformToHistoryItems(data)
-                console.log('GDSA ', historyItems)
                 setHistoryData(historyItems)
             } catch (error) {
                 console.error('fetchMyBoxes: ', error)
@@ -41,7 +42,7 @@ const HistorySection: React.FC = () => {
         }
 
         fetchMyBoxes()
-    }, [])
+    }, [hasPendingTransaction])
 
     const transformToHistoryItems = (
         mysteryBoxes: MysteryBox[]

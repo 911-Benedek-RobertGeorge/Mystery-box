@@ -244,7 +244,7 @@ const Home: React.FC = () => {
                     setHasPendingTransaction={setHasPendingTransaction}
                 />
             </div>{' '}
-            <HistorySection />
+            <HistorySection hasPendingTransaction={hasPendingTransaction} />
             {/* <div className="relative w-32 ">
                 <img src={smile} />{' '}
             </div> */}
