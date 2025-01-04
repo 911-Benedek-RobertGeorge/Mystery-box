@@ -127,7 +127,7 @@ const BoxDetails: React.FC<{
                         crypto adventure!
                     </p>
                     <div className="mt-6">
-                        <span className="px-6 py-3 border border-accent/30  text-white font-bold rounded-full shadow-xl hover:from-green-600 hover:to-green-800 transition duration-300 transform hover:scale-110">
+                        <span className="px-6 py-3 border-r border-l border-accent/30  text-white font-bold rounded-full shadow-xl hover:from-green-600 hover:to-green-800 transition duration-300 transform hover:scale-110">
                             Coming Soon 🚀
                         </span>
                     </div>

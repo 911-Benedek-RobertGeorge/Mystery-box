@@ -225,7 +225,7 @@ export function BuyModal({
                 <Modal>
                     <ModalTrigger
                         className="bg-muted shadow-inner shadow-accent-dark text-accent
-                scale-75 md:scale-100 items-center relative rounded-full flex justify-center group/modal-btn"
+                scale-90 md:scale-100 items-center relative rounded-full flex justify-center group/modal-btn"
                     >
                         <span className="group-hover/modal-btn:translate-x-40 text-center transition duration-500 ">
                             Buy memebox
