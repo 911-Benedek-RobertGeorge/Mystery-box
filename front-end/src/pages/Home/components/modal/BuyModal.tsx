@@ -224,89 +224,128 @@ export function BuyModal({
             {publicKey ? (
                 <Modal>
                     <ModalTrigger
-                        className="bg-muted shadow-inner shadow-accent-dark text-accent
-                scale-90 md:scale-100 items-center relative rounded-full flex justify-center group/modal-btn"
+                        className="bg-gradient-to-r from-accent via-accent-dark to-emerald-500 
+                        scale-90 md:scale-100 items-center relative rounded-full flex justify-center 
+                        group/modal-btn hover:shadow-lg hover:shadow-accent/50 transition-all duration-300"
                     >
-                        <span className="group-hover/modal-btn:translate-x-40 text-center transition duration-500 ">
-                            Buy memebox
-                        </span>{' '}
+                        <span className="group-hover/modal-btn:translate-x-40 text-center transition duration-500 font-bold text-white px-4">
+                            Buy a box!
+                        </span>
                         <div className="-translate-x-40 group-hover/modal-btn:translate-x-0 flex items-center justify-center absolute inset-0 transition duration-500 text-white z-20">
-                            <img className="w-8" src={questionMark} />
+                            <img
+                                className="w-8 animate-bounce"
+                                src={questionMark}
+                            />
                         </div>
                     </ModalTrigger>
-                    <ModalBody className="  bg-background-dark w-full shadow-inner rounded-t-xl  shadow-cyan-600    ">
-                        <ModalContent className=" ">
-                            <div className="">
-                                <div className="">
-                                    <h4 className="text-lg md:text-2xl text-accent-dark  font-bold text-center -mt-4 mb-4">
-                                        {!boughtBoxId ? 'Buy ' : 'Open '}{' '}
-                                        <span className="px-1 py-0.5 rounded-md bg-accent-dark/50 border border-accent text-accent">
-                                            {box?.name}
-                                        </span>{' '}
-                                        now!
+                    <ModalBody className="bg-background-dark w-full rounded-t-xl border-t border-accent/20">
+                        <ModalContent>
+                            <div className="p-6">
+                                <div className="text-center mb-8">
+                                    <h4 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-accent via-purple-500 to-emerald-500 text-transparent bg-clip-text">
+                                        {!boughtBoxId
+                                            ? 'Memebox Time!'
+                                            : '🎉 Box Secured!'}
                                     </h4>
-                                    <div className="flex justify-center items-center ">
-                                        {images.map((image, idx) => (
+                                    <p className="text-gray-400 mt-2">
+                                        Get ready to secure some juicy memes!
+                                    </p>
+                                </div>
+
+                                <div className="flex justify-center items-center mb-8">
+                                    {images.map((image, idx) => (
+                                        <motion.div
+                                            key={idx}
+                                            style={{
+                                                rotate: Math.random() * 30 - 10,
+                                            }}
+                                            whileHover={{
+                                                scale: 1.1,
+                                                rotate: 0,
+                                                zIndex: 50,
+                                            }}
+                                            className="relative -mr-4 group"
+                                        >
+                                            <div className="absolute inset-0 bg-gradient-to-r from-accent to-emerald-500 rounded-lg blur opacity-20 group-hover:opacity-40 transition-opacity"></div>
                                             <motion.div
-                                                key={'images' + idx}
-                                                style={{
-                                                    rotate:
-                                                        Math.random() * 30 - 10,
+                                                animate={{
+                                                    scale: [1, 1.05, 1],
+                                                    boxShadow: [
+                                                        '0 0 0 rgba(0, 255, 255, 0)',
+                                                        '0 0 20px rgba(0, 255, 255, 0.3)',
+                                                        '0 0 0 rgba(0, 255, 255, 0)',
+                                                    ],
                                                 }}
-                                                whileHover={{
-                                                    scale: 1.1,
-                                                    rotate: 0,
-                                                    zIndex: 100,
+                                                transition={{
+                                                    duration: 2,
+                                                    repeat: Infinity,
+                                                    ease: 'easeInOut',
                                                 }}
-                                                whileTap={{
-                                                    scale: 1.1,
-                                                    rotate: 0,
-                                                    zIndex: 100,
-                                                }}
-                                                className="rounded-xl -mr-4 mt-4  bg-white dark:bg-neutral-800 dark:border-neutral-700 border border-accent flex-shrink-0 overflow-hidden"
                                             >
                                                 <img
                                                     src={image}
-                                                    alt="box image"
-                                                    width="500"
-                                                    height="500"
-                                                    className="rounded-lg h-20 w-20 md:h-40 md:w-40 object-cover flex-shrink-0"
+                                                    alt="mystery box"
+                                                    className="relative rounded-lg h-32 w-32 md:h-40 md:w-40 object-cover border-2 border-accent/20"
                                                 />
                                             </motion.div>
-                                        ))}
-                                    </div>
-                                    <div className=" py-8 flex flex-col  gap-y-6 items-start max-w-sm justify-start  mx-auto max-h-[20rem] md:max-h-[15rem]">
-                                        {!boughtBoxId && step <= 0 ? (
-                                            <div className="flex flex-col  ">
-                                                <p className="text-sm text-gray-400 mb-2">
-                                                    Unlock a curated bundle of
-                                                    hand picked meme coins and
-                                                    join the excitement of the
-                                                    bull run!
-                                                </p>
-                                                <div className="flex flex-col   items-start justify-start text-sm">
-                                                    <div>
-                                                        <span className="text-neutral-200 dark:text-neutral-400 mr-3">
-                                                            Price:{' '}
-                                                            {lamportsToSol(
-                                                                box?.amountLamports ??
-                                                                    '0'
-                                                            ).toFixed(4)}{' '}
-                                                            SOL
-                                                        </span>
-                                                        <span className="text-sm text-gray-500">
-                                                            ~{' '}
+                                        </motion.div>
+                                    ))}
+                                </div>
+
+                                {!boughtBoxId && step <= 0 ? (
+                                    <div className="space-y-6">
+                                        <div className="bg-background-light/10 rounded-xl p-4 border border-accent/20">
+                                            <div className="flex justify-between items-center mb-2">
+                                                <span className="text-gray-400">
+                                                    Box Price:
+                                                </span>
+                                                <motion.div
+                                                    className="text-right"
+                                                    whileHover={{ scale: 1.05 }}
+                                                    transition={{
+                                                        type: 'spring',
+                                                        stiffness: 400,
+                                                        damping: 10,
+                                                    }}
+                                                >
+                                                    <motion.div
+                                                        className="text-white font-bold"
+                                                        initial={{
+                                                            opacity: 0,
+                                                            y: 20,
+                                                        }}
+                                                        animate={{
+                                                            opacity: 1,
+                                                            y: 0,
+                                                        }}
+                                                        transition={{
+                                                            duration: 0.5,
+                                                        }}
+                                                    >
+                                                        {lamportsToSol(
+                                                            box?.amountLamports ??
+                                                                '0'
+                                                        ).toFixed(4)}{' '}
+                                                        SOL
+                                                        <span className="text-sm text-gray-500 ml-2">
+                                                            (≈ $
                                                             {(
                                                                 lamportsToSol(
                                                                     box?.amountLamports ??
                                                                         '0'
                                                                 ) * solanaPrice
                                                             ).toFixed(2)}
-                                                            USD
+                                                            )
                                                         </span>
-                                                    </div>
-                                                    <span className="text-neutral-200 dark:text-neutral-400">
-                                                        Commission :{' '}
+                                                    </motion.div>
+                                                </motion.div>
+                                            </div>
+                                            <div className="flex justify-between items-center mb-2">
+                                                <span className="text-gray-400">
+                                                    Service Fee:
+                                                </span>
+                                                <div className="text-right">
+                                                    <span className="text-white">
                                                         {(
                                                             SERVICE_TAX_PERCENTAGE *
                                                             lamportsToSol(
@@ -315,132 +354,132 @@ export function BuyModal({
                                                             )
                                                         ).toFixed(4)}{' '}
                                                         SOL
-                                                    </span>
-                                                    <span className="text-neutral-200 dark:text-neutral-400">
-                                                        There might be needed a
-                                                        small priority fee
-                                                    </span>
-                                                    <span className="text-neutral-200 dark:text-neutral-400">
-                                                        Create token accounts
-                                                        <a
-                                                            href="https://solana.com/docs/core/fees#rent"
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            className="text-accent underline ml-1"
-                                                        >
-                                                            rent
-                                                        </a>{' '}
-                                                        if not existing. <br />
-                                                    </span>{' '}
-                                                    <span className="text-xs text-gray-500">
-                                                        (Reimbursed if tokens
-                                                        are sold)
+                                                        <span className="text-sm text-gray-500 ml-2">
+                                                            (≈ $
+                                                            {(
+                                                                SERVICE_TAX_PERCENTAGE *
+                                                                lamportsToSol(
+                                                                    box?.amountLamports ??
+                                                                        '0'
+                                                                ) *
+                                                                solanaPrice
+                                                            ).toFixed(2)}
+                                                            )
+                                                        </span>
                                                     </span>
                                                 </div>
-                                                {/* <p className="text-sm text-gray-400 mb-4">
-                                                    Max Purchase Limit:{' '}
-                                                    <span className="text-white">
-                                                        {box?.maxBoxAmount}
+                                            </div>
+                                            <div className="flex justify-between items-center text-sm text-gray-400">
+                                                <span>Solana fees:</span>
+                                                <div className="text-right">
+                                                    <span>
+                                                        Gas and token rent fees
+                                                        may apply
                                                     </span>
-                                                </p> */}
-                                                <div className="text-xs text-left text-gray-400 my-4 ">
-                                                    <p className="text-accent">
-                                                        By signing the
-                                                        transaction and
-                                                        purchasing, you agree to
-                                                        the following:
-                                                    </p>
-                                                    <ul className="list-disc list-inside ml-4">
-                                                        <li>
-                                                            This is not
-                                                            financial advice.
-                                                        </li>
 
-                                                        <li>
-                                                            Contents are random,
-                                                            and their value may
-                                                            vary.
-                                                        </li>
-                                                        <li>
-                                                            All sales are final,
-                                                            and no refunds are
-                                                            available.
-                                                        </li>
-                                                        <li>
-                                                            You can read more
-                                                            here{' '}
-                                                            <a
-                                                                href="/terms-and-conditions"
-                                                                target="_blank"
-                                                                className="text-accent underline"
-                                                            >
-                                                                terms and
-                                                                conditions
-                                                            </a>
-                                                        </li>
-                                                    </ul>
+                                                    <motion.span
+                                                        className="block text-xs text-accent/60 cursor-help"
+                                                        whileHover={{
+                                                            scale: 1.05,
+                                                        }}
+                                                        transition={{
+                                                            type: 'spring',
+                                                            stiffness: 400,
+                                                        }}
+                                                    ></motion.span>
                                                 </div>
                                             </div>
-                                        ) : (
-                                            <div className="flex flex-col items-center justify-center w-full ">
-                                                <ol className="w-full">
-                                                    {[
-                                                        'Initiate Purchase',
-                                                        'Sign Transaction',
-                                                        'Send Transaction',
-                                                        'Confirm Transaction',
-                                                        'Complete Purchase',
-                                                    ].map((text, index) => (
-                                                        <li
-                                                            key={index}
-                                                            className={`text-neutral-200 dark:text-neutral-400 text-sm ${
-                                                                step >=
-                                                                index + 1
-                                                                    ? 'font-bold shadow-md shadow-cyan-500/50'
-                                                                    : ''
-                                                            } flex items-center justify-between p-2 rounded-md `}
-                                                        >
-                                                            <div className="flex items-center">
-                                                                {step ===
-                                                                    index +
-                                                                        1 && (
-                                                                    <LoaderIcon className="animate-spin mr-4" />
-                                                                )}
-                                                                {text}
-                                                            </div>
-                                                            {step >
-                                                                index + 1 && (
-                                                                <FaCheckCircle className="text-accent" />
-                                                            )}
-                                                        </li>
-                                                    ))}
-                                                </ol>
-                                            </div>
-                                        )}
-                                    </div>{' '}
-                                </div>
+                                        </div>
+
+                                        <div className="bg-background-light/5 rounded-xl p-4 border border-accent/20">
+                                            <p className="text-accent font-bold mb-2">
+                                                🦍 Degen Notes:
+                                            </p>
+                                            <ul className="space-y-2 text-sm text-gray-400">
+                                                <li className="flex items-center">
+                                                    <span className="mr-2">
+                                                        🎲
+                                                    </span>
+                                                    Contents are random (like
+                                                    your trading strategy)
+                                                </li>
+                                                <li className="flex items-center">
+                                                    <span className="mr-2">
+                                                        💎
+                                                    </span>
+                                                    HODL or SODL - your choice
+                                                </li>
+                                                <li className="flex items-center">
+                                                    <span className="mr-2">
+                                                        🚫
+                                                    </span>
+                                                    No refunds (diamond hands
+                                                    only)
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="bg-background-light/5 rounded-xl p-4 border border-accent/20">
+                                        <ol className="space-y-3">
+                                            {[
+                                                'Formatting transaction',
+                                                'Waiting for signature',
+                                                'Transaction sent',
+                                                'Transaction confirmed',
+                                                'Box successfully bought! 🎉',
+                                            ].map((text, index) => (
+                                                <li
+                                                    key={index}
+                                                    className={`flex items-center justify-between p-2 rounded ${
+                                                        step >= index + 1
+                                                            ? 'text-accent font-bold'
+                                                            : 'text-gray-400'
+                                                    }`}
+                                                >
+                                                    <div className="flex items-center">
+                                                        {step === index + 1 && (
+                                                            <LoaderIcon className="animate-spin mr-2" />
+                                                        )}
+                                                        {text}
+                                                    </div>
+                                                    {step > index + 1 && (
+                                                        <FaCheckCircle className="text-emerald-500" />
+                                                    )}
+                                                </li>
+                                            ))}
+                                        </ol>
+                                    </div>
+                                )}
                             </div>
                         </ModalContent>
+
                         <ModalFooter
                             shouldClose={boughtBoxId ? true : false}
-                            className="gap-4 bg-neutral-950 flex items-center justify-center h-16"
+                            className="border-t border-accent/20 bg-background-dark/80 backdrop-blur-sm p-4"
                         >
                             {boughtBoxId ? (
-                                <button
+                                <motion.button
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
                                     onClick={() => scrollToSection('my-boxes')}
-                                    className="text-sm px-2 py-1 rounded-md shadow-inner shadow-accent-dark border border-accent-dark   disabled:bg-muted disabled:border-0 disabled:cursor-not-allowed disabled:shadow-none "
+                                    className="w-full px-6 py-3 rounded-full bg-gradient-to-r from-accent via-accent-dark to-emerald-500 
+                                    text-white font-bold hover:shadow-lg hover:shadow-accent/30 transition-all"
                                 >
-                                    Go to my boxes
-                                </button>
+                                    View my boxes 📦
+                                </motion.button>
                             ) : (
-                                // <OpenBoxModal boxId={boughtBoxId} />
-                                <button
+                                <motion.button
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
                                     onClick={buyMysteryBox}
-                                    className=" text-sm px-2 py-1 rounded-md shadow-inner shadow-accent-dark border border-accent-dark  w-28 disabled:bg-muted disabled:border-0 disabled:cursor-not-allowed disabled:shadow-none "
                                     disabled={step > 0}
+                                    className="w-full px-6 py-3 rounded-full bg-gradient-to-r from-accent via-accent-dark to-emerald-500 
+                                    text-white font-bold hover:shadow-lg hover:shadow-accent/30 transition-all 
+                                    disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    Buy box{' '}
-                                </button>
+                                    {step > 0 ? 'Processing...' : 'Buy now! 🎁'}
+                                </motion.button>
                             )}
                         </ModalFooter>
                     </ModalBody>
