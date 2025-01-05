@@ -37,17 +37,14 @@ const WhatAreWeSection: React.FC<WhatAreWeSectionProps> = ({
                     >
                         <p className="text-xl text-center md:text-left text-gray-300 leading-relaxed font-semibold">
                             Imagine a{' '}
-                            <span className="bg-gradient-to-r from-accent via-accent-dark to-emerald-500 text-transparent bg-clip-text animate-gradient-x">
-                                {' '}
-                                box
-                            </span>{' '}
+                            <span className="text-pink-500"> mystery box</span>{' '}
                             so epic, it makes you manually picking memecoins
                             look{' '}
                             <span className="text-accent animate-pulse">
                                 {' '}
                                 boring
                             </span>
-                            . Each memebox is packed with
+                            . Each memebox is stuffed with
                             <span className="text-accent-secondary">
                                 {' '}
                                 hand-picked Solana memecoins
