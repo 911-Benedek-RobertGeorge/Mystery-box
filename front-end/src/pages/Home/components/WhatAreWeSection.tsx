@@ -1,6 +1,7 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import HistorySection from './HistorySection'
+import { scrollToSection } from '../../../libs/utils'
 
 interface WhatAreWeSectionProps {
     hasPendingTransaction: boolean
@@ -9,13 +10,6 @@ interface WhatAreWeSectionProps {
 const WhatAreWeSection: React.FC<WhatAreWeSectionProps> = ({
     hasPendingTransaction,
 }) => {
-    const scrollToSection = (id: string) => {
-        const element = document.getElementById(id)
-        if (element) {
-            element.scrollIntoView({ behavior: 'smooth' })
-        }
-    }
-
     return (
         <div className="flex flex-col relative justify-center items-center w-full min-h-[80vh] text-white">
             <div className="flex flex-col justify-center items-center w-full max-w-6xl px-4 md:px-8 pt-16 z-[51]">
