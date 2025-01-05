@@ -8,6 +8,8 @@ import {
 import { VITE_ENV_BACKEND_URL } from '../../../libs/config'
 import { memeCoinType, MysteryBox } from '../../../libs/interfaces'
 import { AnimatedTooltip } from '../../../components/ui/AnimatedTooltip'
+import { motion } from 'framer-motion'
+
 interface HistoryItem {
     price: number
     initialUsdValue: number
@@ -25,24 +27,28 @@ const HistorySection: React.FC<{
     hasPendingTransaction: boolean
 }> = ({ hasPendingTransaction }) => {
     const [historyData, setHistoryData] = React.useState<HistoryItem[]>([])
+    const [offset, setOffset] = React.useState(0)
+    const [limit] = React.useState(5)
+    const [itemsCount, setItemsCount] = React.useState(0)
 
     useEffect(() => {
         const fetchMyBoxes = async () => {
             try {
                 const response = await fetch(
-                    `${VITE_ENV_BACKEND_URL}/boxes/results`
+                    `${VITE_ENV_BACKEND_URL}/boxes/results?offset=${offset}&limit=${limit}`
                 )
                 const data: MysteryBox[] = await response.json()
 
                 const historyItems = transformToHistoryItems(data)
                 setHistoryData(historyItems)
+                setItemsCount(data.length)
             } catch (error) {
                 console.error('fetchMyBoxes: ', error)
             }
         }
 
         fetchMyBoxes()
-    }, [hasPendingTransaction])
+    }, [offset, limit, hasPendingTransaction])
 
     const transformToHistoryItems = (
         mysteryBoxes: MysteryBox[]
@@ -185,6 +191,39 @@ const HistorySection: React.FC<{
                         </div>
                     </div>
                 ))}
+                <div className="flex justify-end items-center space-x-4 mt-8 pr-4">
+                    <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => setOffset(Math.max(0, offset - limit))}
+                        disabled={offset === 0}
+                        className="relative px-6 py-2 rounded-full border border-accent/30 
+                            text-accent font-medium transition-all group overflow-hidden
+                            hover:border-accent/50 hover:text-accent-light
+                            disabled:opacity-30 disabled:cursor-not-allowed"
+                    >
+                        <div className="relative flex items-center space-x-2">
+                            <span>←</span>
+                            <span>Previous</span>
+                        </div>
+                    </motion.button>
+
+                    <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => setOffset(offset + limit)}
+                        disabled={itemsCount !== limit}
+                        className="relative px-6 py-2 rounded-full border border-accent/30 
+                            text-accent font-medium transition-all group overflow-hidden
+                            hover:border-accent/50 hover:text-accent-light
+                            disabled:opacity-30 disabled:cursor-not-allowed"
+                    >
+                        <div className="relative flex items-center space-x-2">
+                            <span>Next</span>
+                            <span>→</span>
+                        </div>
+                    </motion.button>
+                </div>
             </div>
         </div>
     )
