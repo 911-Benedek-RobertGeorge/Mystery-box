@@ -131,12 +131,10 @@ const WhatAreWeSection: React.FC<WhatAreWeSectionProps> = ({
                     </motion.div>
                 </div>
             </div>
-
             <div className="absolute inset-0 w-full h-full z-0">
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-accent to-background-light opacity-20 animate-gradient-x"></div>
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-60"></div>
-                <div className="absolute inset-0 bg-[url('/meme-pattern.png')] opacity-5"></div>
-            </div>
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-60"></div>{' '}
+            </div>{' '}
             <HistorySection hasPendingTransaction={hasPendingTransaction} />
         </div>
     )

@@ -10,7 +10,7 @@ import { lamportsToSol, timeDifferenceFromNow } from '../../../libs/utils'
 import questionMark from '../../../assets/elements/question_mark.png'
 import { FaExternalLinkAlt } from 'react-icons/fa'
 import key from '../../../assets/boxes/key.png'
-
+import smile from '../../../assets/shapes/smile.png'
 interface MyBoxesSectionProps {
     hasPendingTransaction: boolean
     setHasPendingTransaction: (hasPendingTransaction: boolean) => void
@@ -69,16 +69,21 @@ const MyBoxesSection: React.FC<MyBoxesSectionProps> = ({
     return (
         <>
             {!publicKey ? (
-                <div className="text-2xl font-bold text-center text-secondary items-center justify-center"></div>
+                <div className=""></div>
             ) : (
                 <div
                     id="my-boxes"
-                    className="flex flex-col justify-start items-center p-10 xl:px-64 pb-64"
+                    className="  relative flex flex-col justify-start items-center p-10 xl:px-64 pb-64 pt-0"
                 >
                     <div className="flex justify-start items-start w-full">
                         <span className="text-3xl font-bold text-accent p-2 mb-4">
                             My boxes ({myBoxes?.length})
                         </span>
+                    </div>
+                    <div className="absolute inset-0 w-full h-full z-0">
+                        {' '}
+                        <div className="absolute inset-0 h-1/2 bg-gradient-to-r from-black via-accent to-black opacity-5  "></div>
+                        <div className="absolute inset-0 bg-gradient-to-b from-backgorund-dark to-background-dark opacity-10"></div>{' '}
                     </div>
                     <div className="flex flex-col w-full items-start justify-start">
                         {displayedBoxes && displayedBoxes.length > 0 ? (

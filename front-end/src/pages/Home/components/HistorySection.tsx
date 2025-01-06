@@ -191,7 +191,7 @@ const HistorySection: React.FC<{
                         </div>
                     </div>
                 ))}
-                <div className="flex justify-end items-center space-x-4 mt-8 pr-4">
+                <div className="flex justify-center md:justify-end items-center space-x-4 mt-8 pr-4">
                     <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}

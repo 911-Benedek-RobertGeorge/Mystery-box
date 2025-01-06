@@ -276,7 +276,6 @@ const Home: React.FC = () => {
                         />
                     </div>
                 </div>
-
                 <SectionContainer key={2}>
                     <div className="relative flex flex-col justify-center items-center w-full min-h-[80vh] text-white z-[51]">
                         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background-dark to-accent-dark opacity-30 blur-3xl"></div>
@@ -287,7 +286,7 @@ const Home: React.FC = () => {
                             transition={{ duration: 0.6 }}
                             className="flex flex-col justify-center items-center max-w-6xl px-4 md:px-8 z-10"
                         >
-                            <h2 className="text-4xl md:text-6xl font-bold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-accent via-accent-dark to-emerald-500 pb-4">
+                            <h2 className="text-4xl md:text-6xl font-bold mb-8 mt-4 text-transparent bg-clip-text bg-gradient-to-r from-accent via-accent-dark to-emerald-500 pb-4">
                                 About Us
                             </h2>
 
@@ -295,7 +294,10 @@ const Home: React.FC = () => {
                                 <motion.div
                                     initial={{ opacity: 0, x: -50 }}
                                     whileInView={{ opacity: 1, x: 0 }}
-                                    transition={{ duration: 0.6, delay: 0.2 }}
+                                    transition={{
+                                        duration: 0.6,
+                                        delay: 0.2,
+                                    }}
                                     className="space-y-4 md:space-y-8"
                                 >
                                     <div className="bg-background-light bg-opacity-75 p-6 rounded-lg shadow-lg border border-accent/20">
@@ -403,8 +405,11 @@ const Home: React.FC = () => {
                                 <motion.div
                                     initial={{ opacity: 0, x: 50 }}
                                     whileInView={{ opacity: 1, x: 0 }}
-                                    transition={{ duration: 0.6, delay: 0.4 }}
-                                    className="space-y-4 md:space-y-8"
+                                    transition={{
+                                        duration: 0.6,
+                                        delay: 0.4,
+                                    }}
+                                    className="space-y-4 md:space-y-8 mb-4"
                                 >
                                     <div className="bg-background-light bg-opacity-75 p-6 rounded-lg shadow-lg border border-accent/20">
                                         <h3 className="text-2xl font-bold text-purple-500 mb-4">
@@ -463,7 +468,7 @@ const Home: React.FC = () => {
                             </div>
                         </motion.div>
                     </div>
-                </SectionContainer>
+                </SectionContainer>{' '}
             </div>
         </div>
     )
