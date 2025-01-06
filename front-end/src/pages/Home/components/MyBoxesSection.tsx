@@ -25,6 +25,10 @@ const MyBoxesSection: React.FC<MyBoxesSectionProps> = ({
     hasPendingTransaction,
     setHasPendingTransaction,
 }) => {
+    const [offset, setOffset] = React.useState(0)
+    const [limit] = React.useState(5)
+    const [itemsCount, setItemsCount] = React.useState(0)
+
     const [myBoxes, setMyBoxes] = React.useState<MysteryBox[]>()
     const { publicKey } = useWallet()
     const [selectedBoxId, setSelectedBoxId] = React.useState<string>('')
@@ -37,7 +41,7 @@ const MyBoxesSection: React.FC<MyBoxesSectionProps> = ({
                 if (!publicKey || !jwtToken) return
 
                 const response = await fetch(
-                    `${VITE_ENV_BACKEND_URL}/boxes/me`,
+                    `${VITE_ENV_BACKEND_URL}/boxes/me?offset=${offset}&limit=${limit}`,
                     {
                         headers: {
                             Authorization: `Bearer ${jwtToken}`,
@@ -97,9 +101,9 @@ const MyBoxesSection: React.FC<MyBoxesSectionProps> = ({
                         <div className="absolute inset-0 bg-gradient-to-b from-backgorund-dark to-background-dark opacity-10"></div>{' '}
                     </div> */}
                     <div className="flex flex-col w-full items-start justify-start">
-                        {displayedBoxes && displayedBoxes.length > 0 ? (
+                        {myBoxes ? (
                             <>
-                                {displayedBoxes.map((box, index) => {
+                                {myBoxes.map((box, index) => {
                                     return (
                                         <BoxCard
                                             key={index}
@@ -111,16 +115,45 @@ const MyBoxesSection: React.FC<MyBoxesSectionProps> = ({
                                         />
                                     )
                                 })}
-                                {myBoxes && myBoxes.length > 3 && (
-                                    <button
-                                        onClick={() => setShowAll(!showAll)}
-                                        className="relative z-[60] w-full mt-4 py-2 text-accent border border-accent rounded-md hover:bg-accent hover:text-white transition-colors duration-300"
+                                <div className="flex justify-center md:justify-end items-center space-x-4 mt-8 pr-4 w-full">
+                                    <motion.button
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        onClick={() =>
+                                            setOffset(
+                                                Math.max(0, offset - limit)
+                                            )
+                                        }
+                                        disabled={offset === 0}
+                                        className="relative px-6 py-2 rounded-full border border-accent/30 
+                                                           text-accent font-medium transition-all group overflow-hidden
+                                                           hover:border-accent/50 hover:text-accent-light
+                                                           disabled:opacity-30 disabled:cursor-not-allowed"
                                     >
-                                        {showAll
-                                            ? 'Show Less'
-                                            : `Show All (${myBoxes.length})`}
-                                    </button>
-                                )}
+                                        <div className="relative flex items-center space-x-2">
+                                            <span>←</span>
+                                            <span>Previous</span>
+                                        </div>
+                                    </motion.button>
+
+                                    <motion.button
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        onClick={() =>
+                                            setOffset(offset + limit)
+                                        }
+                                        disabled={itemsCount !== limit}
+                                        className="relative px-6 py-2 rounded-full border border-accent/30 
+                                                           text-accent font-medium transition-all group overflow-hidden
+                                                           hover:border-accent/50 hover:text-accent-light
+                                                           disabled:opacity-30 disabled:cursor-not-allowed"
+                                    >
+                                        <div className="relative flex items-center space-x-2">
+                                            <span>Next</span>
+                                            <span>→</span>
+                                        </div>
+                                    </motion.button>
+                                </div>
                             </>
                         ) : (
                             <motion.div

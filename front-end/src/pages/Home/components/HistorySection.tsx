@@ -51,7 +51,7 @@ const HistorySection: React.FC<{
     }, [offset, limit, hasPendingTransaction])
 
     return (
-        <div className="relative flex flex-col justify-start items-center w-full max-w-screen-xl mx-auto px-4 xl:px-16 py-12">
+        <div className="relative flex flex-col justify-start items-center w-full max-w-screen-xl mx-auto px-4 xl:px-16 py-12  h-full lg:h-screen">
             <div className="flex justify-start items-start w-full">
                 <span className="text-2xl font-bold bg-gradient-to-r from-accent to-accent-light bg-clip-text text-transparent mb-4 italic">
                     Professional degens bought
@@ -59,7 +59,7 @@ const HistorySection: React.FC<{
             </div>
 
             <div className="w-full space-y-4">
-                {historyData.slice(0, 5).map((box, index) => (
+                {historyData.map((box, index) => (
                     <BoxCard key={index} box={box} />
                 ))}
                 <div className="flex justify-center md:justify-end items-center space-x-4 mt-8 pr-4">

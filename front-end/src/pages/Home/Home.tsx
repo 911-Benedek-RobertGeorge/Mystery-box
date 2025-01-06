@@ -447,20 +447,24 @@ const Home: React.FC = () => {
                                             </span>
                                             .
                                         </p>
-                                        <motion.button
-                                            whileHover={{
-                                                scale: 1.05,
-                                                boxShadow:
-                                                    '0 0 20px rgba(0, 255, 255, 0.5)',
-                                            }}
-                                            whileTap={{ scale: 0.95 }}
-                                            onClick={() =>
-                                                scrollToSection('boxes-section')
-                                            }
-                                            className="mt-6 px-8 py-3 rounded-full bg-gradient-to-r from-accent via-accent-dark to-emerald-500 text-white font-bold transition-all hover:shadow-lg hover:shadow-accent/50"
-                                        >
-                                            Buy a memebox 🚀
-                                        </motion.button>
+                                        <div className="mx-auto md:mx-0 w-full flex justify-center md:justify-start">
+                                            <motion.button
+                                                whileHover={{
+                                                    scale: 1.05,
+                                                    boxShadow:
+                                                        '0 0 20px rgba(0, 255, 255, 0.5)',
+                                                }}
+                                                whileTap={{ scale: 0.95 }}
+                                                onClick={() =>
+                                                    scrollToSection(
+                                                        'boxes-section'
+                                                    )
+                                                }
+                                                className=" mt-6 px-8 py-3 rounded-full bg-gradient-to-r from-accent via-accent-dark to-emerald-500 text-white font-bold transition-all hover:shadow-lg hover:shadow-accent/50"
+                                            >
+                                                Buy a memebox 🚀
+                                            </motion.button>
+                                        </div>
                                     </div>
                                 </motion.div>
                             </div>
