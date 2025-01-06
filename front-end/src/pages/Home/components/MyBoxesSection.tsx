@@ -13,7 +13,7 @@ import {
 import questionMark from '../../../assets/elements/question_mark.png'
 import { FaExternalLinkAlt } from 'react-icons/fa'
 import key from '../../../assets/boxes/key.png'
- import { motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 
 interface MyBoxesSectionProps {
     hasPendingTransaction: boolean
@@ -88,11 +88,9 @@ const MyBoxesSection: React.FC<MyBoxesSectionProps> = ({
                         <span className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-accent via-accent-dark to-emerald-500 p-2 mb-4">
                             My boxes ({myBoxes?.length || 0})
                         </span>
-                    </div>
-                    
                     </motion.div>
                     <div className="absolute inset-0 w-full h-full z-0">
-                         <div className="absolute inset-0 h-1/2 bg-gradient-to-r from-black via-accent to-black opacity-5  "></div>
+                        <div className="absolute inset-0 h-1/2 bg-gradient-to-r from-black via-accent to-black opacity-5  "></div>
                         <div className="absolute inset-0 bg-gradient-to-b from-backgorund-dark to-background-dark opacity-10"></div>{' '}
                     </div>
                     <div className="flex flex-col w-full items-start justify-start">
