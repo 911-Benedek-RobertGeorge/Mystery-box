@@ -233,7 +233,7 @@ export function BuyModal({
                         </span>
                         <div className="-translate-x-40 group-hover/modal-btn:translate-x-0 flex items-center justify-center absolute inset-0 transition duration-500 text-white z-20">
                             <img
-                                className="w-8 animate-bounce"
+                                className="w-8 animate-bounce mt-2"
                                 src={questionMark}
                             />
                         </div>

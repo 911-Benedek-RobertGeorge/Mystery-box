@@ -127,10 +127,10 @@ const Home: React.FC = () => {
     return (
         <div className="flex flex-col relative w-screen max-w-screen select-none bg-background-dark overflow-hidden">
             <BackgroundGradientAnimation
-                className="justify-center allign-center h-full!"
+                className="justify-center allign-center h-screen"
                 gradientBackgroundStart="rgb(0, 0, 0)"
                 gradientBackgroundEnd="rgb(19, 39, 40)"
-                size="100%"
+                size="50%"
             >
                 <SectionContainer key={1}>
                     <div
@@ -139,7 +139,7 @@ const Home: React.FC = () => {
                     >
                         <div className="opacity-0 md:opacity-100 w-full left-0 text-center">
                             <div className=" text-2xl md:text-6xl w-full flex flex-col">
-                                <div className="z-[41] left-[10%] blur-lg w-1/5 h-20 bg-neutral-900    absolute"></div>
+                                <div className="z-[41] left-[10%] blur-lg w-1/5 h-20 bg-neutral-900  absolute"></div>
                                 <h1 className="z-[103] md:-ml-[60%] leading-tight text-transparent bg-clip-text bg-gradient-to-r from-accent via-accent-dark to-emerald-500 animate-glossy ">
                                     Fancy some
                                 </h1>{' '}
@@ -255,30 +255,28 @@ const Home: React.FC = () => {
             />
             <div className="flex flex-col w-screen h-full">
                 <div className="flex flex-col -mt-96 relative justify-center items-center w-full md:w-1/2 h-96  ml-auto text-white p-8">
-                    <div className="absolute inset-0 w-full h-screen z-0   ">
-                        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background-dark to-accent-dark opacity-30 blur-3xl"></div>
-                        <div className="absolute inset-0 opacity-40  top-96">
-                            <img
-                                className="z-[51] -hue-rotate-90 transition-all duration-1000  ease-out"
-                                src={ribbons}
-                                style={{
-                                    transform: `translateY(${-1300 + scrollPosition * 0.42}px)`,
-                                    rotate: `${200 - scrollPosition * 0.2}deg`,
-                                }}
-                            />
-                        </div>{' '}
+                    {/* <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background-dark to-accent-dark opacity-30 blur-3xl"></div> */}
+                    <div className="absolute inset-0 opacity-40  top-96">
                         <img
-                            className=" z-[50] absolut transition-all duration-1000 ease-out "
-                            src={key}
+                            className="z-[51] -hue-rotate-90 transition-all duration-1000  ease-out"
+                            src={ribbons}
                             style={{
-                                transform: `translateX(${Math.max(0, -2650 + scrollPosition)}px) translateY(${-2050 + scrollPosition}px) `, //translateX(${((-1 * (scrollPosition  / 5) % 2) * scrollPosition) % 1200}px)
+                                transform: `translateY(${-1300 + scrollPosition * 0.42}px)`,
+                                rotate: `${200 - scrollPosition * 0.2}deg`,
                             }}
                         />
-                    </div>
+                    </div>{' '}
+                    <img
+                        className=" z-[50] absolut transition-all duration-1000 ease-out "
+                        src={key}
+                        style={{
+                            transform: `translateX(${Math.max(0, -2650 + scrollPosition)}px) translateY(${-2050 + scrollPosition}px) `, //translateX(${((-1 * (scrollPosition  / 5) % 2) * scrollPosition) % 1200}px)
+                        }}
+                    />
                 </div>
                 <SectionContainer key={2}>
                     <div className="relative flex flex-col justify-center items-center w-full min-h-[80vh] text-white z-[51]">
-                        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background-dark to-accent-dark opacity-30 blur-3xl"></div>
+                        {/* <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background-dark to-accent-dark opacity-30 blur-3xl"></div> */}
 
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}

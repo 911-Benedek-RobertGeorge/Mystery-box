@@ -126,7 +126,7 @@ export function OpenBoxModal({
                     <div className="text-center text-accent/80 text-lg mt-2 font-light w-[80%] mx-auto">
                         {mysteryBox && (
                             <div className="text-center mt-4 space ">
-                                <h2 className="text-xl font-bold text-green-400">
+                                <h2 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-accent   to-emerald-400 ">
                                     🎉 Congratulations! 🎉
                                 </h2>
                                 <p className="text-lg text-accent">
