@@ -6,7 +6,7 @@ interface SectionContainerProps {
 
 const SectionContainer: React.FC<SectionContainerProps> = ({ children }) => {
     return (
-        <div className="relative p-4 md:p-12 mx-auto justify-center flex rounded-3xl flex-row h-screen w-screen ">
+        <div className="relative p-4 md:p-12 mx-auto justify-center flex rounded-3xl flex-row h-full md:h-screen w-screen ">
             <img
                 className="absolute bottom-32 -right-20 w-[25%] "
                 src={solanaImage}

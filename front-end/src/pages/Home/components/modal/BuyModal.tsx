@@ -233,14 +233,14 @@ export function BuyModal({
                         </span>
                         <div className="-translate-x-40 group-hover/modal-btn:translate-x-0 flex items-center justify-center absolute inset-0 transition duration-500 text-white z-20">
                             <img
-                                className="w-8 animate-bounce"
+                                className="w-8 animate-bounce mt-2"
                                 src={questionMark}
                             />
                         </div>
                     </ModalTrigger>
-                    <ModalBody className="bg-background-dark w-full rounded-t-xl border-t border-accent/20">
+                    <ModalBody className="bg-background-dark w-full rounded-t-xl border-t border-accent/20 ">
                         <ModalContent>
-                            <div className="p-6">
+                            <div className="">
                                 <div className="text-center mb-8">
                                     <h4 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-accent via-purple-500 to-emerald-500 text-transparent bg-clip-text">
                                         {!boughtBoxId
@@ -268,6 +268,7 @@ export function BuyModal({
                                         >
                                             <div className="absolute inset-0 bg-gradient-to-r from-accent to-emerald-500 rounded-lg blur opacity-20 group-hover:opacity-40 transition-opacity"></div>
                                             <motion.div
+                                                className="rounded-lg"
                                                 animate={{
                                                     scale: [1, 1.05, 1],
                                                     boxShadow: [
@@ -421,7 +422,7 @@ export function BuyModal({
                                     </div>
                                 ) : (
                                     <div className="bg-background-light/5 rounded-xl p-4 border border-accent/20">
-                                        <ol className="space-y-3">
+                                        <ol className="md:space-y-2">
                                             {[
                                                 'Formatting transaction',
                                                 'Waiting for signature',
@@ -456,15 +457,15 @@ export function BuyModal({
 
                         <ModalFooter
                             shouldClose={boughtBoxId ? true : false}
-                            className="border-t border-accent/20 bg-background-dark/80 backdrop-blur-sm p-4"
+                            className="border-t border-accent/20 bg-background-dark/80 backdrop-blur-sm p-4 flex justify-center items-center "
                         >
                             {boughtBoxId ? (
                                 <motion.button
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
                                     onClick={() => scrollToSection('my-boxes')}
-                                    className="w-full px-6 py-3 rounded-full bg-gradient-to-r from-accent via-accent-dark to-emerald-500 
-                                    text-white font-bold hover:shadow-lg hover:shadow-accent/30 transition-all"
+                                    className="w-full lg:w-1/2  px-6 py-3 rounded-full bg-gradient-to-r from-accent via-accent-dark to-emerald-500 
+                                    text-white font-bold hover:shadow-lg hover:shadow-accent/30 transition-all "
                                 >
                                     View my boxes 📦
                                 </motion.button>
@@ -474,7 +475,7 @@ export function BuyModal({
                                     whileTap={{ scale: 0.95 }}
                                     onClick={buyMysteryBox}
                                     disabled={step > 0}
-                                    className="w-full px-6 py-3 rounded-full bg-gradient-to-r from-accent via-accent-dark to-emerald-500 
+                                    className="w-full lg:w-1/2 px-6 py-3 rounded-full bg-gradient-to-r from-accent via-accent-dark to-emerald-500 
                                     text-white font-bold hover:shadow-lg hover:shadow-accent/30 transition-all 
                                     disabled:opacity-50 disabled:cursor-not-allowed"
                                 >

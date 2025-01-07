@@ -127,10 +127,10 @@ const Home: React.FC = () => {
     return (
         <div className="flex flex-col relative w-screen max-w-screen select-none bg-background-dark overflow-hidden">
             <BackgroundGradientAnimation
-                className="justify-center allign-center h-full!"
+                className="justify-center allign-center h-screen"
                 gradientBackgroundStart="rgb(0, 0, 0)"
                 gradientBackgroundEnd="rgb(19, 39, 40)"
-                size="100%"
+                size="50%"
             >
                 <SectionContainer key={1}>
                     <div
@@ -139,7 +139,7 @@ const Home: React.FC = () => {
                     >
                         <div className="opacity-0 md:opacity-100 w-full left-0 text-center">
                             <div className=" text-2xl md:text-6xl w-full flex flex-col">
-                                <div className="z-[41] left-[10%] blur-lg w-1/5 h-20 bg-neutral-900    absolute"></div>
+                                <div className="z-[41] left-[10%] blur-lg w-1/5 h-20 bg-neutral-900  absolute"></div>
                                 <h1 className="z-[103] md:-ml-[60%] leading-tight text-transparent bg-clip-text bg-gradient-to-r from-accent via-accent-dark to-emerald-500 animate-glossy ">
                                     Fancy some
                                 </h1>{' '}
@@ -223,7 +223,6 @@ const Home: React.FC = () => {
                 >
                     <img src={fluidTape} alt="Fluid Tape" />
                 </div>
-
                 <motion.div
                     className="absolute w-80"
                     initial={{
@@ -244,42 +243,36 @@ const Home: React.FC = () => {
                 </motion.div>
                 <BoxesSection
                     setHasPendingTransaction={setHasPendingTransaction}
-                />
+                />{' '}
             </div>{' '}
-            {/* <div className="relative w-32 ">
-                <img src={smile} />{' '}
-            </div> */}
             <MyBoxesSection
                 hasPendingTransaction={hasPendingTransaction}
                 setHasPendingTransaction={setHasPendingTransaction}
             />
             <div className="flex flex-col w-screen h-full">
                 <div className="flex flex-col -mt-96 relative justify-center items-center w-full md:w-1/2 h-96  ml-auto text-white p-8">
-                    <div className="absolute inset-0 w-full h-screen z-0   ">
-                        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background-dark to-accent-dark opacity-30 blur-3xl"></div>
-                        <div className="absolute inset-0 opacity-40  top-96">
-                            <img
-                                className="z-[51] -hue-rotate-90 transition-all duration-1000  ease-out"
-                                src={ribbons}
-                                style={{
-                                    transform: `translateY(${-1300 + scrollPosition * 0.42}px)`,
-                                    rotate: `${200 - scrollPosition * 0.2}deg`,
-                                }}
-                            />
-                        </div>{' '}
+                    {/* <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background-dark to-accent-dark opacity-30 blur-3xl"></div> */}
+                    <div className="absolute inset-0 opacity-40  top-96">
                         <img
-                            className=" z-[50] absolut transition-all duration-1000 ease-out "
-                            src={key}
+                            className="z-[51] -hue-rotate-90 transition-all duration-1000  ease-out"
+                            src={ribbons}
                             style={{
-                                transform: `translateX(${Math.max(0, -2650 + scrollPosition)}px) translateY(${-2050 + scrollPosition}px) `, //translateX(${((-1 * (scrollPosition  / 5) % 2) * scrollPosition) % 1200}px)
+                                transform: `translateY(${-1300 + scrollPosition * 0.42}px)`,
+                                rotate: `${200 - scrollPosition * 0.2}deg`,
                             }}
                         />
-                    </div>
+                    </div>{' '}
+                    <img
+                        className=" z-[50] absolut transition-all duration-1000 ease-out "
+                        src={key}
+                        style={{
+                            transform: `translateX(${Math.max(0, -2650 + scrollPosition)}px) translateY(${-2050 + scrollPosition}px) `, //translateX(${((-1 * (scrollPosition  / 5) % 2) * scrollPosition) % 1200}px)
+                        }}
+                    />
                 </div>
-
                 <SectionContainer key={2}>
                     <div className="relative flex flex-col justify-center items-center w-full min-h-[80vh] text-white z-[51]">
-                        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background-dark to-accent-dark opacity-30 blur-3xl"></div>
+                        {/* <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background-dark to-accent-dark opacity-30 blur-3xl"></div> */}
 
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
@@ -287,7 +280,7 @@ const Home: React.FC = () => {
                             transition={{ duration: 0.6 }}
                             className="flex flex-col justify-center items-center max-w-6xl px-4 md:px-8 z-10"
                         >
-                            <h2 className="text-4xl md:text-6xl font-bold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-accent via-accent-dark to-emerald-500 pb-4">
+                            <h2 className="text-4xl md:text-6xl font-bold mb-8 mt-4 text-transparent bg-clip-text bg-gradient-to-r from-accent via-accent-dark to-emerald-500 pb-4">
                                 About Us
                             </h2>
 
@@ -295,7 +288,10 @@ const Home: React.FC = () => {
                                 <motion.div
                                     initial={{ opacity: 0, x: -50 }}
                                     whileInView={{ opacity: 1, x: 0 }}
-                                    transition={{ duration: 0.6, delay: 0.2 }}
+                                    transition={{
+                                        duration: 0.6,
+                                        delay: 0.2,
+                                    }}
                                     className="space-y-4 md:space-y-8"
                                 >
                                     <div className="bg-background-light bg-opacity-75 p-6 rounded-lg shadow-lg border border-accent/20">
@@ -403,8 +399,11 @@ const Home: React.FC = () => {
                                 <motion.div
                                     initial={{ opacity: 0, x: 50 }}
                                     whileInView={{ opacity: 1, x: 0 }}
-                                    transition={{ duration: 0.6, delay: 0.4 }}
-                                    className="space-y-4 md:space-y-8"
+                                    transition={{
+                                        duration: 0.6,
+                                        delay: 0.4,
+                                    }}
+                                    className="space-y-4 md:space-y-8 mb-4"
                                 >
                                     <div className="bg-background-light bg-opacity-75 p-6 rounded-lg shadow-lg border border-accent/20">
                                         <h3 className="text-2xl font-bold text-purple-500 mb-4">
@@ -444,26 +443,30 @@ const Home: React.FC = () => {
                                             </span>
                                             .
                                         </p>
-                                        <motion.button
-                                            whileHover={{
-                                                scale: 1.05,
-                                                boxShadow:
-                                                    '0 0 20px rgba(0, 255, 255, 0.5)',
-                                            }}
-                                            whileTap={{ scale: 0.95 }}
-                                            onClick={() =>
-                                                scrollToSection('boxes-section')
-                                            }
-                                            className="mt-6 px-8 py-3 rounded-full bg-gradient-to-r from-accent via-accent-dark to-emerald-500 text-white font-bold transition-all hover:shadow-lg hover:shadow-accent/50"
-                                        >
-                                            Buy a memebox 🚀
-                                        </motion.button>
+                                        <div className="mx-auto md:mx-0 w-full flex justify-center md:justify-start">
+                                            <motion.button
+                                                whileHover={{
+                                                    scale: 1.05,
+                                                    boxShadow:
+                                                        '0 0 20px rgba(0, 255, 255, 0.5)',
+                                                }}
+                                                whileTap={{ scale: 0.95 }}
+                                                onClick={() =>
+                                                    scrollToSection(
+                                                        'boxes-section'
+                                                    )
+                                                }
+                                                className=" mt-6 px-8 py-3 rounded-full bg-gradient-to-r from-accent via-accent-dark to-emerald-500 text-white font-bold transition-all hover:shadow-lg hover:shadow-accent/50"
+                                            >
+                                                Buy a memebox 🚀
+                                            </motion.button>
+                                        </div>
                                     </div>
                                 </motion.div>
                             </div>
                         </motion.div>
                     </div>
-                </SectionContainer>
+                </SectionContainer>{' '}
             </div>
         </div>
     )

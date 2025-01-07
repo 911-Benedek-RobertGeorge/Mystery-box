@@ -13,7 +13,14 @@ const BoxesSection: React.FC<{
     )
 
     return (
-        <div className=" relative flex flex-col md:flex-row justify-center items-center w-full space-y-32 md:space-y-0 pt-32">
+        <div className=" relative flex flex-col md:flex-row justify-center items-center w-full space-y-32 md:space-y-0  lg:pb-32">
+            {' '}
+            <div className="absolute inset-0 w-full h-full z-0">
+                <div className="absolute inset-0 bg-gradient-to-r from-black via-accent/80 to-black opacity-10 animate-gradient-x"></div>
+                <div className="absolute inset-0 bg-gradient-to-b from-black to-background-dark opacity-40"></div>
+
+                <div className="absolute top-56 left-52 inset-0 bg-[url('src/assets/shapes/lines.png')] opacity-5"></div>
+            </div>
             <div className="md:ml-32">
                 {boxTypes && (
                     <BoxDetails
@@ -22,7 +29,6 @@ const BoxesSection: React.FC<{
                     />
                 )}
             </div>
-
             <div className="md:ml-96   -hue-rotate-60 ">
                 {boxTypes && (
                     <BoxDetails

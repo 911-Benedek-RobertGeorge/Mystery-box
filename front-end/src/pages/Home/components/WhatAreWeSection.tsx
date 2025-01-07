@@ -1,6 +1,7 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import HistorySection from './HistorySection'
+import { scrollToSection } from '../../../libs/utils'
 
 interface WhatAreWeSectionProps {
     hasPendingTransaction: boolean
@@ -9,13 +10,6 @@ interface WhatAreWeSectionProps {
 const WhatAreWeSection: React.FC<WhatAreWeSectionProps> = ({
     hasPendingTransaction,
 }) => {
-    const scrollToSection = (id: string) => {
-        const element = document.getElementById(id)
-        if (element) {
-            element.scrollIntoView({ behavior: 'smooth' })
-        }
-    }
-
     return (
         <div className="flex flex-col relative justify-center items-center w-full min-h-[80vh] text-white">
             <div className="flex flex-col justify-center items-center w-full max-w-6xl px-4 md:px-8 pt-16 z-[51]">
@@ -137,12 +131,10 @@ const WhatAreWeSection: React.FC<WhatAreWeSectionProps> = ({
                     </motion.div>
                 </div>
             </div>
-
             <div className="absolute inset-0 w-full h-full z-0">
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-accent to-background-light opacity-20 animate-gradient-x"></div>
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-60"></div>
-                <div className="absolute inset-0 bg-[url('/meme-pattern.png')] opacity-5"></div>
-            </div>
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-60"></div>{' '}
+            </div>{' '}
             <HistorySection hasPendingTransaction={hasPendingTransaction} />
         </div>
     )
