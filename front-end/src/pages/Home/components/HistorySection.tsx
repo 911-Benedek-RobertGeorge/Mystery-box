@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import logo from '../../../assets/elements/logo.png'
 import {
     lamportsToSol,
@@ -27,24 +27,26 @@ interface HistoryItem {
 const HistorySection: React.FC<{
     hasPendingTransaction: boolean
 }> = ({ hasPendingTransaction }) => {
+    const [isLoadingMore, setIsLoadingMore] = useState(false)
     const [historyData, setHistoryData] = React.useState<MysteryBox[]>([])
     const [offset, setOffset] = React.useState(0)
     const [limit] = React.useState(5)
     const [itemsCount, setItemsCount] = React.useState(0)
 
-    useEffect(() => {
-        const fetchMyBoxes = async () => {
-            try {
-                const response = await fetch(
-                    `${VITE_ENV_BACKEND_URL}/boxes/results?offset=${offset}&limit=${limit}`
-                )
-                const data: MysteryBox[] = await response.json()
-
-                setHistoryData(data)
-                setItemsCount(data.length)
-            } catch (error) {
-                console.error('fetchMyBoxes: ', error)
-            }
+    const fetchHistoryData = async (newOffset: number) => {
+        setIsLoadingMore(true)
+        try {
+            const response = await fetch(
+                `${VITE_ENV_BACKEND_URL}/boxes/results?offset=${newOffset}&limit=${limit}`
+            )
+            const data: MysteryBox[] = await response.json()
+             setHistoryData(data)
+            setItemsCount(data.length)
+            setOffset(newOffset)
+        } catch (error) {
+            console.error('fetchHistoryData: ', error)
+        } finally {
+            setIsLoadingMore(false)
         }
 
         fetchMyBoxes()
@@ -66,32 +68,52 @@ const HistorySection: React.FC<{
                     <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        onClick={() => setOffset(Math.max(0, offset - limit))}
-                        disabled={offset === 0}
+                        onClick={() =>
+                            fetchHistoryData(Math.max(0, offset - limit))
+                        }
+                        disabled={offset === 0 || isLoadingMore}
                         className="relative px-6 py-2 rounded-full border border-accent/30 
                             text-accent font-medium transition-all group overflow-hidden
                             hover:border-accent/50 hover:text-accent-light
                             disabled:opacity-30 disabled:cursor-not-allowed"
                     >
                         <div className="relative flex items-center space-x-2">
-                            <span>←</span>
-                            <span>Previous</span>
+                            {isLoadingMore && offset !== 0 ? (
+                                <div className="flex items-center space-x-2">
+                                    <div className="w-4 h-4 border-2 border-accent rounded-full border-t-transparent animate-spin"></div>
+                                    <span>Loading...</span>
+                                </div>
+                            ) : (
+                                <>
+                                    <span>←</span>
+                                    <span>Previous</span>
+                                </>
+                            )}
                         </div>
                     </motion.button>
 
                     <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        onClick={() => setOffset(offset + limit)}
-                        disabled={itemsCount !== limit}
+                        onClick={() => fetchHistoryData(offset + limit)}
+                        disabled={itemsCount !== limit || isLoadingMore}
                         className="relative px-6 py-2 rounded-full border border-accent/30 
                             text-accent font-medium transition-all group overflow-hidden
                             hover:border-accent/50 hover:text-accent-light
                             disabled:opacity-30 disabled:cursor-not-allowed"
                     >
                         <div className="relative flex items-center space-x-2">
-                            <span>Next</span>
-                            <span>→</span>
+                            {isLoadingMore && itemsCount === limit ? (
+                                <div className="flex items-center space-x-2">
+                                    <div className="w-4 h-4 border-2 border-accent rounded-full border-t-transparent animate-spin"></div>
+                                    <span>Loading...</span>
+                                </div>
+                            ) : (
+                                <>
+                                    <span>Next</span>
+                                    <span>→</span>
+                                </>
+                            )}
                         </div>
                     </motion.button>
                 </div>

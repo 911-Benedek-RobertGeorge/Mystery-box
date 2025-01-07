@@ -1,7 +1,5 @@
 import { ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
-import { PublicKey, Transaction } from '@solana/web3.js'
-import { VITE_ENV_BACKEND_PUBLIC_KEY } from './config'
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))
