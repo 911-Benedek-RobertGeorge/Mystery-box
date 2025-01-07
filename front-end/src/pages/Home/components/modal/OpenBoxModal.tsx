@@ -40,6 +40,8 @@ export function OpenBoxModal({
 
     async function openBoughtBox(boxId: string) {
         try {
+            setCloseModal(false)
+
             if (!publicKey || !jwtToken) {
                 toast.prototype('Plase reconnect your wallet')
                 throw new Error('JWT Token not found')
@@ -91,7 +93,6 @@ export function OpenBoxModal({
             console.error('Error opening the box transaction:', error)
         } finally {
             setHasPendingTransaction && setHasPendingTransaction(false)
-            setCloseModal(false)
         }
     }
 

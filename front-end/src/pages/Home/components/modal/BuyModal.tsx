@@ -92,6 +92,11 @@ export function BuyModal({
             } catch (error) {
                 attempts++
                 if (error instanceof Error) {
+                    if (error.message === 'User rejected the request.') {
+                        toast.error('User rejected the request.')
+                        setStep(-1)
+                        return
+                    }
                     toast.error(`Attempt ${attempts} failed: ${error.message}`)
                     console.error(`Attempt ${attempts} failed:`, error)
                 } else {
