@@ -112,18 +112,37 @@ const MyBoxesSection: React.FC<MyBoxesSectionProps> = ({
                                                             {box.boxType.name}
                                                         </div>
 
-                                                        <div
-                                                            className="flex flex-row space-x-2 cursor-pointer"
-                                                            onClick={() =>
-                                                                window.open(
-                                                                    `https://explorer.solana.com/tx/${box.claimSignature ? box.claimSignature : box.buySignature}`
-                                                                )
-                                                            }
-                                                        >
-                                                            <span className="text-sm text-slate-400">
-                                                                {box.status}{' '}
-                                                            </span>
-                                                            <FaExternalLinkAlt />
+                                                        <div className="flex flex-col items-start justify-center space-y-1">
+                                                            <div
+                                                                className="flex flex-row items-center space-x-2 cursor-pointer hover:text-accent transition-colors duration-200 group"
+                                                                onClick={() =>
+                                                                    window.open(
+                                                                        `https://explorer.solana.com/tx/${box.buySignature}`
+                                                                    )
+                                                                }
+                                                            >
+                                                                <span className="text-sm text-slate-400 group-hover:text-accent">
+                                                                    Purchase
+                                                                    Transaction
+                                                                </span>
+                                                                <FaExternalLinkAlt className="w-3 h-3 text-slate-400 group-hover:text-accent" />
+                                                            </div>
+                                                            {box.claimSignature && (
+                                                                <div
+                                                                    className="flex flex-row items-center space-x-2 cursor-pointer hover:text-accent transition-colors duration-200 group"
+                                                                    onClick={() =>
+                                                                        window.open(
+                                                                            `https://explorer.solana.com/tx/${box.claimSignature}`
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    <span className="text-sm text-slate-400 group-hover:text-accent">
+                                                                        Opening
+                                                                        Transaction
+                                                                    </span>
+                                                                    <FaExternalLinkAlt className="w-3 h-3 text-slate-400 group-hover:text-accent" />
+                                                                </div>
+                                                            )}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -167,19 +186,30 @@ const MyBoxesSection: React.FC<MyBoxesSectionProps> = ({
                                                             new Date(
                                                                 box.updatedAt
                                                             )
-                                                        ).hours > 0
+                                                        ).days > 0
                                                             ? timeDifferenceFromNow(
                                                                   new Date(
                                                                       box.updatedAt
                                                                   )
-                                                              ).hours +
-                                                              ' hours ago'
+                                                              ).days +
+                                                              ' days ago'
                                                             : timeDifferenceFromNow(
-                                                                  new Date(
-                                                                      box.updatedAt
-                                                                  )
-                                                              ).minutes +
-                                                              ' minutes ago'}
+                                                                    new Date(
+                                                                        box.updatedAt
+                                                                    )
+                                                                ).hours > 0
+                                                              ? timeDifferenceFromNow(
+                                                                    new Date(
+                                                                        box.updatedAt
+                                                                    )
+                                                                ).hours +
+                                                                ' hours ago'
+                                                              : timeDifferenceFromNow(
+                                                                    new Date(
+                                                                        box.updatedAt
+                                                                    )
+                                                                ).minutes +
+                                                                ' minutes ago'}
                                                     </div>
                                                 </div>
                                             </div>

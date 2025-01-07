@@ -147,11 +147,15 @@ const HistorySection: React.FC<{
                                     {box.date.toLocaleDateString()}
                                 </div>
                                 <div className="text-sm text-slate-500">
-                                    {timeDifferenceFromNow(box.date).hours > 0
-                                        ? timeDifferenceFromNow(box.date)
-                                              .hours + ' hours ago'
+                                    {timeDifferenceFromNow(box.date).days > 0
+                                        ? timeDifferenceFromNow(box.date).days +
+                                          ' days ago'
                                         : timeDifferenceFromNow(box.date)
-                                              .minutes + ' minutes ago'}
+                                                .hours > 0
+                                          ? timeDifferenceFromNow(box.date)
+                                                .hours + ' hours ago'
+                                          : timeDifferenceFromNow(box.date)
+                                                .minutes + ' minutes ago'}
                                 </div>
                             </div>
                         </div>
