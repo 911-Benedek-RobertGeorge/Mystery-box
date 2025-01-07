@@ -1,13 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import logo from '../../../assets/elements/logo.png'
-import {
-    lamportsToSol,
-    shortenAddress,
-    timeDifferenceFromNow,
-} from '../../../libs/utils'
 import { VITE_ENV_BACKEND_URL } from '../../../libs/config'
 import { memeCoinType, MysteryBox } from '../../../libs/interfaces'
-import { AnimatedTooltip } from '../../../components/ui/AnimatedTooltip'
 import { motion } from 'framer-motion'
 import BoxCard from './BoxCard'
 
@@ -33,6 +26,15 @@ const HistorySection: React.FC<{
     const [offset, setOffset] = React.useState(0)
     const [limit] = React.useState(5)
     const [itemsCount, setItemsCount] = React.useState(0)
+    const [totalItemsCount, setTotalItemsCount] = React.useState(0)
+
+    const fetchHistoryDataCount = async () => {
+        const response = await fetch(
+            `${VITE_ENV_BACKEND_URL}/boxes/results/count`
+        )
+        const data = await response.json()
+        setTotalItemsCount(data)
+    }
 
     const fetchHistoryData = async (newOffset: number) => {
         setIsLoadingMore(true)
@@ -53,13 +55,14 @@ const HistorySection: React.FC<{
 
     useEffect(() => {
         fetchHistoryData(offset)
+        fetchHistoryDataCount()
     }, [hasPendingTransaction])
 
     return (
         <div className="relative flex flex-col justify-start items-center w-full max-w-screen-xl mx-auto  md:p-10  py-12  h-full lg:h-screen">
             <div className="flex justify-center md:justify-start items-start w-full py-8">
                 <span className="text-2xl font-bold bg-gradient-to-r from-accent to-accent-light bg-clip-text text-transparent mb-4 italic">
-                    Professional degens bought
+                    Professional degens bought ({totalItemsCount})
                 </span>
             </div>
 

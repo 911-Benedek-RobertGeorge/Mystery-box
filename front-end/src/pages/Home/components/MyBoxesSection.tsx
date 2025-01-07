@@ -21,35 +21,48 @@ const MyBoxesSection: React.FC<MyBoxesSectionProps> = ({
     const [offset, setOffset] = React.useState(0)
     const [limit] = React.useState(5)
     const [itemsCount, setItemsCount] = React.useState(0)
+    const [totalItemsCount, setTotalItemsCount] = React.useState(0)
 
     const [myBoxes, setMyBoxes] = React.useState<MysteryBox[]>()
     const { publicKey } = useWallet()
     const [selectedBoxId, setSelectedBoxId] = React.useState<string>('')
     const jwtToken = sessionStorage.getItem('jwtToken')
 
-    useEffect(() => {
-        const fetchMyBoxes = async () => {
-            try {
-                if (!publicKey || !jwtToken) return
+    const fetchMyBoxesCount = async () => {
+        const response = await fetch(`${VITE_ENV_BACKEND_URL}/boxes/me/count`, {
+            headers: {
+                Authorization: `Bearer ${jwtToken}`,
+            },
+        })
+        const data = await response.json()
+        setTotalItemsCount(data)
+    }
 
-                const response = await fetch(
-                    `${VITE_ENV_BACKEND_URL}/boxes/me?offset=${offset}&limit=${limit}`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${jwtToken}`,
-                        },
-                    }
-                )
-                const data = await response.json()
-                if (response.status !== 200) {
-                    throw new Error(data.message)
+    const fetchMyBoxes = async () => {
+        try {
+            if (!publicKey || !jwtToken) return
+
+            const response = await fetch(
+                `${VITE_ENV_BACKEND_URL}/boxes/me?offset=${offset}&limit=${limit}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${jwtToken}`,
+                    },
                 }
-                setItemsCount(data.length)
-                setMyBoxes(data)
-            } catch (error) {
-                console.error('fetchMyBoxes: ', error)
+            )
+            const data = await response.json()
+            if (response.status !== 200) {
+                throw new Error(data.message)
             }
+            setItemsCount(data.length)
+            setMyBoxes(data)
+        } catch (error) {
+            console.error('fetchMyBoxes: ', error)
         }
+    }
+
+    useEffect(() => {
+        fetchMyBoxesCount()
         fetchMyBoxes()
     }, [publicKey, jwtToken, hasPendingTransaction])
 
@@ -82,7 +95,7 @@ const MyBoxesSection: React.FC<MyBoxesSectionProps> = ({
                         className="flex justify-center md:justify-start items-start w-full "
                     >
                         <span className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r py-8 from-accent via-accent-dark to-emerald-500 p-2 mb-4">
-                            My boxes ({myBoxes?.length || 0})
+                            My boxes ({totalItemsCount})
                         </span>
                     </motion.div>
                     {/* 
