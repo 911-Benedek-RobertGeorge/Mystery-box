@@ -212,7 +212,10 @@ function MemeCoinDetailsCard({ content }: { content: BoxContent }) {
                 </div>
                 <div className="text-xs text-gray-300">
                     <span className="font-semibold text-gray-400">Amount:</span>{' '}
-                    {parseInt(content.amount, 10)}
+                    {(
+                        parseInt(content.amount, 10) /
+                        10 ** content.token.decimals
+                    ).toFixed(2)}
                 </div>
                 <div className="text-xs text-gray-300">
                     <span className="font-semibold text-gray-400">

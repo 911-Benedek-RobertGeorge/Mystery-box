@@ -223,7 +223,6 @@ const Home: React.FC = () => {
                 >
                     <img src={fluidTape} alt="Fluid Tape" />
                 </div>
-
                 <motion.div
                     className="absolute w-80"
                     initial={{
@@ -244,11 +243,8 @@ const Home: React.FC = () => {
                 </motion.div>
                 <BoxesSection
                     setHasPendingTransaction={setHasPendingTransaction}
-                />
+                />{' '}
             </div>{' '}
-            {/* <div className="relative w-32 ">
-                <img src={smile} />{' '}
-            </div> */}
             <MyBoxesSection
                 hasPendingTransaction={hasPendingTransaction}
                 setHasPendingTransaction={setHasPendingTransaction}

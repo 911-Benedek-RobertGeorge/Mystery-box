@@ -1,18 +1,11 @@
-import React, { useEffect, useState } from 'react'
-import { BoxStatus, MysteryBox } from '../../../libs/interfaces'
+import React, { useEffect } from 'react'
+import { MysteryBox } from '../../../libs/interfaces'
 import { VITE_ENV_BACKEND_URL } from '../../../libs/config'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { OpenBoxModal } from './modal/OpenBoxModal'
-import cyanBox from '../../../assets/boxes/cyan_box.png'
-import { AnimatedTooltip } from '../../../components/ui/AnimatedTooltip'
-import {
-    lamportsToSol,
-    scrollToSection,
-    timeDifferenceFromNow,
-} from '../../../libs/utils'
+
+import { scrollToSection } from '../../../libs/utils'
 import questionMark from '../../../assets/elements/question_mark.png'
-import { FaExternalLinkAlt } from 'react-icons/fa'
-import key from '../../../assets/boxes/key.png'
 import { motion } from 'framer-motion'
 import BoxCard from './BoxCard'
 
@@ -33,7 +26,6 @@ const MyBoxesSection: React.FC<MyBoxesSectionProps> = ({
     const { publicKey } = useWallet()
     const [selectedBoxId, setSelectedBoxId] = React.useState<string>('')
     const jwtToken = sessionStorage.getItem('jwtToken')
-    const [showAll, setShowAll] = useState(false)
 
     useEffect(() => {
         const fetchMyBoxes = async () => {
@@ -52,6 +44,7 @@ const MyBoxesSection: React.FC<MyBoxesSectionProps> = ({
                 if (response.status !== 200) {
                     throw new Error(data.message)
                 }
+                setItemsCount(data.length)
                 setMyBoxes(data)
             } catch (error) {
                 console.error('fetchMyBoxes: ', error)
@@ -59,8 +52,6 @@ const MyBoxesSection: React.FC<MyBoxesSectionProps> = ({
         }
         fetchMyBoxes()
     }, [publicKey, jwtToken, hasPendingTransaction])
-
-    const displayedBoxes = showAll ? myBoxes : myBoxes?.slice(0, 3)
 
     const handleOpenBoxModal = () => {
         const button = document.getElementById('open-box-modal-button')
@@ -82,15 +73,15 @@ const MyBoxesSection: React.FC<MyBoxesSectionProps> = ({
             ) : (
                 <div
                     id="my-boxes"
-                    className="relative flex flex-col justify-start items-center p-10 xl:px-64 pb-64"
+                    className="relative flex flex-col justify-start items-center md:p-10 xl:px-64 pt-10 pb-32"
                 >
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6 }}
-                        className="flex justify-start items-start w-full"
+                        className="flex justify-center md:justify-start items-start w-full "
                     >
-                        <span className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-accent via-accent-dark to-emerald-500 p-2 mb-4">
+                        <span className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r py-8 from-accent via-accent-dark to-emerald-500 p-2 mb-4">
                             My boxes ({myBoxes?.length || 0})
                         </span>
                     </motion.div>

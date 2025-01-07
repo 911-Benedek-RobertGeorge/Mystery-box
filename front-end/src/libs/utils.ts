@@ -41,14 +41,18 @@ export function lamportsToSol(lamports: string): number {
 }
 
 export function timeDifferenceFromNow(date: Date): {
+    days: number
     hours: number
     minutes: number
 } {
     const now = new Date()
     const diffMs = now.getTime() - date.getTime()
-    const diffHours = Math.floor(diffMs / (1000 * 60 * 60))
+
     const diffMinutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60))
-    return { hours: diffHours, minutes: diffMinutes }
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60))
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
+
+    return { days: diffDays, hours: diffHours, minutes: diffMinutes }
 }
 
 export const scrollToSection = (sectionId: string) => {
