@@ -27,8 +27,9 @@ interface HistoryItem {
 const HistorySection: React.FC<{
     hasPendingTransaction: boolean
 }> = ({ hasPendingTransaction }) => {
-    const [isLoadingMore, setIsLoadingMore] = useState(false)
     const [historyData, setHistoryData] = React.useState<MysteryBox[]>([])
+
+    const [isLoadingMore, setIsLoadingMore] = useState(false)
     const [offset, setOffset] = React.useState(0)
     const [limit] = React.useState(5)
     const [itemsCount, setItemsCount] = React.useState(0)
@@ -40,7 +41,7 @@ const HistorySection: React.FC<{
                 `${VITE_ENV_BACKEND_URL}/boxes/results?offset=${newOffset}&limit=${limit}`
             )
             const data: MysteryBox[] = await response.json()
-             setHistoryData(data)
+            setHistoryData(data)
             setItemsCount(data.length)
             setOffset(newOffset)
         } catch (error) {
@@ -48,9 +49,11 @@ const HistorySection: React.FC<{
         } finally {
             setIsLoadingMore(false)
         }
+    }
 
-        fetchMyBoxes()
-    }, [offset, limit, hasPendingTransaction])
+    useEffect(() => {
+        fetchHistoryData(offset)
+    }, [hasPendingTransaction])
 
     return (
         <div className="relative flex flex-col justify-start items-center w-full max-w-screen-xl mx-auto  md:p-10  py-12  h-full lg:h-screen">
