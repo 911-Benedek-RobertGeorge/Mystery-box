@@ -1,8 +1,5 @@
 import { useState } from 'react'
 
-function sleep(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms))
-}
 import {
     Modal,
     ModalBody,

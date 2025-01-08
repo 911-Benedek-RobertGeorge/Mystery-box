@@ -1,7 +1,7 @@
 import React from 'react'
 import { BoxType } from '../../../libs/interfaces'
 import { useSelector } from 'react-redux'
-import cyanBox from '../../../assets/boxes/cyan_box-Photoroom.png'
+import cyanBox from '../../../assets/boxes/logo.png'
 import chillguy from '../../../assets/coins/chill-guy.png'
 import { BuyModal } from './modal/BuyModal'
 
