@@ -225,7 +225,7 @@ export function BuyModal({
     }
 
     return (
-        <div className="  flex items-center justify-center">
+        <div className="flex items-center justify-center">
             {publicKey ? (
                 <Modal>
                     <ModalTrigger
@@ -491,9 +491,15 @@ export function BuyModal({
                     </ModalBody>
                 </Modal>
             ) : (
-                <span className="text-accent-dark">
-                    Please Connect wallet to buy{' '}
-                </span>
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="px-6 py-3 rounded-full 
+                        text-accent-secondary font-bold transition-all
+                        "
+                >
+                    Please connect wallet to buy a box
+                </motion.div>
             )}
         </div>
     )
