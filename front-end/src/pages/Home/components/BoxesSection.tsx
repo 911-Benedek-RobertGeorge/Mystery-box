@@ -54,7 +54,7 @@ const BoxDetails: React.FC<{
                 className="w-96 mx-auto"
                 style={{ transformStyle: 'preserve-3d' }}
             ></img>
-            <div className="absolute inset-0 rounded-lg bg-gradient-to-b from-transparent via-accent to-accent-dark/50 opacity-20 blur-3xl  "></div>
+            <div className="absolute inset-0 rounded-lg bg-gradient-to-b from-transparent via-accent to-accent-dark/50 opacity-20 blur-3xl"></div>
 
             {!comingSoon ? (
                 <div className="flex flex-col justify-center items-start ml-8 mt-4 text-gray-300">
@@ -64,49 +64,54 @@ const BoxDetails: React.FC<{
                         </h2>
                         <span className="inline-block bg-background-light text-accent text-xs font-semibold px-2 py-1 rounded-full">
                             {box?.availableBoxes > 0
-                                ? `Remaining boxes: ${box?.availableBoxes}`
-                                : 'No Boxes'}
+                                ? ` ${box?.availableBoxes} ${
+                                      box?.availableBoxes === 1
+                                          ? 'box available'
+                                          : 'boxes available'
+                                  } 🔥`
+                                : 'Sold out 😭'}
                         </span>
                     </div>
-                    <div className=" flex flex-col text-lg space-y-2">
+                    <div className="flex flex-col text-lg space-y-2">
                         <p className="">
-                            When everybody scroll endlessly through Twitter and
-                            TikTok to get meme gems{' '}
+                            While normies are doomscrolling{' '}
+                            <span className="font-bold">X</span> and
+                            <span className="font-bold "> TikTok</span> for
+                            signals 📱
                         </p>
                         <div className="relative">
-                            {' '}
                             <img
-                                className="absolute w-16  ml-36 -mt-2  "
+                                className="absolute w-14 ml-48 -mt-2 "
                                 src={chillguy}
-                            />{' '}
-                            <p> But you are just a </p>
+                            />
+                            <p>But you're just a vibing</p>
                         </div>
-                        <p>
-                            Who buys{' '}
-                            <span className="text-accent"> memeBox</span> and
-                            let the best memes come to you.
-                        </p>
                     </div>
-                    <p className="text-lg mt-2"></p>
                     <h2 className="text-lg font-bold text-cyan-500 mt-4">
-                        Meme Artifacts
+                        What's Inside? 🎁
                     </h2>
                     <p className="">
-                        {' '}
-                        Each box is pre-purchased, ensuring you receive curated
-                        and selected memes
+                        Each box is packed with hand-picked{' '}
+                        <span className="text-yellow-400">meme magic</span> by
+                        our professional{' '}
+                        <span className="bg-gradient-to-r text-accent-secondary">
+                            degen researchers 🧪
+                        </span>{' '}
                     </p>
                     <div className="mt-6 text-gray-300 max-w-md">
                         <p className="mt-2">
-                            Diversify your portfolio and get a chance to win
+                            <span className="bg-gradient-to-r text-accent-secondary">
+                                WAGMI 🚀
+                            </span>{' '}
+                            Extra chance to win
                             <span className="text-cyan-500 font-bold">
                                 {' '}
-                                1 SOL
+                                1 SOL{' '}
                             </span>
-                            !
+                            for the lucky buyers! 🍀
                         </p>
                     </div>
-                    <div className="flex justify-center w-full mt-8 ">
+                    <div className="flex justify-center w-full mt-8">
                         {box?.availableBoxes > 0 ? (
                             <BuyModal
                                 box={box}
@@ -116,25 +121,25 @@ const BoxDetails: React.FC<{
                             />
                         ) : (
                             <span className="text-accent-secondary font-bold">
-                                Boxes sold out, come back later!
+                                Too late ser! Come back for next drop 🔥
                             </span>
                         )}
                     </div>
                 </div>
             ) : (
-                <div className="flex flex-col items-center justify-center p-6  rounded-lg shadow-md">
-                    <h4 className="text-3xl font-extrabold text-cyan-400 mb-4  ">
-                        Next Trend Memes
+                <div className="flex flex-col items-center justify-center p-6 rounded-lg shadow-md">
+                    <h4 className="text-3xl font-extrabold text-cyan-400 mb-4">
+                        Next Level Memes Loading...
                     </h4>
                     <p className="text-lg text-gray-300 text-center">
-                        Get ready to dive into the next big trend of meme coins!
-                        This box is packed with surprises, rare treasures, and
-                        the thrill of the unknown. Stay tuned for the ultimate
-                        crypto adventure!
+                        Wen next box? Soon™️! We're cooking up something extra
+                        spicy 🌶️ Get ready for the most degen-approved
+                        collection of meme treasures yet! Don't miss out on the
+                        exclusive trenches collection! 🏄‍♂️
                     </p>
                     <div className="mt-6">
-                        <span className="px-6 py-3 border-r border-l border-accent/30  text-white font-bold rounded-full shadow-xl hover:from-green-600 hover:to-green-800 transition duration-300 transform hover:scale-110">
-                            Coming Soon 🚀
+                        <span className="px-6 py-3 border-r border-l border-accent/30 text-white font-bold rounded-full shadow-xl hover:from-green-600 hover:to-green-800 transition duration-300 transform hover:scale-110">
+                            Coming Soon™️ 🚀
                         </span>
                     </div>
                 </div>
