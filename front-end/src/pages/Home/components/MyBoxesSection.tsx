@@ -40,8 +40,6 @@ const MyBoxesSection: React.FC<MyBoxesSectionProps> = ({
 
     const fetchMyBoxes = async () => {
         try {
-            if (!publicKey || !jwtToken) return
-
             const response = await fetch(
                 `${VITE_ENV_BACKEND_URL}/boxes/me?offset=${offset}&limit=${limit}`,
                 {
@@ -62,6 +60,8 @@ const MyBoxesSection: React.FC<MyBoxesSectionProps> = ({
     }
 
     useEffect(() => {
+        if (!publicKey || !jwtToken) return
+
         fetchMyBoxesCount()
         fetchMyBoxes()
     }, [publicKey, jwtToken, hasPendingTransaction])
