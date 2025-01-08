@@ -1,21 +1,9 @@
 import React, { useEffect, useState } from 'react'
+
 import { VITE_ENV_BACKEND_URL } from '../../../libs/config'
-import { memeCoinType, MysteryBox } from '../../../libs/interfaces'
+import { MysteryBox } from '../../../libs/interfaces'
 import { motion } from 'framer-motion'
 import BoxCard from './BoxCard'
-
-interface HistoryItem {
-    price: number
-    initialUsdValue: number
-    roi: number
-    date: Date
-    claimUsdValue: number
-
-    boxType: string
-    boxContent: memeCoinType[]
-    image: string
-    buyer: string
-}
 
 const HistorySection: React.FC<{
     hasPendingTransaction: boolean
