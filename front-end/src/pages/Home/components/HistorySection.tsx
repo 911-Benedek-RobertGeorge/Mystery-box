@@ -90,7 +90,11 @@ const HistorySection: React.FC<{
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => fetchHistoryData(offset + limit)}
-                        disabled={itemsCount !== limit || isLoadingMore}
+                        disabled={
+                            itemsCount !== limit ||
+                            offset + limit >= totalItemsCount ||
+                            isLoadingMore
+                        }
                         className="relative px-6 py-2 rounded-full border border-accent/30 
                             text-accent font-medium transition-all group overflow-hidden
                             hover:border-accent/50 hover:text-accent-light

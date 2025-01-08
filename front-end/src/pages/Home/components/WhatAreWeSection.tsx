@@ -28,6 +28,7 @@ const WhatAreWeSection: React.FC<WhatAreWeSectionProps> = ({
                         whileInView={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.6, delay: 0.2 }}
                         className="space-y-8"
+                        viewport={{ once: true }}
                     >
                         <p className="text-xl text-center md:text-left text-gray-300 leading-relaxed font-semibold">
                             Imagine a{' '}
@@ -69,6 +70,7 @@ const WhatAreWeSection: React.FC<WhatAreWeSectionProps> = ({
                                         duration: 0.3,
                                         delay: 0.1 * index,
                                     }}
+                                    viewport={{ once: true }}
                                     className="flex items-center space-x-4 group"
                                 >
                                     <span className="flex items-center justify-center w-12 h-12 rounded-full bg-accent text-background-dark font-bold transform group-hover:scale-110 group-hover:rotate-12 transition-all">
@@ -87,6 +89,7 @@ const WhatAreWeSection: React.FC<WhatAreWeSectionProps> = ({
                         whileInView={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.6, delay: 0.4 }}
                         className="flex flex-col justify-center space-y-8 text-gray-300"
+                        viewport={{ once: true }}
                     >
                         <p className="text-xl leading-relaxed">
                             <span className="text-2xl">🎲</span> Degen mode ON?

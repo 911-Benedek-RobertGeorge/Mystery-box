@@ -12,7 +12,6 @@ import pnut from '../../assets/coins/pnut.png'
 import popcat from '../../assets/coins/popcat.png'
 import wif from '../../assets/coins/wif.png'
 
-import key from '../../assets/boxes/key.png'
 import chillGuy from '../../assets/coins/chill-guy.png'
 import bonk from '../../assets/coins/bonk.png'
 
@@ -88,7 +87,7 @@ const Home: React.FC = () => {
                 container.querySelectorAll<HTMLImageElement>('.floating-object')
 
             objects.forEach((obj, index) => {
-                const intensity = (index + 1) * 0.5 // Adjust movement for each object
+                const intensity = (index + 1) * 0.2 // Adjust movement for each object
                 obj.style.transform = `rotateY(${x * intensity}deg) rotateX(${-y * intensity}deg) translate(${x * intensity}px, ${-y * intensity}px)`
                 obj.style.transitionDuration = '2s'
             })
@@ -148,9 +147,8 @@ const Home: React.FC = () => {
                                     memes fortunes
                                 </h1>{' '}
                             </div>
-                            `
                         </div>
-                        ` <MemeImagesFloating memesImage={memesImage ?? []} />
+                        <MemeImagesFloating memesImage={memesImage ?? []} />
                         <div className=" scale-75 md:scale-90 md:-top-24 relative z-[102] flex flex-col justify-center items-center">
                             <img
                                 src={questionMark}
@@ -201,47 +199,52 @@ const Home: React.FC = () => {
                     </div>
                 </SectionContainer>
             </BackgroundGradientAnimation>
-            {/* WHAT ARE MEMEBOXES SECTION */}
             <WhatAreWeSection hasPendingTransaction={hasPendingTransaction} />
             <img
                 src={vectorShape}
                 className="w-screen top-[23.5rem] rotate-12 md:rotate-6 h-[900px] absolute  animate-pulse"
                 style={{ transformStyle: 'preserve-3d' }}
-                loading="eager"
+                loading="lazy"
             ></img>{' '}
             <div
                 id="boxes-section"
                 className="relative flex flex-col justify-center items-center w-full"
             >
-                <div
-                    className="absolute -rotate-12 w-96 z-[2]"
-                    style={{
-                        transform: `translateX(${Math.min(-700 + scrollPosition, 300)}px) translateY(${Math.min(-700 + scrollPosition / 2.5, -290)}px)`,
-                        filter: `hue-rotate(${Math.max(-80, 10 - scrollPosition / 10)}deg)`,
-                        transition:
-                            'transform 0.2s ease-out, filter 0.2s ease-out',
-                    }}
-                >
-                    <img src={fluidTape} alt="Fluid Tape" />
+                {' '}
+                <div className="relative ">
+                    <div
+                        className="absolute -rotate-12 w-96 z-[2]"
+                        style={{
+                            transform: `translateX(${Math.min(-1500 + scrollPosition / 1.5, 100)}px) translateY(${Math.min(-1200 + scrollPosition / 2, 0)}px)`,
+                            filter: `hue-rotate(${Math.max(-80, 10 - scrollPosition / 10)}deg)`,
+                            transition:
+                                'transform 0.2s ease-out, filter 0.2s ease-out',
+                        }}
+                    >
+                        <img src={fluidTape} alt="Fluid Tape" />
+                    </div>
+                    <motion.div
+                        className="absolute w-80"
+                        initial={{
+                            x: 0,
+                            y: 0,
+                            rotate: 120,
+                            filter: 'hue-rotate(200deg)',
+                        }}
+                        animate={{
+                            x: Math.max(
+                                2500 - scrollPosition,
+                                scrollPosition / 8
+                            ),
+                            y: Math.min(-1500 + scrollPosition / 1.4),
+                            rotate: Math.min(0, 200 - scrollPosition / 10),
+                            filter: `hue-rotate(${Math.min(0, 200 - scrollPosition / 3.3)}deg)`,
+                        }}
+                        transition={{ ease: 'easeOut', duration: 0.2 }}
+                    >
+                        <img src={waveTape} alt="Fluid Tape" />
+                    </motion.div>
                 </div>
-                <motion.div
-                    className="absolute w-80"
-                    initial={{
-                        x: 1300,
-                        y: -1200,
-                        rotate: 120,
-                        filter: 'hue-rotate(200deg)',
-                    }}
-                    animate={{
-                        x: Math.max(1300 - scrollPosition, scrollPosition / 3),
-                        y: Math.min(-1200 + scrollPosition),
-                        rotate: Math.min(0, 100 - scrollPosition / 10),
-                        filter: `hue-rotate(${Math.min(0, 200 - scrollPosition / 3.3)}deg)`,
-                    }}
-                    transition={{ ease: 'easeOut', duration: 0.2 }}
-                >
-                    <img src={waveTape} alt="Fluid Tape" />
-                </motion.div>
                 <BoxesSection
                     setHasPendingTransaction={setHasPendingTransaction}
                 />{' '}
@@ -250,29 +253,23 @@ const Home: React.FC = () => {
                 hasPendingTransaction={hasPendingTransaction}
                 setHasPendingTransaction={setHasPendingTransaction}
             />
-            <div className="flex flex-col w-screen h-full">
-                <div className="flex flex-col -mt-96 relative justify-center items-center w-full md:w-1/2 h-96  ml-auto text-white p-8">
-                    {/* <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background-dark to-accent-dark opacity-30 blur-3xl"></div> */}
-                    <div className="absolute inset-0 opacity-40  top-96">
-                        <img
-                            className="z-[51] -hue-rotate-90 transition-all duration-1000  ease-out"
-                            src={ribbons}
-                            style={{
-                                transform: `translateY(${-1300 + scrollPosition * 0.42}px)`,
-                                // rotate: `${200 - scrollPosition * 0.2}deg`,
-                            }}
-                        />
-                    </div>{' '}
-                    <img
-                        className=" z-[50] absolut transition-all duration-1000 ease-out "
-                        src={key}
-                        style={{
-                            transform: `translateX(${Math.max(0, -2650 + scrollPosition)}px) translateY(${-2050 + scrollPosition}px) `, //translateX(${((-1 * (scrollPosition  / 5) % 2) * scrollPosition) % 1200}px)
-                        }}
-                    />
-                </div>
-                <AboutUsSection />
+            {/* <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background-dark to-accent-dark opacity-30 blur-3xl"></div> */}
+            <div className="relative  ">
+                {' '}
+                <img
+                    className=" absolute z-[1] -left-24 -top-32  rotate-12 -hue-rotate-90 w-96 h-96"
+                    src={ribbons}
+                    style={{}}
+                />
             </div>
+            {/* <img
+                className=" z-[50] absolut transition-all duration-1000 ease-out "
+                src={key}
+                style={{
+                    transform: `translateX(${Math.max(0, -1200 + scrollPosition)}px) translateY(${-2050 + scrollPosition}px) `, //translateX(${((-1 * (scrollPosition  / 5) % 2) * scrollPosition) % 1200}px)
+                }}
+            /> */}
+            <AboutUsSection />
         </div>
     )
 }

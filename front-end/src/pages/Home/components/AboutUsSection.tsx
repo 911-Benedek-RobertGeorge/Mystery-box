@@ -33,6 +33,7 @@ const AboutUsSection: React.FC = () => {
                                 duration: 0.6,
                                 delay: 0.2,
                             }}
+                            viewport={{ once: true }}
                             className="space-y-4 md:space-y-8"
                         >
                             <div className="bg-background-light bg-opacity-75 p-6 rounded-lg shadow-lg border border-accent/20">
@@ -144,6 +145,7 @@ const AboutUsSection: React.FC = () => {
                                 duration: 0.6,
                                 delay: 0.4,
                             }}
+                            viewport={{ once: true }}
                             className="space-y-4 md:space-y-8 mb-4"
                         >
                             <div className="bg-background-light bg-opacity-75 p-6 rounded-lg shadow-lg border border-accent/20">

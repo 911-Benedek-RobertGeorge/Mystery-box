@@ -123,11 +123,11 @@ const BoxCard: React.FC<BoxCardProps> = ({
                     </div>
                 </div>
             </div>
-            <div className="w-full self-center  flex justify-center items-center  pt-4 lg:w-1/6 lg:pt-0 flex">
+            <div className="w-full self-center  justify-center items-center  pt-4 lg:w-1/6 lg:pt-0 flex">
                 <div className="text-xl font-extrabold leading-5 tracking-tight flex-col flex">
                     <span className="align-middle">
                         {parseFloat(
-                            lamportsToSol(box.boxType.amountLamports).toFixed(4)
+                            lamportsToSol(box.boxType.amountLamports).toFixed(2)
                         )}{' '}
                         SOL
                     </span>
@@ -163,7 +163,7 @@ const BoxCard: React.FC<BoxCardProps> = ({
                                 setSelectedBoxId(box._id)
                                 handleOpenBoxModal()
                             }}
-                            className="bg-muted shadow-inner px-4 shadow-accent  text-accent scale-75 md:scale-100 items-center relative rounded-full flex justify-center group/modal-btn overflow-hidden p-2"
+                            className="bg-muted w-24 mt-4 shadow-inner px-4 shadow-accent  text-accent items-center relative rounded-full flex justify-center group/modal-btn overflow-hidden p-2"
                         >
                             <span className="group-hover/modal-btn:translate-x-40 text-center transition duration-500">
                                 Open
