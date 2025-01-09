@@ -66,7 +66,7 @@ const BoxDetails: React.FC<{
 
             {!comingSoon ? (
                 <div className="flex flex-col justify-center items-start ml-8 mt-4 text-gray-300">
-                    <div className="flex flex-col md:flex-row justify-between items-center w-full mb-8">
+                    <div className="flex flex-col md:flex-row justify-between items-center w-full ">
                         <h2 className="text-3xl font-bold text-cyan-500 mb-2 self-start">
                             {box?.name}
                         </h2>
