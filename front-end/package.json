@@ -21,6 +21,7 @@
         "@solana/wallet-standard-features": "1.1.0",
         "@solana/wallet-standard-util": "1.1.0",
         "@tsparticles/confetti": "^3.7.1",
+        "@vercel/analytics": "^1.4.1",
         "@vercel/speed-insights": "^1.1.0",
         "@vitejs/plugin-basic-ssl": "^1.2.0",
         "axios": "^1.7.9",

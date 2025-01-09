@@ -10,7 +10,6 @@ import { setBoxTypes } from './context/store/BoxSlice'
 import axios from 'axios'
 import { VITE_ENV_BACKEND_URL } from './libs/config'
 import TermsAndConditions from './pages/TermsAndConditions/TermsAndConditions'
-import { SpeedInsights } from '@vercel/speed-insights/react'
 
 function App() {
     const dispatch = useDispatch()
@@ -58,7 +57,6 @@ function App() {
                 <div className="max-w-screen overflow-hidden">
                     <Navbar />
                     <Toaster />
-                    <SpeedInsights />
 
                     <Routes>
                         <Route path={`/`} element={<Home />} />
