@@ -66,11 +66,11 @@ const BoxDetails: React.FC<{
 
             {!comingSoon ? (
                 <div className="flex flex-col justify-center items-start ml-8 mt-4 text-gray-300">
-                    <div className="flex flex-col md:flex-row justify-between items-center w-full ">
-                        <h2 className="text-3xl font-bold text-cyan-500 mb-2 self-start">
+                    <div className="flex flex-row justify-between items-center w-full">
+                        <h2 className="text-3xl font-bold text-cyan-500">
                             {box?.name}
                         </h2>
-                        <span className="inline-block bg-background-light text-accent text-xs font-semibold px-2 py-1 rounded-full self-end md:self-center">
+                        <span className="inline-block bg-background-light text-accent text-xs font-semibold px-2 py-1 rounded-full mt-2">
                             {box?.availableBoxes > 0
                                 ? ` ${box?.availableBoxes} ${
                                       box?.availableBoxes === 1
