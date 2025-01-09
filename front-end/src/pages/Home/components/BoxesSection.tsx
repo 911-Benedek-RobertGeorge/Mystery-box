@@ -4,12 +4,17 @@ import { useSelector } from 'react-redux'
 import cyanBox from '../../../assets/boxes/cyan_box-Photoroom.png'
 import chillguy from '../../../assets/coins/chill-guy.png'
 import { BuyModal } from './modal/BuyModal'
+import { lamportsToSol } from '../../../libs/utils'
 
 const BoxesSection: React.FC<{
     setHasPendingTransaction: (value: boolean) => void
 }> = ({ setHasPendingTransaction }) => {
     const boxTypes: BoxType[] = useSelector(
         (state: { box: { types: BoxType[] } }) => state.box.types
+    )
+
+    const solanaPrice = useSelector(
+        (state: { solana: { price: number } }) => state.solana.price
     )
 
     return (
@@ -25,6 +30,7 @@ const BoxesSection: React.FC<{
                 {boxTypes && (
                     <BoxDetails
                         box={boxTypes[0]}
+                        solanaPrice={solanaPrice}
                         setHasPendingTransaction={setHasPendingTransaction}
                     />
                 )}
@@ -33,6 +39,7 @@ const BoxesSection: React.FC<{
                 {boxTypes && (
                     <BoxDetails
                         comingSoon="Next week "
+                        solanaPrice={solanaPrice}
                         setHasPendingTransaction={setHasPendingTransaction}
                         box={boxTypes[5]}
                     />
@@ -45,8 +52,9 @@ const BoxesSection: React.FC<{
 const BoxDetails: React.FC<{
     box: BoxType
     comingSoon?: string
+    solanaPrice: number | null
     setHasPendingTransaction: (value: boolean) => void
-}> = ({ box, comingSoon, setHasPendingTransaction }) => {
+}> = ({ box, comingSoon, solanaPrice, setHasPendingTransaction }) => {
     return (
         <div className="relative max-w-md items-center justify-center p-6 md:p-0 z-[101]">
             <img
@@ -71,6 +79,28 @@ const BoxDetails: React.FC<{
                                   } 🔥`
                                 : 'Sold out 😭'}
                         </span>
+                    </div>
+                    <div className="flex items-center space-x-2 mb-4">
+                        <div className="flex flex-col items-start">
+                            <span className="text-xl font-bold bg-gradient-to-r from-emerald-500 via-accent to-pink-500 text-transparent bg-clip-text animate-gradient-x">
+                                {parseFloat(
+                                    lamportsToSol(
+                                        box?.amountLamports ?? '0'
+                                    ).toFixed(4)
+                                )}{' '}
+                                SOL
+                            </span>
+                            {solanaPrice && (
+                                <span className="text-lg text-gray-400 font-medium">
+                                    ≈ $
+                                    {(
+                                        lamportsToSol(
+                                            box?.amountLamports ?? '0'
+                                        ) * solanaPrice
+                                    ).toFixed(2)}
+                                </span>
+                            )}
+                        </div>
                     </div>
                     <div className="flex flex-col text-lg space-y-2">
                         <p className="">
