@@ -1,21 +1,9 @@
 import React, { useEffect, useState } from 'react'
+
 import { VITE_ENV_BACKEND_URL } from '../../../libs/config'
-import { memeCoinType, MysteryBox } from '../../../libs/interfaces'
+import { MysteryBox } from '../../../libs/interfaces'
 import { motion } from 'framer-motion'
 import BoxCard from './BoxCard'
-
-interface HistoryItem {
-    price: number
-    initialUsdValue: number
-    roi: number
-    date: Date
-    claimUsdValue: number
-
-    boxType: string
-    boxContent: memeCoinType[]
-    image: string
-    buyer: string
-}
 
 const HistorySection: React.FC<{
     hasPendingTransaction: boolean
@@ -102,7 +90,11 @@ const HistorySection: React.FC<{
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => fetchHistoryData(offset + limit)}
-                        disabled={itemsCount !== limit || isLoadingMore}
+                        disabled={
+                            itemsCount !== limit ||
+                            offset + limit >= totalItemsCount ||
+                            isLoadingMore
+                        }
                         className="relative px-6 py-2 rounded-full border border-accent/30 
                             text-accent font-medium transition-all group overflow-hidden
                             hover:border-accent/50 hover:text-accent-light

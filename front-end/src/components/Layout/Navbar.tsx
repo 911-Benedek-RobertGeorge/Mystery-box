@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import { cn, scrollToSection, shortenAddress } from '../../libs/utils'
-import logo from '../../assets/elements/logo.png'
+import logo from '../../assets/boxes/logo.png'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { Link } from 'react-router-dom'
 import { WalletDisconnectButton } from '@solana/wallet-adapter-react-ui'

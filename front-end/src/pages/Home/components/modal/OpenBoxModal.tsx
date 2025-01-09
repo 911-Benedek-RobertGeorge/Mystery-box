@@ -1,8 +1,5 @@
 import { useState } from 'react'
 
-function sleep(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms))
-}
 import {
     Modal,
     ModalBody,
@@ -166,11 +163,14 @@ export function OpenBoxModal({
                                 </div>
                             ) : (
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4  max-h-80 md:max-h-96 overflow-y-auto mb-4 p-4">
-                                    {mysteryBox?.boxContents.map((content) => (
-                                        <MemeCoinDetailsCard
-                                            content={content}
-                                        />
-                                    ))}{' '}
+                                    {mysteryBox?.boxContents.map(
+                                        (content, index) => (
+                                            <MemeCoinDetailsCard
+                                                key={index}
+                                                content={content}
+                                            />
+                                        )
+                                    )}{' '}
                                 </div>
                             )}
                         </div>
@@ -193,7 +193,7 @@ function MemeCoinDetailsCard({ content }: { content: BoxContent }) {
             key={content._id}
             className=" h-32 flex items-center hover:cursor-pointer border  border-accent-secondary/20 shadow-inner hover:shadow-accent/80 shadow-accent/40 rounded-xl p-4 hover:scale-105 transition-transform duration-200"
         >
-            <div className="flex flex-col items-center justify-center mr-2">
+            <div className="flex flex-col items-center justify-center mr-2 w-14">
                 <img
                     src={content.token.image}
                     alt={content.token.name}

@@ -1,7 +1,7 @@
 import React from 'react'
 import { BoxType } from '../../../libs/interfaces'
 import { useSelector } from 'react-redux'
-import cyanBox from '../../../assets/boxes/cyan_box-Photoroom.png'
+import cyanBox from '../../../assets/boxes/logo.png'
 import chillguy from '../../../assets/coins/chill-guy.png'
 import { BuyModal } from './modal/BuyModal'
 import { lamportsToSol } from '../../../libs/utils'
@@ -66,11 +66,11 @@ const BoxDetails: React.FC<{
 
             {!comingSoon ? (
                 <div className="flex flex-col justify-center items-start ml-8 mt-4 text-gray-300">
-                    <div className="flex justify-between items-center w-full">
-                        <h2 className="text-3xl font-bold text-cyan-500 mb-2">
+                    <div className="flex flex-col md:flex-row justify-between items-center w-full mb-8">
+                        <h2 className="text-3xl font-bold text-cyan-500 mb-2 self-start">
                             {box?.name}
                         </h2>
-                        <span className="inline-block bg-background-light text-accent text-xs font-semibold px-2 py-1 rounded-full">
+                        <span className="inline-block bg-background-light text-accent text-xs font-semibold px-2 py-1 rounded-full self-end md:self-center">
                             {box?.availableBoxes > 0
                                 ? ` ${box?.availableBoxes} ${
                                       box?.availableBoxes === 1

@@ -27,6 +27,7 @@ const MyBoxesSection: React.FC<MyBoxesSectionProps> = ({
     const { publicKey } = useWallet()
     const [selectedBoxId, setSelectedBoxId] = React.useState<string>('')
     const jwtToken = sessionStorage.getItem('jwtToken')
+    const [isLoadingMore, setIsLoadingMore] = React.useState(false)
 
     const fetchMyBoxesCount = async () => {
         const response = await fetch(`${VITE_ENV_BACKEND_URL}/boxes/me/count`, {
@@ -38,12 +39,11 @@ const MyBoxesSection: React.FC<MyBoxesSectionProps> = ({
         setTotalItemsCount(data)
     }
 
-    const fetchMyBoxes = async () => {
+    const fetchMyBoxes = async (newOffset: number) => {
+        setIsLoadingMore(true)
         try {
-            if (!publicKey || !jwtToken) return
-
             const response = await fetch(
-                `${VITE_ENV_BACKEND_URL}/boxes/me?offset=${offset}&limit=${limit}`,
+                `${VITE_ENV_BACKEND_URL}/boxes/me?offset=${newOffset}&limit=${limit}`,
                 {
                     headers: {
                         Authorization: `Bearer ${jwtToken}`,
@@ -54,16 +54,23 @@ const MyBoxesSection: React.FC<MyBoxesSectionProps> = ({
             if (response.status !== 200) {
                 throw new Error(data.message)
             }
-            setItemsCount(data.length)
-            setMyBoxes(data)
+            if (data.length != 0) {
+                setItemsCount(data.length)
+                setMyBoxes(data)
+                setOffset(newOffset)
+            }
         } catch (error) {
             console.error('fetchMyBoxes: ', error)
+        } finally {
+            setIsLoadingMore(false)
         }
     }
 
     useEffect(() => {
+        if (!publicKey || !jwtToken) return
+
         fetchMyBoxesCount()
-        fetchMyBoxes()
+        fetchMyBoxes(offset)
     }, [publicKey, jwtToken, hasPendingTransaction])
 
     const handleOpenBoxModal = () => {
@@ -124,19 +131,28 @@ const MyBoxesSection: React.FC<MyBoxesSectionProps> = ({
                                         whileHover={{ scale: 1.05 }}
                                         whileTap={{ scale: 0.95 }}
                                         onClick={() =>
-                                            setOffset(
+                                            fetchMyBoxes(
                                                 Math.max(0, offset - limit)
                                             )
                                         }
-                                        disabled={offset === 0}
+                                        disabled={offset === 0 || isLoadingMore}
                                         className="relative px-6 py-2 rounded-full border border-accent/30 
-                                                           text-accent font-medium transition-all group overflow-hidden
-                                                           hover:border-accent/50 hover:text-accent-light
-                                                           disabled:opacity-30 disabled:cursor-not-allowed"
+                                                         text-accent font-medium transition-all group overflow-hidden
+                                                         hover:border-accent/50 hover:text-accent-light
+                                                         disabled:opacity-30 disabled:cursor-not-allowed"
                                     >
                                         <div className="relative flex items-center space-x-2">
-                                            <span>←</span>
-                                            <span>Previous</span>
+                                            {isLoadingMore && offset !== 0 ? (
+                                                <div className="flex items-center space-x-2">
+                                                    <div className="w-4 h-4 border-2 border-accent rounded-full border-t-transparent animate-spin"></div>
+                                                    <span>Loading...</span>
+                                                </div>
+                                            ) : (
+                                                <>
+                                                    <span>←</span>
+                                                    <span>Previous</span>
+                                                </>
+                                            )}
                                         </div>
                                     </motion.button>
 
@@ -144,17 +160,31 @@ const MyBoxesSection: React.FC<MyBoxesSectionProps> = ({
                                         whileHover={{ scale: 1.05 }}
                                         whileTap={{ scale: 0.95 }}
                                         onClick={() =>
-                                            setOffset(offset + limit)
+                                            fetchMyBoxes(offset + limit)
                                         }
-                                        disabled={itemsCount !== limit}
+                                        disabled={
+                                            itemsCount !== limit ||
+                                            offset + limit >= totalItemsCount ||
+                                            isLoadingMore
+                                        }
                                         className="relative px-6 py-2 rounded-full border border-accent/30 
-                                                           text-accent font-medium transition-all group overflow-hidden
-                                                           hover:border-accent/50 hover:text-accent-light
-                                                           disabled:opacity-30 disabled:cursor-not-allowed"
+                                                         text-accent font-medium transition-all group overflow-hidden
+                                                         hover:border-accent/50 hover:text-accent-light
+                                                         disabled:opacity-30 disabled:cursor-not-allowed"
                                     >
                                         <div className="relative flex items-center space-x-2">
-                                            <span>Next</span>
-                                            <span>→</span>
+                                            {isLoadingMore &&
+                                            itemsCount === limit ? (
+                                                <div className="flex items-center space-x-2">
+                                                    <div className="w-4 h-4 border-2 border-accent rounded-full border-t-transparent animate-spin"></div>
+                                                    <span>Loading...</span>
+                                                </div>
+                                            ) : (
+                                                <>
+                                                    <span>Next</span>
+                                                    <span>→</span>
+                                                </>
+                                            )}
                                         </div>
                                     </motion.button>
                                 </div>
@@ -163,7 +193,7 @@ const MyBoxesSection: React.FC<MyBoxesSectionProps> = ({
                             <motion.div
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                className="z-[52] w-full flex flex-col items-center justify-center space-y-8 py-16"
+                                className="z-[110] w-full flex flex-col items-center justify-center space-y-8 py-16"
                             >
                                 <img
                                     src={questionMark}
