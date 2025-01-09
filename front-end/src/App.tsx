@@ -3,14 +3,14 @@ import { SolContextProvider } from './context/Solana/SolContextProvider'
 import { Route, Routes, BrowserRouter as Router } from 'react-router-dom'
 import Navbar from './components/Layout/Navbar'
 import { Toaster } from 'react-hot-toast'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { useEffect } from 'react'
 import { setSolanaPrice } from './context/store/SolanaSlice'
 import { setBoxTypes } from './context/store/BoxSlice'
 import axios from 'axios'
 import { VITE_ENV_BACKEND_URL } from './libs/config'
 import TermsAndConditions from './pages/TermsAndConditions/TermsAndConditions'
-import { SpeedInsights } from '@vercel/speed-insights/next'
+import { SpeedInsights } from '@vercel/speed-insights/react'
 
 function App() {
     const dispatch = useDispatch()
