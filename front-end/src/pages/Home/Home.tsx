@@ -29,6 +29,7 @@ import { VITE_ENV_BACKEND_URL } from '../../libs/config'
 import vectorShape from '../../assets/elements/vector-shape.png'
 import WhatAreWeSection from './components/WhatAreWeSection'
 import AboutUsSection from './components/AboutUsSection'
+import FAQ from '../FAQ/FAQ'
 
 const memeCoinImages = [chillGuy, bonk, boom, mow, pnut, popcat, wif]
 
@@ -257,7 +258,7 @@ const Home: React.FC = () => {
             <div className="relative  ">
                 {' '}
                 <img
-                    className=" absolute z-[1] -left-24 -top-32  rotate-12 -hue-rotate-90 w-96 h-96"
+                    className=" absolute z-[1] -left-24 -top-32  rotate-12 -hue-rotate-90 w-96 h-96 hidden md:block"
                     src={ribbons}
                     style={{}}
                 />
@@ -269,6 +270,7 @@ const Home: React.FC = () => {
                     transform: `translateX(${Math.max(0, -1200 + scrollPosition)}px) translateY(${-2050 + scrollPosition}px) `, //translateX(${((-1 * (scrollPosition  / 5) % 2) * scrollPosition) % 1200}px)
                 }}
             /> */}
+            <FAQ />
             <AboutUsSection />
         </div>
     )
