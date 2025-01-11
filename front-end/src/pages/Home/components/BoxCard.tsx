@@ -23,7 +23,7 @@ const BoxCard: React.FC<BoxCardProps> = ({
     handleOpenBoxModal,
 }) => {
     return (
-        <div className="z-[55] mb-3 flex w-[80%] self-center md:w-full max-w-screen transform flex-col justify-between items-center md:items-start rounded-md bg-background-dark border border-accent/50 hover:border-accent bg-opacity-75 p-6 text-accent transition duration-500 ease-in-out hover:-translate-y-1 hover:shadow-lg hover:shadow-accent-dark/50 md:flex-row md:p-4">
+        <div className="z-[55] mb-3 flex w-[80%] self-center md:w-full max-w-screen transform flex-col justify-between items-center md:items-start rounded-md bg-background-dark border border-accent/50 hover:border-accent bg-opacity-75 p-2 text-accent transition duration-500 ease-in-out hover:-translate-y-1 hover:shadow-lg hover:shadow-accent-dark/50 md:flex-row md:p-4">
             <div className="flex flex-col md:flex-row  justify-center md:justify-start">
                 <div className="flex flex-row items-center justify-center">
                     <img

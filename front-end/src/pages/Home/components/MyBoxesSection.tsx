@@ -111,7 +111,7 @@ const MyBoxesSection: React.FC<MyBoxesSectionProps> = ({
                         <div className="absolute inset-0 h-1/2 bg-gradient-to-r from-black via-accent to-black opacity-5  "></div>
                         <div className="absolute inset-0 bg-gradient-to-b from-backgorund-dark to-background-dark opacity-10"></div>{' '}
                     </div> */}
-                    <div className="flex flex-col w-full items-start justify-start">
+                    <div className="flex flex-col items-start justify-start w-[80%]">
                         {myBoxes ? (
                             <>
                                 {myBoxes.map((box, index) => {

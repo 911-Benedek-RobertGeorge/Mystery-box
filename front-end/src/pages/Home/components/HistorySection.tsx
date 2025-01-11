@@ -54,7 +54,7 @@ const HistorySection: React.FC<{
                 </span>
             </div>
 
-            <div className="flex flex-col w-full space-y-4">
+            <div className="flex flex-col  space-y-4 w-[80%]">
                 {historyData.map((box, index) => (
                     <BoxCard key={index} box={box} />
                 ))}
