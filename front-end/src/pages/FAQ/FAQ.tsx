@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import Navbar from '../../components/Layout/Navbar'
 import { FiChevronDown } from 'react-icons/fi'
 
 interface FAQItemProps {
@@ -81,7 +80,6 @@ const FAQ: React.FC = () => {
 
     return (
         <div className="flex flex-col w-screen max-w-screen select-none bg-background-dark overflow-hidden">
-            <Navbar />
             <div className="relative p-4 md:p-8 mx-auto justify-center flex rounded-3xl flex-row h-full w-screen">
                 <div className="bg-background-dark w-full h-full rounded-3xl shadow-inner shadow-cyan-600">
                     <div className="absolute inset-0 w-full h-full">
