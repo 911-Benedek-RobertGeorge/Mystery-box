@@ -14,10 +14,13 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "^2.5.0",
+        "@reown/appkit": "^1.6.4",
+        "@reown/appkit-adapter-solana": "^1.6.4",
         "@solana/wallet-adapter-base": "0.9.23",
         "@solana/wallet-adapter-phantom": "^0.9.24",
         "@solana/wallet-adapter-react": "^0.15.35",
         "@solana/wallet-adapter-react-ui": "^0.9.35",
+        "@solana/wallet-adapter-wallets": "^0.19.32",
         "@solana/wallet-standard-features": "1.1.0",
         "@solana/wallet-standard-util": "1.1.0",
         "@tsparticles/confetti": "^3.7.1",
