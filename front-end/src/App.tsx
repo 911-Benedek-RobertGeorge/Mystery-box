@@ -10,6 +10,7 @@ import { setBoxTypes } from './context/store/BoxSlice'
 import axios from 'axios'
 import { VITE_ENV_BACKEND_URL } from './libs/config'
 import TermsAndConditions from './pages/TermsAndConditions/TermsAndConditions'
+import Analytics from './pages/Analytics/Analytics'
 
 function App() {
     const dispatch = useDispatch()
@@ -65,6 +66,8 @@ function App() {
                             path={`/terms-and-conditions`}
                             element={<TermsAndConditions />}
                         />
+
+                        <Route path="/analytics" element={<Analytics />} />
                     </Routes>
                 </div>
             </SolContextProvider>

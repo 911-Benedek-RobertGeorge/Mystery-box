@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import { cn, scrollToSection, shortenAddress } from '../../libs/utils'
 import logo from '../../assets/boxes/logo.png'
@@ -6,10 +6,12 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import { Link } from 'react-router-dom'
 import { WalletDisconnectButton } from '@solana/wallet-adapter-react-ui'
 import toast from 'react-hot-toast'
+import { ADMIN_WALLETS } from '../../libs/constants'
 
 function Navbar({ className }: { className?: string }) {
     const [active, setActive] = useState<string | null>(null)
     const { connected, publicKey, disconnect } = useWallet()
+    const isAdmin = publicKey && ADMIN_WALLETS.includes(publicKey.toString())
 
     const onDisconnect = () => {
         sessionStorage.removeItem('jwtToken')
@@ -122,12 +124,29 @@ function Navbar({ className }: { className?: string }) {
                                             connected ? onDisconnect : undefined
                                         }
                                     /> */}
+                                    {isAdmin && connected && (
+                                        <Link
+                                            to="/analytics"
+                                            className="block px-4 py-2 text-accent-dark hover:text-accent"
+                                            onClick={() => setActive(null)}
+                                        >
+                                            Analytics
+                                        </Link>
+                                    )}
                                 </div>
                             )}
                         </div>
-                        <div className="hidden md:flex space-x-8 justify-center items-center ">
+                        <div className="hidden md:flex space-x-8 justify-center items-center">
+                            {isAdmin && connected && (
+                                <Link
+                                    to="/analytics"
+                                    className="text-accent-dark hover:text-accent transition-colors"
+                                >
+                                    Analytics
+                                </Link>
+                            )}
                             <button
-                                className="  text-accent-dark hover:text-accent"
+                                className="text-accent-dark hover:text-accent"
                                 onClick={() => {
                                     setActive(null)
                                     scrollToSection('my-boxes')
@@ -135,12 +154,6 @@ function Navbar({ className }: { className?: string }) {
                             >
                                 My Boxes
                             </button>
-                            {/* <Link
-                                to="./#"
-                                className="text-accent-dark hover:text-accent "
-                            >
-                                How to buy
-                            </Link> */}
                             <div className="text-accent-dark hover:text-accent">
                                 <button
                                     onClick={() => {
@@ -167,13 +180,6 @@ function Navbar({ className }: { className?: string }) {
                                     color: connected ? '#0E7490' : '#24B9C0',
                                 }}
                             />
-                            {/* <WalletMultiButton
-                                style={{
-                                    padding: '0',
-                                    backgroundColor: 'transparent',
-                                    color: connected ? '#0E7490' : '#24B9C0',
-                                }}
-                            /> */}
                         </div>
                     </>
                 )}
