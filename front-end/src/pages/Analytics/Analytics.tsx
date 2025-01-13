@@ -62,7 +62,7 @@ const Analytics: React.FC = () => {
 
     return (
         <div className="min-h-screen max-w-full pt-32 mx-auto bg-background-dark text-gray-200 overflow-auto">
-            <div className="mt-16 mx-10">
+            <div className="mt-16 mx-10 mb-16">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
