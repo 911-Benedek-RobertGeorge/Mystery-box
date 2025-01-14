@@ -205,13 +205,12 @@ const Home: React.FC = () => {
                 src={vectorShape}
                 className="w-screen top-[23.5rem] rotate-12 md:rotate-6 h-[900px] absolute  animate-pulse"
                 style={{ transformStyle: 'preserve-3d' }}
-                loading="lazy"
+                loading="eager"
             ></img>{' '}
             <div
                 id="boxes-section"
                 className="relative flex flex-col justify-center items-center w-full"
             >
-                {' '}
                 <div className="relative ">
                     <div
                         className="absolute -rotate-12 w-96 z-[2]"
@@ -222,7 +221,7 @@ const Home: React.FC = () => {
                                 'transform 0.2s ease-out, filter 0.2s ease-out',
                         }}
                     >
-                        <img src={fluidTape} alt="Fluid Tape" />
+                        <img src={fluidTape} alt="Fluid Tape" loading="lazy" />
                     </div>
                     <motion.div
                         className="absolute w-80"
@@ -243,24 +242,24 @@ const Home: React.FC = () => {
                         }}
                         transition={{ ease: 'easeOut', duration: 0.2 }}
                     >
-                        <img src={waveTape} alt="Fluid Tape" />
+                        <img src={waveTape} alt="Fluid Tape" loading="lazy" />
                     </motion.div>
                 </div>
                 <BoxesSection
                     setHasPendingTransaction={setHasPendingTransaction}
                 />{' '}
             </div>{' '}
-            <MyBoxesSection
+            {/* <MyBoxesSection
                 hasPendingTransaction={hasPendingTransaction}
                 setHasPendingTransaction={setHasPendingTransaction}
-            />
+            /> */}
             {/* <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background-dark to-accent-dark opacity-30 blur-3xl"></div> */}
             <div className="relative  ">
                 {' '}
                 <img
                     className=" absolute z-[1] -left-24 -top-32  rotate-12 -hue-rotate-90 w-96 h-96 hidden md:block"
                     src={ribbons}
-                    style={{}}
+                    loading="lazy"
                 />
             </div>
             {/* <img

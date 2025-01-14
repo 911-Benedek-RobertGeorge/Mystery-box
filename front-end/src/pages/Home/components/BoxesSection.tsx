@@ -143,12 +143,13 @@ const BoxDetails: React.FC<{
                     </div>
                     <div className="flex justify-center w-full mt-8">
                         {box?.availableBoxes > 0 ? (
-                            <BuyModal
-                                box={box}
-                                setHasPendingTransaction={
-                                    setHasPendingTransaction
-                                }
-                            />
+                            // <BuyModal
+                            //     box={box}
+                            //     setHasPendingTransaction={
+                            //         setHasPendingTransaction
+                            //     }
+                            // />
+                            <></>
                         ) : (
                             <span className="text-accent-secondary font-bold">
                                 Too late ser! Come back for next drop 🔥

@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react'
 import { MysteryBox } from '../../../libs/interfaces'
 import { VITE_ENV_BACKEND_URL } from '../../../libs/config'
-import { useWallet } from '@solana/wallet-adapter-react'
 import { OpenBoxModal } from './modal/OpenBoxModal'
 
 import { scrollToSection } from '../../../libs/utils'
 import questionMark from '../../../assets/elements/question_mark.png'
 import { motion } from 'framer-motion'
 import BoxCard from './BoxCard'
+import { useAppKitAccount } from '@reown/appkit/react'
+import { PublicKey } from '@solana/web3.js'
 
 interface MyBoxesSectionProps {
     hasPendingTransaction: boolean
@@ -24,7 +25,7 @@ const MyBoxesSection: React.FC<MyBoxesSectionProps> = ({
     const [totalItemsCount, setTotalItemsCount] = React.useState(0)
 
     const [myBoxes, setMyBoxes] = React.useState<MysteryBox[]>()
-    const { publicKey } = useWallet()
+    const { address } = useAppKitAccount()
     const [selectedBoxId, setSelectedBoxId] = React.useState<string>('')
     const jwtToken = sessionStorage.getItem('jwtToken')
     const [isLoadingMore, setIsLoadingMore] = React.useState(false)
@@ -67,11 +68,11 @@ const MyBoxesSection: React.FC<MyBoxesSectionProps> = ({
     }
 
     useEffect(() => {
-        if (!publicKey || !jwtToken) return
+        if (!address || !jwtToken) return
 
         fetchMyBoxesCount()
         fetchMyBoxes(offset)
-    }, [publicKey, jwtToken, hasPendingTransaction])
+    }, [address, jwtToken, hasPendingTransaction])
 
     const handleOpenBoxModal = () => {
         const button = document.getElementById('open-box-modal-button')
@@ -88,7 +89,7 @@ const MyBoxesSection: React.FC<MyBoxesSectionProps> = ({
 
     return (
         <>
-            {!publicKey ? (
+            {!address ? (
                 <div className=""></div>
             ) : (
                 <div
@@ -223,11 +224,11 @@ const MyBoxesSection: React.FC<MyBoxesSectionProps> = ({
                             </motion.div>
                         )}
                     </div>
-                    <OpenBoxModal
+                    {/* <OpenBoxModal
                         setHasPendingTransaction={setHasPendingTransaction}
                         hiddenTrigger={true}
                         boxId={selectedBoxId}
-                    />
+                    /> */}
                 </div>
             )}
         </>

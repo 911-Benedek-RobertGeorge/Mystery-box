@@ -10,7 +10,7 @@ import {
 import questionMark from '../../../../assets/elements/question_mark.png'
 import cyanBox from '../../../../assets/boxes/cyan_box.png'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
-import { Transaction } from '@solana/web3.js'
+// import { Transaction } from '@solana/web3.js'
 import toast, { LoaderIcon } from 'react-hot-toast'
 import { Buffer } from 'buffer'
 import { useNetworkConfiguration } from '../../../../context/Solana/SolNetworkConfigurationProvider'
@@ -23,6 +23,11 @@ import { BoxType } from '../../../../libs/interfaces'
 import { lamportsToSol, scrollToSection } from '../../../../libs/utils'
 import { FaCheckCircle } from 'react-icons/fa'
 import { useSelector } from 'react-redux'
+
+import { useAppKitConnection } from '@reown/appkit-adapter-solana/react'
+import { PublicKey, Transaction, SystemProgram } from '@solana/web3.js'
+import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
+import type { Provider } from '@reown/appkit-adapter-solana/react'
 
 export function BuyModal({
     box,
@@ -37,12 +42,17 @@ export function BuyModal({
         (state: { solana: { price: number } }) => state.solana.price
     )
     const { publicKey, sendTransaction } = useWallet()
-    const { connection } = useConnection()
+    // const { connection } = useConnection()
     const { networkConfiguration } = useNetworkConfiguration()
     const [step, setStep] = useState(0)
     const [latestTxSignature, setLatestTxSignature] = useState<string>('')
     const jwtToken = sessionStorage.getItem('jwtToken')
     const [boughtBoxId, setBoughtBoxId] = useState<string | null>(null)
+
+    // reown appkit
+    const { isConnected, address } = useAppKitAccount()
+    const { connection } = useAppKitConnection()
+    const { walletProvider } = useAppKitProvider<Provider>('solana')
 
     const buyMysteryBox = async () => {
         setStep(1)
@@ -81,11 +91,36 @@ export function BuyModal({
                 )
                 const transactionObject = Transaction.from(transactionBuffer)
 
-                const txSignature = await sendAndConfirmTransaction({
-                    transaction: transactionObject,
-                })
+                const txSignature =
+                    await sendTransactionReownAppKit(transactionObject)
+
                 if (!txSignature) return
 
+                setStep(3)
+                const confirmationPromise = confirmTransaction(txSignature)
+
+                toast.promise(
+                    confirmationPromise,
+                    {
+                        loading: 'Processing Transaction',
+                        success: () => (
+                            <a
+                                href={`${SOLANA_EXPLORER_URL}/tx/${txSignature}?cluster=${networkConfiguration}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                style={{ textDecoration: 'underline' }}
+                            >
+                                View on Solana explorer
+                            </a>
+                        ),
+                        error: (err) => `Transaction failed: ${err.message}`,
+                    },
+                    {
+                        duration: 10000,
+                    }
+                )
+
+                setStep(4)
                 await indexTransaction(txSignature)
                 setStep(6)
                 return
@@ -115,6 +150,7 @@ export function BuyModal({
 
     async function indexTransaction(signature: string) {
         try {
+            console.log('Indexing ', signature, jwtToken)
             if (!jwtToken) throw new Error('JWT token not found ')
 
             const response = await fetch(`${VITE_ENV_BACKEND_URL}/index`, {
@@ -146,72 +182,89 @@ export function BuyModal({
             console.error('Error indexing transaction:', error)
         }
     }
-    async function sendAndConfirmTransaction({
-        transaction,
-    }: {
-        transaction: Transaction
-    }): Promise<string | false> {
-        try {
-            if (!publicKey) {
-                throw new Error('Wallet not connected')
-            }
 
-            const latestBlockhash = await connection.getLatestBlockhash()
-            transaction.recentBlockhash = latestBlockhash.blockhash
-            transaction.feePayer = publicKey
-            setHasPendingTransaction(true)
+    // reown appkit
+    async function sendTransactionReownAppKit(transaction: Transaction) {
+        if (!connection || !address) return
+        const latestBlockhash = await connection.getLatestBlockhash()
+        transaction.recentBlockhash = latestBlockhash.blockhash
+        transaction.feePayer = new PublicKey(address)
+        setHasPendingTransaction(true)
 
-            const txSignature = await sendTransaction(transaction, connection)
-            setLatestTxSignature(txSignature)
+        const signature = await walletProvider.sendTransaction(
+            transaction,
+            connection
+        )
+        console.log(signature)
 
-            setStep(3)
-
-            const confirmationPromise = confirmTransaction(txSignature)
-
-            toast.promise(
-                confirmationPromise,
-                {
-                    loading: 'Processing Transaction',
-                    success: () => (
-                        <a
-                            href={`${SOLANA_EXPLORER_URL}/tx/${txSignature}?cluster=${networkConfiguration}`}
-                            target="_blank"
-                            rel="noreferrer"
-                            style={{ textDecoration: 'underline' }}
-                        >
-                            View on Solana explorer
-                        </a>
-                    ),
-                    error: (err) => `Transaction failed: ${err.message}`,
-                },
-                {
-                    duration: 10000,
-                }
-            )
-
-            setStep(4)
-            const result = await confirmationPromise
-            setHasPendingTransaction(false)
-
-            if (!result) {
-                throw new Error('Transaction not confirmed' + result)
-            }
-
-            return txSignature
-        } catch (error) {
-            setHasPendingTransaction(false)
-            console.error('Error sending and confirming transaction:', error)
-
-            throw error
-        }
+        confirmTransaction(signature)
+        return signature
     }
+
+    // async function sendAndConfirmTransaction(
+    //     transaction: Transaction
+    // ): Promise<string | false> {
+    //     try {
+    //         if (!publicKey) {
+    //             throw new Error('Wallet not connected')
+    //         }
+
+    //         const latestBlockhash = await connection.getLatestBlockhash()
+    //         transaction.recentBlockhash = latestBlockhash.blockhash
+    //         transaction.feePayer = publicKey
+    //         setHasPendingTransaction(true)
+
+    //         const txSignature = await sendTransaction(transaction, connection)
+    //         setLatestTxSignature(txSignature)
+
+    //         setStep(3)
+
+    //         const confirmationPromise = confirmTransaction(txSignature)
+
+    //         toast.promise(
+    //             confirmationPromise,
+    //             {
+    //                 loading: 'Processing Transaction',
+    //                 success: () => (
+    //                     <a
+    //                         href={`${SOLANA_EXPLORER_URL}/tx/${txSignature}?cluster=${networkConfiguration}`}
+    //                         target="_blank"
+    //                         rel="noreferrer"
+    //                         style={{ textDecoration: 'underline' }}
+    //                     >
+    //                         View on Solana explorer
+    //                     </a>
+    //                 ),
+    //                 error: (err) => `Transaction failed: ${err.message}`,
+    //             },
+    //             {
+    //                 duration: 10000,
+    //             }
+    //         )
+
+    //         setStep(4)
+    //         const result = await confirmationPromise
+    //         setHasPendingTransaction(false)
+
+    //         if (!result) {
+    //             throw new Error('Transaction not confirmed' + result)
+    //         }
+
+    //         return txSignature
+    //     } catch (error) {
+    //         setHasPendingTransaction(false)
+    //         console.error('Error sending and confirming transaction:', error)
+
+    //         throw error
+    //     }
+    // }
 
     async function confirmTransaction(signature: string) {
         const maxRetries = 20
         let retryCount = 0
 
         while (retryCount < maxRetries) {
-            const tx = await connection.getTransaction(signature, {
+            const tx = await connection!.getTransaction(signature, {
                 commitment: 'confirmed',
                 maxSupportedTransactionVersion: 0,
             })

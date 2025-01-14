@@ -63,3 +63,21 @@ export const scrollToSection = (sectionId: string) => {
         })
     }
 }
+
+export const getTimestampFromJwt = (token: string) => {
+    try {
+        // Split the token into parts
+        const [, payloadBase64] = token.split('.') // Ignore the header and signature
+
+        // Decode the Base64 payload
+        const decodedPayload = JSON.parse(atob(payloadBase64))
+
+        const issuedAt = decodedPayload.iat // Issued at timestamp
+        const expiration = decodedPayload.exp // Expiration timestamp
+
+        return { issuedAt, expiration }
+    } catch (error) {
+        console.error('Error decoding JWT:', error)
+        return null
+    }
+}
