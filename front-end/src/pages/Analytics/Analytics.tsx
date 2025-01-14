@@ -229,13 +229,27 @@ const Analytics: React.FC = () => {
                                             </div>
                                             <div className="text-sm text-gray-400">
                                                 Current: $
-                                                {Number(
-                                                    box.liveBoxValue || 0
-                                                ).toFixed(2)}
+                                                {box.status === 'CLAIMED'
+                                                    ? Number(
+                                                          box.claimUsdValue || 0
+                                                      ).toFixed(2)
+                                                    : Number(
+                                                          box.liveBoxValue || 0
+                                                      ).toFixed(2)}
                                             </div>
                                             <ValueChange
                                                 initial={box.initialUsdValue}
-                                                current={box.liveBoxValue || 0}
+                                                current={
+                                                    box.status === 'CLAIMED'
+                                                        ? Number(
+                                                              box.claimUsdValue ||
+                                                                  0
+                                                          )
+                                                        : Number(
+                                                              box.liveBoxValue ||
+                                                                  0
+                                                          )
+                                                }
                                             />
                                         </div>
                                     </div>
