@@ -116,7 +116,7 @@ const Analytics: React.FC = () => {
                                             Initial
                                         </th>
                                         <th className="p-4 text-left text-accent w-[100px]">
-                                            Current
+                                            Current/Claimed
                                         </th>
                                         <th className="p-4 text-left text-accent w-[100px]">
                                             Change
@@ -187,7 +187,11 @@ const Analytics: React.FC = () => {
                                                         box.initialUsdValue
                                                     }
                                                     current={
-                                                        box.liveBoxValue || 0
+                                                        box.status === 'CLAIMED'
+                                                            ? box.claimUsdValue ||
+                                                              0
+                                                            : box.liveBoxValue ||
+                                                              0
                                                     }
                                                 />
                                             </td>
