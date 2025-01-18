@@ -27,7 +27,7 @@ import {
     SolflareWalletAdapter,
 } from '@solana/wallet-adapter-wallets'
 import bs58 from 'bs58'
-import { getTimestampFromJwt } from './libs/utils'
+import { getDataFromJwt, getTimestampFromJwt } from './libs/utils'
 
 const solanaWeb3JsAdapter = new SolanaAdapter({
     wallets: [new PhantomWalletAdapter(), new SolflareWalletAdapter()],
@@ -116,9 +116,11 @@ function App() {
 
             if (token) {
                 const timestamp = getTimestampFromJwt(token)
+                const data = getDataFromJwt(token)
                 if (
                     timestamp &&
-                    timestamp.expiration > Math.floor(Date.now() / 1000)
+                    timestamp.expiration > Math.floor(Date.now() / 1000) &&
+                    data.walletAddress === address
                 ) {
                     return true
                 }
