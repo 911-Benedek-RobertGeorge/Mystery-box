@@ -1,5 +1,4 @@
 import Home from './pages/Home/Home'
-import { SolContextProvider } from './context/Solana/SolContextProvider'
 import { Route, Routes, BrowserRouter as Router } from 'react-router-dom'
 import Navbar from './components/Layout/Navbar'
 import { Toaster } from 'react-hot-toast'
@@ -11,28 +10,55 @@ import axios from 'axios'
 import { VITE_ENV_BACKEND_URL, VITE_ENV_REOWN_ID } from './libs/config'
 import TermsAndConditions from './pages/TermsAndConditions/TermsAndConditions'
 import {
-    AppKitConnectButton,
     createAppKit,
+    Provider,
     useAppKitAccount,
     useAppKitProvider,
     useAppKitTheme,
 } from '@reown/appkit/react'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana/react'
-import { solana, solanaTestnet, solanaDevnet } from '@reown/appkit/networks'
+import { solana } from '@reown/appkit/networks'
+import logo from '../src/assets/boxes/logo.png'
+
+import { toast } from 'react-hot-toast'
+import { getSignInMessage, verifySignature } from './libs/services/authService'
 import {
     PhantomWalletAdapter,
     SolflareWalletAdapter,
 } from '@solana/wallet-adapter-wallets'
+import bs58 from 'bs58'
 import { getTimestampFromJwt } from './libs/utils'
-import { SolanaSignInInput } from '@solana/wallet-standard-features'
-import logo from '../src/assets/boxes/logo.png'
 
-import type { Provider } from '@reown/appkit-adapter-solana/react'
+const solanaWeb3JsAdapter = new SolanaAdapter({
+    wallets: [new PhantomWalletAdapter(), new SolflareWalletAdapter()],
+})
+
+const projectId = VITE_ENV_REOWN_ID || 'b56e18d47c72ab683b10814fe9495694'
+
+const metadata = {
+    name: 'memebox',
+    description: 'memebox',
+    url: window.location.origin,
+    icons: [logo],
+}
+
+// Initialize AppKit once
+createAppKit({
+    adapters: [solanaWeb3JsAdapter],
+    networks: [solana],
+    metadata: metadata,
+    projectId,
+    features: {
+        analytics: true,
+        socials: ['google', 'apple', 'x', 'discord'],
+    },
+})
+
 function App() {
     const dispatch = useDispatch()
     const { walletProvider } = useAppKitProvider<Provider>('solana')
-    const { isConnected, address, status, embeddedWalletInfo } =
-        useAppKitAccount()
+    const { isConnected, address } = useAppKitAccount()
+    console.log({ walletProvider })
 
     useEffect(() => {
         const fetchSolanaPrice = async () => {
@@ -70,17 +96,26 @@ function App() {
     }, [dispatch])
 
     useEffect(() => {
-        if (isConnected) signIn()
-        console.log('isConnected', walletProvider)
-    }, [isConnected])
+        if (isConnected && address) {
+            signIn()
+        }
+    }, [isConnected, address])
 
     const signIn = async () => {
+        let signedMessage: any
+        let jwt: string
+        const encoder = new TextEncoder()
         try {
+            if (!isConnected || !address || !walletProvider) {
+                toast.error('Please connect your wallet first')
+                sessionStorage.removeItem('jwtToken')
+                return false
+            }
+
             const token = sessionStorage.getItem('jwtToken')
 
             if (token) {
                 const timestamp = getTimestampFromJwt(token)
-                /// if the jwt token is not expired no need to sign in again
                 if (
                     timestamp &&
                     timestamp.expiration > Math.floor(Date.now() / 1000)
@@ -89,84 +124,63 @@ function App() {
                 }
             }
 
-            // Fetch the signInInput from the backend
-            const createResponse = await fetch(
-                `${VITE_ENV_BACKEND_URL}/auth/sign-in`
-            )
-            console.log('createResponse', createResponse)
-            const input: SolanaSignInInput = await createResponse.json()
-            const encoder = new TextEncoder()
-            const encodedMessage = encoder.encode(createResponse.toString())
+            // Get the message to sign
+            const message = await getSignInMessage(address)
+            const messageBytes = encoder.encode(message)
 
-            const signed = await walletProvider.signMessage(encodedMessage)
-            console.log('signed', signed)
-            // const output = await adapter.signIn(input)
-            // const payload = {
-            //     input,
-            //     output: {
-            //         account: {
-            //             publicKey: Array.from(output.account.publicKey),
-            //             address: output.account.address,
-            //         },
-            //         signature: Array.from(output.signature),
-            //         signedMessage: Array.from(output.signedMessage),
-            //     },
-            // }
-            const verifyResponse = await fetch(
-                `${VITE_ENV_BACKEND_URL}/auth/verify-sign-in`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
+            if (walletProvider && 'signMessage' in walletProvider) {
+                // @ts-ignore
+                signedMessage = await walletProvider.signMessage(messageBytes)
+                const base58SignedMessage = bs58.encode(signedMessage)
+                jwt = await verifySignature(message, base58SignedMessage)
+            } else {
+                const bs58Message = bs58.encode(messageBytes)
+                signedMessage = (await walletProvider.request({
+                    method: 'solana_signMessage',
+                    params: {
+                        message: bs58Message,
+                        pubkey: address,
+                        encoding: 'utf8',
                     },
-                    body: JSON.stringify(signed),
-                }
-            )
-            const response = await verifyResponse.json()
+                })) as any
+                jwt = await verifySignature(message, signedMessage.signature)
+            }
 
-            sessionStorage.setItem('jwtToken', response.jwt)
-            if (!response) throw new Error('Sign In verification failed!')
+            if (!jwt) {
+                throw new Error('Signature verification failed')
+            }
 
-            return false
+            sessionStorage.setItem('jwtToken', jwt)
+            return true
         } catch (error) {
             console.error('Error signing in:', error)
+            toast.error('Failed to sign in: ' + (error as Error).message)
+            sessionStorage.removeItem('jwtToken')
+            if (walletProvider && 'disconnect' in walletProvider) {
+                try {
+                    await walletProvider.disconnect()
+                } catch (disconnectError) {
+                    console.error(
+                        'Error disconnecting wallet:',
+                        disconnectError
+                    )
+                }
+            }
+            return false
         }
     }
 
-    // 0. Set up Solana Adapter
-    const solanaWeb3JsAdapter = new SolanaAdapter({
-        wallets: [new PhantomWalletAdapter(), new SolflareWalletAdapter()],
-    })
+    const { setThemeMode, setThemeVariables } = useAppKitTheme()
 
-    const projectId = VITE_ENV_REOWN_ID || 'b56e18d47c72ab683b10814fe9495694' // this is a public projectId only to use on localhost
-
-    // 2. Create a metadata object - optional
-    const metadata = {
-        name: 'memebox',
-        description: 'AppKit Example',
-        url: 'https://www.memebox-sol.com/', // origin must match your domain & subdomain
-        icons: [logo],
-    }
-
-    // 3. Create modal
-    createAppKit({
-        adapters: [solanaWeb3JsAdapter],
-        networks: [solana],
-        metadata: metadata,
-        projectId,
-        features: {
-            analytics: true, // Optional - defaults to your Cloud configuration
-        },
-    })
-    const { themeMode, themeVariables, setThemeMode, setThemeVariables } =
-        useAppKitTheme()
-
-    setThemeMode('dark')
-    setThemeVariables({
-        '--w3m-color-mix': '#011717',
-        '--w3m-color-mix-strength': 40,
-        '--w3m-accent': '#0CC4D3', // '#0E7490',
-    })
+    // Set theme once on mount
+    useEffect(() => {
+        setThemeMode('dark')
+        setThemeVariables({
+            '--w3m-color-mix': '#011717',
+            '--w3m-color-mix-strength': 40,
+            '--w3m-accent': '#0CC4D3',
+        })
+    }, [])
 
     return (
         <Router>

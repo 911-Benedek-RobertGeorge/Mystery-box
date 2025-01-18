@@ -1,11 +1,9 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { cn, scrollToSection, shortenAddress } from '../../libs/utils'
 import logo from '../../assets/boxes/logo.png'
 import { Link } from 'react-router-dom'
-import { WalletDisconnectButton } from '@solana/wallet-adapter-react-ui'
 import toast from 'react-hot-toast'
 import { useAppKitAccount } from '@reown/appkit/react'
-import { PublicKey, Transaction, SystemProgram } from '@solana/web3.js'
 
 function Navbar({ className }: { className?: string }) {
     const [active, setActive] = useState<string | null>(null)
