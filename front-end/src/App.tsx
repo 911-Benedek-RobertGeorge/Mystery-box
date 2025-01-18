@@ -43,7 +43,6 @@ const metadata = {
     icons: [logo],
 }
 
-// Initialize AppKit once
 createAppKit({
     adapters: [solanaWeb3JsAdapter],
     networks: [solana],
@@ -85,17 +84,12 @@ function App() {
                     const publicKey = new PublicKey(address)
                     setAddress(publicKey.toBase58())
                 } catch (error) {
-                    console.error('Invalid Solana address:', error)
                     setAddress(undefined)
                 }
             } else {
-                console.log('Not a Solana address format:', address)
                 setAddress(undefined)
             }
         }
-
-        console.log({ allAccounts })
-        console.log({ address })
     }, [allAccounts, address])
 
     useEffect(() => {
@@ -135,7 +129,6 @@ function App() {
 
     useEffect(() => {
         if (isConnected && address) {
-            console.log({ isConnected, address })
             signIn()
         }
     }, [address])
@@ -163,18 +156,10 @@ function App() {
             }
 
             const token = sessionStorage.getItem('jwtToken')
-            console.log({ token })
 
             if (token) {
                 const timestamp = getTimestampFromJwt(token)
                 const data = getDataFromJwt(token)
-                console.log('JWT Validation:', {
-                    hasTimestamp: !!timestamp,
-                    tokenExpiration: timestamp?.expiration,
-                    currentTime: Math.floor(Date.now() / 1000),
-                    storedAddress: data.walletAddress,
-                    currentAddress: address,
-                })
 
                 if (data.walletAddress !== address) {
                     console.log({
