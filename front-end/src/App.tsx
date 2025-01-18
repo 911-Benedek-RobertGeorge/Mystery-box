@@ -3,7 +3,7 @@ import { Route, Routes, BrowserRouter as Router } from 'react-router-dom'
 import Navbar from './components/Layout/Navbar'
 import { Toaster } from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { setSolanaPrice } from './context/store/SolanaSlice'
 import { setBoxTypes } from './context/store/BoxSlice'
 import axios from 'axios'
@@ -28,6 +28,7 @@ import {
 } from '@solana/wallet-adapter-wallets'
 import bs58 from 'bs58'
 import { getDataFromJwt, getTimestampFromJwt } from './libs/utils'
+import { PublicKey } from '@solana/web3.js'
 
 const solanaWeb3JsAdapter = new SolanaAdapter({
     wallets: [new PhantomWalletAdapter(), new SolflareWalletAdapter()],
@@ -57,8 +58,45 @@ createAppKit({
 function App() {
     const dispatch = useDispatch()
     const { walletProvider } = useAppKitProvider<Provider>('solana')
-    const { isConnected, address } = useAppKitAccount()
-    console.log({ walletProvider })
+    const {
+        isConnected,
+        allAccounts,
+        address: reownAddress,
+    } = useAppKitAccount()
+    const [address, setAddress] = useState<string | undefined>(undefined)
+
+    useEffect(() => {
+        const isSolanaAddress = (address: string) => {
+            return /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(address)
+        }
+
+        if (reownAddress && isSolanaAddress(reownAddress)) {
+            setAddress(reownAddress)
+            return
+        }
+
+        const address = allAccounts.find(
+            (account) => account.namespace === 'solana'
+        )?.address
+
+        if (address) {
+            if (isSolanaAddress(address)) {
+                try {
+                    const publicKey = new PublicKey(address)
+                    setAddress(publicKey.toBase58())
+                } catch (error) {
+                    console.error('Invalid Solana address:', error)
+                    setAddress(undefined)
+                }
+            } else {
+                console.log('Not a Solana address format:', address)
+                setAddress(undefined)
+            }
+        }
+
+        console.log({ allAccounts })
+        console.log({ address })
+    }, [allAccounts, address])
 
     useEffect(() => {
         const fetchSolanaPrice = async () => {
@@ -97,9 +135,21 @@ function App() {
 
     useEffect(() => {
         if (isConnected && address) {
+            console.log({ isConnected, address })
             signIn()
         }
+    }, [address])
+
+    useEffect(() => {
+        if (!isConnected && address) {
+            logout()
+        }
     }, [isConnected, address])
+
+    const logout = () => {
+        sessionStorage.removeItem('jwtToken')
+        setAddress(undefined)
+    }
 
     const signIn = async () => {
         let signedMessage: any
@@ -113,15 +163,33 @@ function App() {
             }
 
             const token = sessionStorage.getItem('jwtToken')
+            console.log({ token })
 
             if (token) {
                 const timestamp = getTimestampFromJwt(token)
                 const data = getDataFromJwt(token)
+                console.log('JWT Validation:', {
+                    hasTimestamp: !!timestamp,
+                    tokenExpiration: timestamp?.expiration,
+                    currentTime: Math.floor(Date.now() / 1000),
+                    storedAddress: data.walletAddress,
+                    currentAddress: address,
+                })
+
+                if (data.walletAddress !== address) {
+                    console.log({
+                        walletJwt: data.walletAddress,
+                        currentAddress: address,
+                    })
+                    sessionStorage.removeItem('jwtToken')
+                    return false
+                }
+
                 if (
                     timestamp &&
-                    timestamp.expiration > Math.floor(Date.now() / 1000) &&
-                    data.walletAddress === address
+                    timestamp.expiration > Math.floor(Date.now() / 1000)
                 ) {
+                    console.log('Valid JWT found, skipping sign-in')
                     return true
                 }
             }
