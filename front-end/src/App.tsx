@@ -52,6 +52,7 @@ createAppKit({
         analytics: true,
         socials: ['google', 'apple', 'x', 'discord'],
     },
+    allWallets: 'ONLY_MOBILE',
 })
 
 function App() {
