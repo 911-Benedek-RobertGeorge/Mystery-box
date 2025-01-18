@@ -81,3 +81,9 @@ export const getTimestampFromJwt = (token: string) => {
         return null
     }
 }
+
+export const getDataFromJwt = (token: string): { walletAddress: string } => {
+    const [, payloadBase64] = token.split('.') // Ignore the header and signature
+    const decodedPayload = JSON.parse(atob(payloadBase64))
+    return { walletAddress: decodedPayload.walletAddress }
+}
