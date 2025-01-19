@@ -5,13 +5,23 @@ import { motion } from 'framer-motion'
 import { BoxContent, MysteryBox } from '../../libs/interfaces'
 import { VITE_ENV_BACKEND_URL } from '../../libs/config'
 import { FaExternalLinkAlt } from 'react-icons/fa'
-import { shortenAddress } from '../../libs/utils'
+import { lamportsToSol, shortenAddress } from '../../libs/utils'
+import { useSelector } from 'react-redux'
 
 const Analytics: React.FC = () => {
     const [boxes, setBoxes] = useState<MysteryBox[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const { publicKey } = useWallet()
     const isAdmin = publicKey && ADMIN_WALLETS.includes(publicKey.toString())
+    const solanaPrice = useSelector(
+        (state: { solana: { price: number } }) => state.solana.price
+    )
+
+    const computeBoxCost = (box: MysteryBox) => {
+        return (
+            lamportsToSol(box.boxType.amountLamports) * solanaPrice
+        ).toFixed(2)
+    }
 
     useEffect(() => {
         const fetchAnalytics = async () => {
@@ -113,13 +123,16 @@ const Analytics: React.FC = () => {
                                             Transactions
                                         </th>
                                         <th className="p-4 text-left text-accent w-[100px]">
-                                            Initial
+                                            Paid
+                                        </th>
+                                        <th className="p-4 text-left text-accent w-[100px]">
+                                            Cost
                                         </th>
                                         <th className="p-4 text-left text-accent w-[100px]">
                                             Current/Claimed
                                         </th>
                                         <th className="p-4 text-left text-accent w-[100px]">
-                                            Change
+                                            PnL
                                         </th>
                                         <th className="p-4 text-left text-accent min-w-[600px]">
                                             Contents
@@ -169,6 +182,7 @@ const Analytics: React.FC = () => {
                                                     )}
                                                 </div>
                                             </td>
+
                                             <td className="p-4 w-[100px]">
                                                 $
                                                 {box.initialUsdValue?.toFixed(
@@ -176,15 +190,27 @@ const Analytics: React.FC = () => {
                                                 ) || '0'}
                                             </td>
                                             <td className="p-4 w-[100px]">
+                                                ${computeBoxCost(box)}
+                                            </td>
+                                            <td className="p-4 w-[100px]">
                                                 $
                                                 {Number(
-                                                    box.liveBoxValue || 0
+                                                    box.liveBoxValue ||
+                                                        box.claimUsdValue ||
+                                                        0
                                                 ).toFixed(2)}
                                             </td>
                                             <td className="p-4 w-[100px]">
                                                 <ValueChange
                                                     initial={
-                                                        box.initialUsdValue
+                                                        box.status === 'CLAIMED'
+                                                            ? box.initialUsdValue ||
+                                                              0
+                                                            : Number(
+                                                                  computeBoxCost(
+                                                                      box
+                                                                  )
+                                                              )
                                                     }
                                                     current={
                                                         box.status === 'CLAIMED'
@@ -222,10 +248,13 @@ const Analytics: React.FC = () => {
                                         </div>
                                         <div className="text-right">
                                             <div className="text-sm text-gray-400">
-                                                Initial: $
+                                                Paid: $
                                                 {box.initialUsdValue?.toFixed(
                                                     2
                                                 ) || '0'}
+                                            </div>
+                                            <div className="text-sm text-gray-400">
+                                                Cost: ${computeBoxCost(box)}
                                             </div>
                                             <div className="text-sm text-gray-400">
                                                 Current: $
@@ -238,7 +267,9 @@ const Analytics: React.FC = () => {
                                                       ).toFixed(2)}
                                             </div>
                                             <ValueChange
-                                                initial={box.initialUsdValue}
+                                                initial={Number(
+                                                    computeBoxCost(box)
+                                                )}
                                                 current={
                                                     box.status === 'CLAIMED'
                                                         ? Number(
@@ -424,27 +455,5 @@ const AddressLink: React.FC<{ address: string }> = ({ address }) => (
         <FaExternalLinkAlt className="w-3 h-3" />
     </a>
 )
-
-const calculateTotalValueLocked = (boxes: MysteryBox[]) => {
-    return boxes.reduce((sum, box) => sum + (box.liveBoxValue || 0), 0)
-}
-
-const calculateAverageROI = (boxes: MysteryBox[]) => {
-    const claimedBoxes = boxes.filter(
-        (box) =>
-            box.status === 'CLAIMED' && box.initialUsdValue && box.liveBoxValue
-    )
-    if (claimedBoxes.length === 0) return 0
-
-    const totalROI = claimedBoxes.reduce((sum, box) => {
-        const roi =
-            ((box.liveBoxValue! - box.initialUsdValue!) /
-                box.initialUsdValue!) *
-            100
-        return sum + roi
-    }, 0)
-
-    return totalROI / claimedBoxes.length
-}
 
 export default Analytics
