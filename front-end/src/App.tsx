@@ -11,6 +11,7 @@ import axios from 'axios'
 import { VITE_ENV_BACKEND_URL } from './libs/config'
 import TermsAndConditions from './pages/TermsAndConditions/TermsAndConditions'
 import Analytics from './pages/Analytics/Analytics'
+import { isLoggedInWalletAnalytics } from './libs/utils'
 
 function App() {
     const dispatch = useDispatch()
@@ -29,9 +30,12 @@ function App() {
         }
 
         const fetchBoxTypes = async () => {
+            const isAnalytics = isLoggedInWalletAnalytics()
             try {
                 const response = await axios(
-                    `${VITE_ENV_BACKEND_URL || 'https://ejacdvrot9.execute-api.eu-central-1.amazonaws.com/api'}/boxes/types`,
+                    `${VITE_ENV_BACKEND_URL || 'https://ejacdvrot9.execute-api.eu-central-1.amazonaws.com/api'}/boxes/types${
+                        isAnalytics ? '?debug=true' : ''
+                    }`,
                     {
                         method: 'GET',
                         headers: {

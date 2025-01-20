@@ -4,6 +4,7 @@ import { VITE_ENV_BACKEND_URL } from '../../../libs/config'
 import { MysteryBox } from '../../../libs/interfaces'
 import { motion } from 'framer-motion'
 import BoxCard from './BoxCard'
+import { isLoggedInWalletAnalytics } from '../../../libs/utils'
 
 const HistorySection: React.FC<{
     hasPendingTransaction: boolean
@@ -17,8 +18,12 @@ const HistorySection: React.FC<{
     const [totalItemsCount, setTotalItemsCount] = React.useState(0)
 
     const fetchHistoryDataCount = async () => {
+        const isAnalytics = isLoggedInWalletAnalytics()
+
         const response = await fetch(
-            `${VITE_ENV_BACKEND_URL}/boxes/results/count`
+            `${VITE_ENV_BACKEND_URL}/boxes/results/count${
+                isAnalytics ? '?debug=true' : ''
+            }`
         )
         const data = await response.json()
         setTotalItemsCount(data)
@@ -26,9 +31,13 @@ const HistorySection: React.FC<{
 
     const fetchHistoryData = async (newOffset: number) => {
         setIsLoadingMore(true)
+        const isAnalytics = isLoggedInWalletAnalytics()
+
         try {
             const response = await fetch(
-                `${VITE_ENV_BACKEND_URL}/boxes/results?offset=${newOffset}&limit=${limit}`
+                `${VITE_ENV_BACKEND_URL}/boxes/results?offset=${newOffset}&limit=${limit}${
+                    isAnalytics ? '&debug=true' : ''
+                }`
             )
             const data: MysteryBox[] = await response.json()
             setHistoryData(data)
