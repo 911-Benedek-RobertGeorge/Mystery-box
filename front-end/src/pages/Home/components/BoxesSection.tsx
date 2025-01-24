@@ -27,43 +27,36 @@ const BoxesSection: React.FC<BoxesSectionProps> = ({
         (box) => box._id === '678eb04437c646670f5a3109'
     )
 
+    const introBox = boxTypes?.find(
+        (box) => box._id === '6793785f1e6acd3043be74ae'
+    )
+
+    const mainBox = boxTypes?.find(
+        (box) => box._id === '676135d9687f17a1771ba2f6'
+    )
+
     return (
         <>
-            {/* {testBox && (
-                <div className="flex justify-center items-start [z-index:102]">
-                    <BuyModal
-                        box={testBox}
-                        setHasPendingTransaction={setHasPendingTransaction}
-                        setIsChevronHidden={setIsChevronHidden}
-                    />
-                </div>
-            )}
-            {!boxTypes ||
-                (boxTypes.length === 0 && (
-                    <div className="flex justify-center items-center h-screen">
-                        <h1 className="text-2xl font-bold text-accent">
-                            Loading...
-                        </h1>
-                    </div>
-                ))} */}
-
             {boxTypes?.length > 0 && (
                 <BoxesLayout isChevronHidden={isChevronHidden}>
-                    <IntroBox
-                        setIsChevronHidden={setIsChevronHidden}
-                        box={boxTypes[0]}
-                        solanaPrice={solanaPrice}
-                        setHasPendingTransaction={setHasPendingTransaction}
-                    />
-                    <MainBox
-                        setIsChevronHidden={setIsChevronHidden}
-                        box={boxTypes[0]}
-                        solanaPrice={solanaPrice}
-                        setHasPendingTransaction={setHasPendingTransaction}
-                    />
+                    {introBox && (
+                        <IntroBox
+                            setIsChevronHidden={setIsChevronHidden}
+                            box={introBox}
+                            solanaPrice={solanaPrice}
+                            setHasPendingTransaction={setHasPendingTransaction}
+                        />
+                    )}
+                    {mainBox && (
+                        <MainBox
+                            setIsChevronHidden={setIsChevronHidden}
+                            box={mainBox}
+                            solanaPrice={solanaPrice}
+                            setHasPendingTransaction={setHasPendingTransaction}
+                        />
+                    )}
                     <ComingSoonBox
                         setIsChevronHidden={setIsChevronHidden}
-                        box={boxTypes[5]}
                         solanaPrice={solanaPrice}
                         setHasPendingTransaction={setHasPendingTransaction}
                     />

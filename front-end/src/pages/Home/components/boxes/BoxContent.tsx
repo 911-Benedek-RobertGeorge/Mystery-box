@@ -4,7 +4,7 @@ import { PriceDisplay } from './PriceDisplay'
 import { BuyModal } from '../modal/BuyModal'
 
 interface BoxContentProps {
-    box: BoxType
+    box?: BoxType
     image?: React.ReactNode
     solanaPrice: number | null
     availableBoxes?: number
@@ -42,6 +42,12 @@ export const BoxContent: React.FC<BoxContentProps> = ({
     features,
     showPrice = true,
 }) => {
+    console.log({ box })
+    const areBoxesAvailable =
+        box?.availableBoxes && box?.availableBoxes > 0 ? true : false
+    const boxesAvailableStyle = areBoxesAvailable
+        ? 'inline-block bg-background-light text-accent font-semibold px-4 py-1 rounded-full'
+        : 'inline-block bg-slate-600 text-white font-semibold px-4 py-1 rounded-full'
     return (
         <>
             <div className="relative max-w-md mx-auto p-6 md:p-0">
@@ -54,22 +60,16 @@ export const BoxContent: React.FC<BoxContentProps> = ({
                     </div>
 
                     <div className="flex flex-row space-x-4 justify-center items-baseline">
-                        {box?.availableBoxes && (
-                            <span className="inline-block bg-background-light text-accent font-semibold px-4 py-1 rounded-full">
-                                {box?.availableBoxes > 0
-                                    ? ` ${box?.availableBoxes} ${
-                                          box?.availableBoxes === 1
-                                              ? 'box available'
-                                              : 'boxes available'
-                                      } 🔥`
-                                    : 'Sold out 😭'}
-                            </span>
-                        )}
+                        <span className={boxesAvailableStyle}>
+                            {areBoxesAvailable
+                                ? `${box?.availableBoxes} boxes available 🔥`
+                                : 'Sold out 😭'}
+                        </span>
                     </div>
 
                     {image && image}
 
-                    {showPrice && (
+                    {showPrice && box && (
                         <PriceDisplay box={box} solanaPrice={solanaPrice} />
                     )}
 
@@ -97,11 +97,28 @@ export const BoxContent: React.FC<BoxContentProps> = ({
                     )}
                 </div>
             </div>
-            <BuyModal
-                box={box}
-                setHasPendingTransaction={setHasPendingTransaction}
-                setIsChevronHidden={setIsChevronHidden}
-            />
+            {box && areBoxesAvailable && (
+                <BuyModal
+                    box={box}
+                    setHasPendingTransaction={setHasPendingTransaction}
+                    setIsChevronHidden={setIsChevronHidden}
+                />
+            )}
+
+            {box && !areBoxesAvailable && (
+                <div className="flex items-center justify-center mt-8">
+                    <div
+                        className="bg-gradient-to-r from-accent via-accent-dark to-emerald-500 
+                        scale-90 md:scale-100 items-center relative rounded-xl flex justify-center 
+                        group/modal-btn opacity-50 cursor-not-allowed"
+                    >
+                        <span className="text-center transition duration-500 font-bold text-white px-6 py-3">
+                            No more boxes available
+                        </span>
+                        <div className="-translate-x-40 group-hover/modal-btn:translate-x-0 flex items-center justify-center absolute inset-0 transition duration-500 text-white z-20"></div>
+                    </div>
+                </div>
+            )}
         </>
     )
 }

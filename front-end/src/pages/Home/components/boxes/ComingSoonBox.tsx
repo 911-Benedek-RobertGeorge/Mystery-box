@@ -3,7 +3,7 @@ import { BoxType } from '../../../../libs/interfaces'
 import { BoxContent } from './BoxContent'
 
 interface ComingSoonBoxProps {
-    box: BoxType
+    box?: BoxType
     solanaPrice: number | null
     setHasPendingTransaction: (value: boolean) => void
     setIsChevronHidden: (value: boolean) => void
