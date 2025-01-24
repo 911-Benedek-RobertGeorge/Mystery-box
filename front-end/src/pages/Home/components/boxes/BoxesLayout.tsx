@@ -90,7 +90,7 @@ export const BoxesLayout: React.FC<BoxesLayoutProps> = ({
                     <FaChevronLeft size={24} />
                 </button>
 
-                <div className="flex justify-center items-center w-full">
+                <div className="flex justify-center items-center w-full lg:mt-10">
                     <AnimatePresence
                         initial={false}
                         mode="wait"
@@ -128,7 +128,7 @@ export const BoxesLayout: React.FC<BoxesLayoutProps> = ({
                 </button>
             </div>
 
-            <div className="flex justify-center space-x-3 mt-8">
+            <div className="flex justify-center space-x-3 mt-10 pb-6">
                 {childrenArray.map((_, index) => (
                     <button
                         key={index}

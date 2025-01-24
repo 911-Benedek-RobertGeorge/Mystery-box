@@ -2,10 +2,10 @@ import React, { useState } from 'react'
 import { BoxType } from '../../../libs/interfaces'
 import { useSelector } from 'react-redux'
 import { MainBox } from './boxes/MainBox'
-import { BuyModal } from './modal/BuyModal'
 import { ComingSoonBox } from './boxes/ComingSoonBox'
 import { BoxesLayout } from './boxes/BoxesLayout'
 import { IntroBox } from './boxes/IntroBox'
+import { TestBox } from './boxes/TestBox'
 
 interface BoxesSectionProps {
     setHasPendingTransaction: (value: boolean) => void
@@ -29,7 +29,7 @@ const BoxesSection: React.FC<BoxesSectionProps> = ({
 
     return (
         <>
-            {testBox && (
+            {/* {testBox && (
                 <div className="flex justify-center items-start [z-index:102]">
                     <BuyModal
                         box={testBox}
@@ -45,7 +45,7 @@ const BoxesSection: React.FC<BoxesSectionProps> = ({
                             Loading...
                         </h1>
                     </div>
-                ))}
+                ))} */}
 
             {boxTypes?.length > 0 && (
                 <BoxesLayout isChevronHidden={isChevronHidden}>
@@ -67,6 +67,14 @@ const BoxesSection: React.FC<BoxesSectionProps> = ({
                         solanaPrice={solanaPrice}
                         setHasPendingTransaction={setHasPendingTransaction}
                     />
+                    {testBox && (
+                        <TestBox
+                            box={testBox}
+                            solanaPrice={solanaPrice}
+                            setHasPendingTransaction={setHasPendingTransaction}
+                            setIsChevronHidden={setIsChevronHidden}
+                        />
+                    )}
                 </BoxesLayout>
             )}
         </>

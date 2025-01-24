@@ -1,6 +1,6 @@
 import React from 'react'
 import { BoxType } from '../../../../libs/interfaces'
-import cyanBox from '../../../../assets/boxes/logo.png'
+import introBox from '../../../../assets/boxes/introBox.png'
 import { BoxContent } from './BoxContent'
 
 interface IntroBoxProps {
@@ -23,10 +23,16 @@ export const IntroBox: React.FC<IntroBoxProps> = ({
                 solanaPrice={solanaPrice}
                 setHasPendingTransaction={setHasPendingTransaction}
                 variant="intro"
-                image={cyanBox}
+                image={
+                    <img
+                        src={introBox}
+                        alt="Intro Box"
+                        className="my-6 ml-2 scale-125"
+                    />
+                }
                 setIsChevronHidden={setIsChevronHidden}
                 title={
-                    <p className="bg-gradient-to-r from-accent-secondary via-purple-500 to-emerald-500 text-transparent bg-clip-text">
+                    <p className="bg-gradient-to-r from-accent via-blue-500 to-emerald-500 text-transparent bg-clip-text">
                         {`${box.name} Box`}
                     </p>
                 }

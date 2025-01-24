@@ -1,12 +1,11 @@
 import React from 'react'
 import { BoxType } from '../../../../libs/interfaces'
-import cyanBox from '../../../../assets/boxes/logo.png'
 import { PriceDisplay } from './PriceDisplay'
 import { BuyModal } from '../modal/BuyModal'
 
 interface BoxContentProps {
     box: BoxType
-    image?: string
+    image?: React.ReactNode
     solanaPrice: number | null
     availableBoxes?: number
     setHasPendingTransaction: (value: boolean) => void
@@ -68,11 +67,7 @@ export const BoxContent: React.FC<BoxContentProps> = ({
                         )}
                     </div>
 
-                    <img
-                        src={image || cyanBox}
-                        className="w-72 mx-auto mt-4"
-                        style={{ transformStyle: 'preserve-3d' }}
-                    />
+                    {image && image}
 
                     {showPrice && (
                         <PriceDisplay box={box} solanaPrice={solanaPrice} />

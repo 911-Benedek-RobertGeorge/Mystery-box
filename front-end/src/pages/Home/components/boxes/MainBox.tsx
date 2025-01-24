@@ -1,6 +1,7 @@
 import React from 'react'
 import { BoxType } from '../../../../libs/interfaces'
 import { BoxContent } from './BoxContent'
+import mainBox from '../../../../assets/boxes/cyan_box-noBG.png'
 
 interface MainBoxProps {
     box: BoxType
@@ -20,11 +21,19 @@ export const MainBox: React.FC<MainBoxProps> = ({
             <BoxContent
                 box={box}
                 solanaPrice={solanaPrice}
+                image={
+                    <img
+                        src={mainBox}
+                        alt="Main Box"
+                        width={288}
+                        className="mt-8"
+                    />
+                }
                 setHasPendingTransaction={setHasPendingTransaction}
                 variant="box"
                 setIsChevronHidden={setIsChevronHidden}
                 title={
-                    <p className="bg-gradient-to-r from-accent via-accent-dark to-emerald-500 text-transparent bg-clip-text">
+                    <p className="bg-gradient-to-r from-accent via-accent-secondary to-emerald-500 text-transparent bg-clip-text">
                         {`${box.name} Box`}
                     </p>
                 }
