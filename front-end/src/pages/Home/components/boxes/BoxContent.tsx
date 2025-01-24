@@ -59,13 +59,15 @@ export const BoxContent: React.FC<BoxContentProps> = ({
                         </div>
                     </div>
 
-                    <div className="flex flex-row space-x-4 justify-center items-baseline">
-                        <span className={boxesAvailableStyle}>
-                            {areBoxesAvailable
-                                ? `${box?.availableBoxes} boxes available 🔥`
-                                : 'Sold out 😭'}
-                        </span>
-                    </div>
+                    {box && (
+                        <div className="flex flex-row space-x-4 justify-center items-baseline">
+                            <span className={boxesAvailableStyle}>
+                                {areBoxesAvailable
+                                    ? `${box?.availableBoxes} boxes available 🔥`
+                                    : 'Sold out 😭'}
+                            </span>
+                        </div>
+                    )}
 
                     {image && image}
 
@@ -103,6 +105,22 @@ export const BoxContent: React.FC<BoxContentProps> = ({
                     setHasPendingTransaction={setHasPendingTransaction}
                     setIsChevronHidden={setIsChevronHidden}
                 />
+            )}
+
+            {!box && (
+                <div className="flex items-center justify-center mt-8">
+                    <div
+                        className="bg-gradient-to-r from-gray-600 via-gray-700 to-gray-800 
+                        scale-90 md:scale-100 items-center relative rounded-xl flex justify-center 
+                        opacity-70 cursor-not-allowed"
+                    >
+                        <span className="text-center font-bold text-gray-300 px-8 py-4 flex items-center space-x-2">
+                            <span>Coming soon</span>
+                            <span>✨</span>
+                        </span>
+                        <div className="flex items-center justify-center absolute inset-0 text-white z-20"></div>
+                    </div>
+                </div>
             )}
 
             {box && !areBoxesAvailable && (
