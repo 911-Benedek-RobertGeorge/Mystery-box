@@ -94,7 +94,7 @@ export function OpenBoxModal({
     }
 
     return (
-        <div className=" h-full  absolute  flex items-center justify-center z-[105]">
+        <div className="h-full absolute flex items-center justify-center z-[400] pointer-events-none">
             <Modal>
                 <ModalTrigger
                     className={cn(
@@ -119,7 +119,7 @@ export function OpenBoxModal({
                 </ModalTrigger>
                 <ModalBody
                     closeModal={closeModal}
-                    className="z-[200] bg-background-dark w-full shadow-inner rounded-t-xl  shadow-cyan-600 py-4  md:max-w-[60%] xl:max-w-[40%]"
+                    className="pointer-events-auto z-[400] bg-background-dark w-full shadow-inner rounded-t-xl shadow-cyan-600 py-4 md:max-w-[60%] xl:max-w-[40%]"
                 >
                     <div className="text-center text-accent/80 text-lg mt-2 font-light w-[80%] mx-auto">
                         {mysteryBox && (

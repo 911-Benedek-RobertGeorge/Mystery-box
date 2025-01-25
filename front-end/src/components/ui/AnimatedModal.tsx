@@ -1,6 +1,6 @@
 'use client'
 import { AnimatePresence, motion } from 'framer-motion'
-import React, {
+import {
     ReactNode,
     createContext,
     useContext,
@@ -42,9 +42,11 @@ export function Modal({ children }: { children: ReactNode }) {
 export const ModalTrigger = ({
     children,
     className,
+    setIsChevronHidden,
 }: {
     children: ReactNode
     className?: string
+    setIsChevronHidden?: (value: boolean) => void
 }) => {
     const { setOpen } = useModal()
     return (
@@ -53,7 +55,10 @@ export const ModalTrigger = ({
                 'px-4 py-2 rounded-md text-black dark:text-white text-center relative overflow-hidden ',
                 className
             )}
-            onClick={() => setOpen(true)}
+            onClick={() => {
+                setOpen(true)
+                setIsChevronHidden && setIsChevronHidden(true)
+            }}
         >
             {children}
         </button>
@@ -64,10 +69,12 @@ export const ModalBody = ({
     children,
     className,
     closeModal,
+    setIsChevronHidden,
 }: {
     children: ReactNode
     className?: string
     closeModal?: boolean
+    setIsChevronHidden?: (value: boolean) => void
 }) => {
     const { open } = useModal()
     useEffect(() => {
@@ -80,7 +87,10 @@ export const ModalBody = ({
 
     const modalRef = useRef(null)
     const { setOpen } = useModal()
-    if (closeModal) setOpen(false)
+    if (closeModal) {
+        setOpen(false)
+        setIsChevronHidden && setIsChevronHidden(false)
+    }
 
     // useOutsideClick(modalRef, () => setOpen(false))
 
@@ -132,7 +142,7 @@ export const ModalBody = ({
                             damping: 15,
                         }}
                     >
-                        <CloseIcon />
+                        <CloseIcon setIsChevronHidden={setIsChevronHidden} />
                         {children}
                     </motion.div>
                 </motion.div>
@@ -195,12 +205,17 @@ const Overlay = ({ className }: { className?: string }) => {
     )
 }
 
-const CloseIcon = () => {
+const CloseIcon = ({
+    setIsChevronHidden,
+}: {
+    setIsChevronHidden?: (value: boolean) => void
+}) => {
     const { setOpen } = useModal()
     return (
         <button
             onClick={() => {
                 setOpen(false)
+                setIsChevronHidden && setIsChevronHidden(false)
             }}
             className="absolute top-4 right-4 group"
         >
