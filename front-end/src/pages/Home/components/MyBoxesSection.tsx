@@ -224,11 +224,11 @@ const MyBoxesSection: React.FC<MyBoxesSectionProps> = ({
                             </motion.div>
                         )}
                     </div>
-                    {/* <OpenBoxModal
+                    <OpenBoxModal
                         setHasPendingTransaction={setHasPendingTransaction}
                         hiddenTrigger={true}
                         boxId={selectedBoxId}
-                    /> */}
+                    />
                 </div>
             )}
         </>

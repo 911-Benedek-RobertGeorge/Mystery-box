@@ -1,26 +1,15 @@
 import { useState } from 'react'
-import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
-import { cn, scrollToSection, shortenAddress } from '../../libs/utils'
+ import { cn, scrollToSection } from '../../libs/utils'
 import logo from '../../assets/boxes/logo.png'
 import { Link } from 'react-router-dom'
-import toast from 'react-hot-toast'
-import { useAppKitAccount } from '@reown/appkit/react'
+ import { useAppKitAccount } from '@reown/appkit/react'
 import { ADMIN_WALLETS } from '../../libs/constants'
-import { useWallet } from '@solana/wallet-adapter-react'
-
+ 
 function Navbar({ className }: { className?: string }) {
     const [active, setActive] = useState<string | null>(null)
-    // const { connected, publicKey, disconnect } = useWallet()
-    const { address : publicKey, isConnected, caipAddress, status, embeddedWalletInfo } =
-        useAppKitAccount()
-    // const publicKey = new publicKey(address)
-    // const onDisconnect = () => {
-    //     sessionStorage.removeItem('jwtToken')
-    //     disconnect()
-    // }
-
- 
-     const isAdmin = publicKey && ADMIN_WALLETS.includes(publicKey.toString())
+     const { address : publicKey, isConnected } = useAppKitAccount()
+  
+     const isAdmin = publicKey && ADMIN_WALLETS.includes(publicKey )
  
     return (
         <div

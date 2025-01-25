@@ -7,8 +7,7 @@ import {
     ModalTrigger,
 } from '../../../../components/ui/AnimatedModal'
 import questionMark from '../../../../assets/elements/question_mark.png'
-import { useWallet } from '@solana/wallet-adapter-react'
-
+ 
 import toast from 'react-hot-toast'
 import { useNetworkConfiguration } from '../../../../context/Solana/SolNetworkConfigurationProvider'
 import { VITE_ENV_BACKEND_URL } from '../../../../libs/config'
@@ -18,6 +17,7 @@ import { confetti } from '@tsparticles/confetti'
 import { BoxContent, MysteryBox } from '../../../../libs/interfaces'
 import { SOLANA_EXPLORER_URL } from '../../../../libs/constants'
 import { FaExternalLinkAlt } from 'react-icons/fa'
+import { useAppKitAccount } from '@reown/appkit/react'
 
 export function OpenBoxModal({
     boxId,
@@ -28,9 +28,8 @@ export function OpenBoxModal({
     hiddenTrigger?: boolean
     setHasPendingTransaction?: (value: boolean) => void
 }) {
-    const { publicKey } = useWallet()
-    const { networkConfiguration } = useNetworkConfiguration()
-
+     const { networkConfiguration } = useNetworkConfiguration()
+    const {address: publicKey} = useAppKitAccount()
     const jwtToken = sessionStorage.getItem('jwtToken')
     const [mysteryBox, setMysteryBox] = useState<MysteryBox>()
     const [closeModal, setCloseModal] = useState(false)

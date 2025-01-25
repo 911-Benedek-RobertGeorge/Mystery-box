@@ -9,9 +9,7 @@ import {
 } from '../../../../components/ui/AnimatedModal'
 import questionMark from '../../../../assets/elements/question_mark.png'
 import cyanBox from '../../../../assets/boxes/cyan_box.png'
-import { useConnection, useWallet } from '@solana/wallet-adapter-react'
-// import { Transaction } from '@solana/web3.js'
-import toast, { LoaderIcon } from 'react-hot-toast'
+  import toast, { LoaderIcon } from 'react-hot-toast'
 import { Buffer } from 'buffer'
 import { useNetworkConfiguration } from '../../../../context/Solana/SolNetworkConfigurationProvider'
 import { VITE_ENV_BACKEND_URL } from '../../../../libs/config'
@@ -25,7 +23,7 @@ import { FaCheckCircle } from 'react-icons/fa'
 import { useSelector } from 'react-redux'
 
 import { useAppKitConnection } from '@reown/appkit-adapter-solana/react'
-import { PublicKey, Transaction, SystemProgram } from '@solana/web3.js'
+import { PublicKey, Transaction  } from '@solana/web3.js'
 import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
 import type { Provider } from '@reown/appkit-adapter-solana/react'
 
@@ -43,16 +41,14 @@ export function BuyModal({
     const solanaPrice = useSelector(
         (state: { solana: { price: number } }) => state.solana.price
     )
-    const { publicKey, sendTransaction } = useWallet()
-    // const { connection } = useConnection()
+     // const { connection } = useConnection()
     const { networkConfiguration } = useNetworkConfiguration()
     const [step, setStep] = useState(0)
-    const [latestTxSignature, setLatestTxSignature] = useState<string>('')
-    const jwtToken = sessionStorage.getItem('jwtToken')
+     const jwtToken = sessionStorage.getItem('jwtToken')
     const [boughtBoxId, setBoughtBoxId] = useState<string | null>(null)
 
     // reown appkit
-    const { isConnected, address } = useAppKitAccount()
+    const { address : publicKey } = useAppKitAccount()
     const { connection } = useAppKitConnection()
     const { walletProvider } = useAppKitProvider<Provider>('solana')
 
@@ -95,7 +91,7 @@ export function BuyModal({
 
                 const txSignature =
                     await sendTransactionReownAppKit(transactionObject)
-
+                console.log("TX SIGNATURE", txSignature , !!txSignature)
                 if (!txSignature) return
 
                 setStep(3)
@@ -121,6 +117,7 @@ export function BuyModal({
                         duration: 10000,
                     }
                 )
+                await new Promise((resolve) => setTimeout(resolve, 2000))
 
                 setStep(4)
                 await indexTransaction(txSignature)
@@ -138,21 +135,23 @@ export function BuyModal({
                     console.error(`Attempt ${attempts} failed:`, error)
                 } else {
                     toast.error(`Attempt ${attempts} failed: ${String(error)}`)
-                    console.error(`Attempt ${attempts} failed:`, String(error))
-                }
+                 }
                 if (attempts >= maxAttempts) {
                     setStep(-1)
                     toast.error(
                         'Error buying mystery box after multiple attempts'
                     )
+                    return 
                 }
+                console.error(`Attempt ${attempts} failed:`, error)
+
             }
         }
     }
 
     async function indexTransaction(signature: string) {
         try {
-            console.log('Indexing ', signature, jwtToken)
+            console.log('Indexing ', "sg",signature, "JWT", jwtToken)
             if (!jwtToken) throw new Error('JWT token not found ')
 
             const response = await fetch(`${VITE_ENV_BACKEND_URL}/index`, {
@@ -164,12 +163,15 @@ export function BuyModal({
                 body: JSON.stringify({ signature: signature }),
             })
 
+            console.log('Indexing response', response)
             if (!response.ok) {
                 throw new Error('Failed to index the transaction')
             }
             setStep(5)
 
             const result = await response.json()
+            console.log('Indexing res', result)
+
             if (result.message) {
                 console.error(result.message)
                 return
@@ -187,17 +189,17 @@ export function BuyModal({
 
     // reown appkit
     async function sendTransactionReownAppKit(transaction: Transaction) {
-        if (!connection || !address) return
+        if (!connection || !publicKey) return
         const latestBlockhash = await connection.getLatestBlockhash()
         transaction.recentBlockhash = latestBlockhash.blockhash
-        transaction.feePayer = new PublicKey(address)
+        transaction.feePayer = new PublicKey(publicKey)
         setHasPendingTransaction(true)
 
         const signature = await walletProvider.sendTransaction(
             transaction,
             connection
         )
-        console.log(signature)
+        console.log("send TX SIGNATURE :", signature)
 
         confirmTransaction(signature)
         return signature
@@ -270,6 +272,7 @@ export function BuyModal({
                 commitment: 'confirmed',
                 maxSupportedTransactionVersion: 0,
             })
+            console.log('TX HAS BEEN FOUND AND CONFIRMED', tx)
             if (tx) {
                 return tx
             }

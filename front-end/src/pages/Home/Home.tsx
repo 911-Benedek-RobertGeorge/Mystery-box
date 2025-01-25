@@ -241,10 +241,10 @@ const Home: React.FC = () => {
                     setHasPendingTransaction={setHasPendingTransaction}
                 />{' '}
             </div>{' '}
-            {/* <MyBoxesSection
+            <MyBoxesSection
                 hasPendingTransaction={hasPendingTransaction}
                 setHasPendingTransaction={setHasPendingTransaction}
-            /> */}
+            />
             {/* <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background-dark to-accent-dark opacity-30 blur-3xl"></div> */}
             <div className="relative  ">
                 {' '}
