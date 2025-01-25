@@ -32,9 +32,11 @@ import type { Provider } from '@reown/appkit-adapter-solana/react'
 export function BuyModal({
     box,
     setHasPendingTransaction,
+    setIsChevronHidden,
 }: {
     box: BoxType | null
     setHasPendingTransaction: (value: boolean) => void
+    setIsChevronHidden: (value: boolean) => void
 }) {
     const images = [cyanBox]
 
@@ -278,16 +280,17 @@ export function BuyModal({
     }
 
     return (
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center mt-8">
             {publicKey ? (
                 <Modal>
                     <ModalTrigger
+                        setIsChevronHidden={setIsChevronHidden}
                         className="bg-gradient-to-r from-accent via-accent-dark to-emerald-500 
-                        scale-90 md:scale-100 items-center relative rounded-full flex justify-center 
+                        scale-90 md:scale-100 items-center relative rounded-xl flex justify-center 
                         group/modal-btn hover:shadow-lg hover:shadow-accent/50 transition-all duration-300"
                     >
-                        <span className="group-hover/modal-btn:translate-x-40 text-center transition duration-500 font-bold text-white px-4">
-                            Buy a box!
+                        <span className="group-hover/modal-btn:translate-x-40 text-center transition duration-500 font-bold text-white px-4 py-1">
+                            Click here to buy a box!
                         </span>
                         <div className="-translate-x-40 group-hover/modal-btn:translate-x-0 flex items-center justify-center absolute inset-0 transition duration-500 text-white z-20">
                             <img
@@ -296,9 +299,12 @@ export function BuyModal({
                             />
                         </div>
                     </ModalTrigger>
-                    <ModalBody className="bg-background-dark w-full rounded-t-xl border-t border-accent/20 ">
+                    <ModalBody
+                        className="bg-background-dark w-full rounded-t-xl border-t border-accent/20"
+                        setIsChevronHidden={setIsChevronHidden}
+                    >
                         <ModalContent>
-                            <div className="">
+                            <div>
                                 <div className="text-center mb-8">
                                     <h4 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-accent via-purple-500 to-emerald-500 text-transparent bg-clip-text">
                                         {!boughtBoxId
