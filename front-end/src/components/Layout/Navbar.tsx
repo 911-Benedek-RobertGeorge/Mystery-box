@@ -11,7 +11,7 @@ import { useWallet } from '@solana/wallet-adapter-react'
 function Navbar({ className }: { className?: string }) {
     const [active, setActive] = useState<string | null>(null)
     // const { connected, publicKey, disconnect } = useWallet()
-    const { address, isConnected, caipAddress, status, embeddedWalletInfo } =
+    const { address : publicKey, isConnected, caipAddress, status, embeddedWalletInfo } =
         useAppKitAccount()
     // const publicKey = new publicKey(address)
     // const onDisconnect = () => {
@@ -20,14 +20,8 @@ function Navbar({ className }: { className?: string }) {
     // }
 
  
-    const { connected, publicKey, disconnect } = useWallet()
-    const isAdmin = publicKey && ADMIN_WALLETS.includes(publicKey.toString())
-
-    const onDisconnect = () => {
-        sessionStorage.removeItem('jwtToken')
-        disconnect()
-    }
-
+     const isAdmin = publicKey && ADMIN_WALLETS.includes(publicKey.toString())
+ 
     return (
         <div
             className={cn(
@@ -42,19 +36,12 @@ function Navbar({ className }: { className?: string }) {
                 ></img>
             </Link>
             <div
-                className={`transform-all duration-500 transition ease-in-out h-16 items-center relative rounded-full border border-r-accent border-l-accent border-transparent bg-muted shadow-input flex justify-center space-x-8 px-8 shadow-inner shadow-accent-dark scale-75 md:scale-100 `}
+                className={cn(`transform-all duration-500 transition ease-in-out h-10 items-center relative rounded-full border border-transparent border-r-accent border-l-accent bg-muted shadow-input flex justify-center space-x-8 px-1 shadow-inner shadow-accent-dark scale-75 md:scale-100 `,   isConnected ? "h-16 px-4" : " " )}
             >
                 {' '}
                 {!isConnected ? (
                     <>
-                        {' '}
-                        {/* <WalletMultiButton
-                            style={{
-                                padding: '0',
-                                backgroundColor: 'transparent',
-                                color: isConnected ? '#0E7490' : '#24B9C0',
-                            }}
-                        /> */}
+                    
                     </>
                 ) : (
                     <>
@@ -91,39 +78,8 @@ function Navbar({ className }: { className?: string }) {
                                     >
                                         My Boxes
                                     </button>
-                                    {/* <Link
-                                        to="./#"
-                                        className="block px-4 py-2  text-accent-dark hover:text-accent"
-                                        onClick={() => setActive(null)}
-                                    >
-                                        How to buy
-                                    </Link> */}
-                                    <div className="text-accent-dark hover:text-accent">
-                                        <button
-                                            onClick={() => {
-                                                navigator.clipboard.writeText(
-                                                    address ?? ''
-                                                )
-                                                toast.success(
-                                                    'Address copied to clipboard'
-                                                )
-                                            }}
-                                            className="text-accent-dark hover:text-accent"
-                                        >
-                                            {shortenAddress(address ?? '', 3)}
-                                        </button>
-                                    </div>{' '}
-                                    {/* <WalletDisconnectButton
-                                        // onClick={onDisconnect}
-                                        style={{
-                                            padding: '0',
-                                            backgroundColor: 'transparent',
-                                            color: connected
-                                                ? '#0E7490'
-                                                : '#24B9C0',
-                                        }}
-                                    /> */}
-                                    {isAdmin && connected && (
+                                   
+                                    {isAdmin && isConnected && (
                                         <Link
                                             to="/analytics"
                                             className="block px-4 py-2 text-accent-dark hover:text-accent"
@@ -136,7 +92,7 @@ function Navbar({ className }: { className?: string }) {
                             )}
                         </div>
                         <div className="hidden md:flex space-x-8 justify-center items-center">
-                            {isAdmin && connected && (
+                            {isAdmin && isConnected && (
                                 <Link
                                     to="/analytics"
                                     className="text-accent-dark hover:text-accent transition-colors"
@@ -153,32 +109,10 @@ function Navbar({ className }: { className?: string }) {
                             >
                                 My Boxes
                             </button>
-                            <div className="text-accent-dark hover:text-accent">
-                                <button
-                                    onClick={() => {
-                                        navigator.clipboard.writeText(
-                                            address ?? ''
-                                        )
-                                        toast.success(
-                                            'Address copied to clipboard'
-                                        )
-                                    }}
-                                    className="text-accent-dark hover:text-accent"
-                                >
-                                    {shortenAddress(address ?? '', 3)}
-                                </button>
-                            </div>
-                            {/* <WalletDisconnectButton
-                                onClick={onDisconnect}
-                                style={{
-                                    padding: '0',
-                                    backgroundColor: 'transparent',
-                                    color: connected ? '#0E7490' : '#24B9C0',
-                                }}
-                            /> */}
+                      
                         </div>
                     </>
-                )}{' '}
+                )} 
                 <appkit-button/>
             </div>
         </div>

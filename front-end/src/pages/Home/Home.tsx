@@ -31,8 +31,7 @@ import WhatAreWeSection from './components/WhatAreWeSection'
 import AboutUsSection from './components/AboutUsSection'
 import FAQ from '../FAQ/FAQ'
 
-const memeCoinImages = [chillGuy, bonk, boom, mow, pnut, popcat, wif]
-
+ 
 const Home: React.FC = () => {
     const containerRef = useRef<HTMLDivElement | null>(null)
     const [scrollPosition, setScrollPosition] = useState(0)
@@ -40,21 +39,14 @@ const Home: React.FC = () => {
     const [hasPendingTransaction, setHasPendingTransaction] = useState(false)
 
     useEffect(() => {
-        let memeImages = memeCoinImages.map((meme) => {
-            return {
-                src: meme,
-                top: `${Math.random() * 50 + 10}%`,
-                left: `${Math.random() * 80 + 10}%`,
-            }
-        })
+ 
         const fetchMemeImages = async () => {
             try {
                 const response = await fetch(`${VITE_ENV_BACKEND_URL}/tokens`)
                 const data = await response.json()
 
-                memeImages = [
-                    // ...memeImages,
-                    ...data.map((meme: Token) => ({
+                const memeImages = [
+                     ...data.map((meme: Token) => ({
                         src: meme?.image ?? '',
                         top: `${Math.random() * 50 + 10}%`,
                         left: `${Math.random() * 80 + 10}%`,
@@ -70,7 +62,7 @@ const Home: React.FC = () => {
 
         fetchMemeImages()
 
-        setMemesImage(memeImages)
+       
     }, [])
 
     // make the memecoins float while moving the mouse
