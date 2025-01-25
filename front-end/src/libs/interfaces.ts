@@ -47,6 +47,7 @@ export interface BoxContent {
     status: string
     createdAt: string
     __v: number
+    tokenValue?: string
 }
 
 export enum BoxStatus {
@@ -70,6 +71,7 @@ export interface MysteryBox {
     solPrice: number
     initialUsdValue: number
     claimUsdValue: number
+    liveBoxValue?: number
 }
 
 export type memeCoinType = {

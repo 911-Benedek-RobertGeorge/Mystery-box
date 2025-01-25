@@ -1,5 +1,6 @@
 import { ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
+import { ANALYTICS_WALLETS } from './config'
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))
@@ -76,14 +77,33 @@ export const getTimestampFromJwt = (token: string) => {
         const expiration = decodedPayload.exp // Expiration timestamp
 
         return { issuedAt, expiration }
+
+       } catch (error) {
+        console.error('Error decoding JWT:', error)
+        return null
+    }
+}
+
+export const getDataFromJwt = (token: string | null) => {
+    if (!token) return null
+
+    try {
+        const [, payloadBase64] = token.split('.') // Ignore the header and signature
+        const decodedPayload = JSON.parse(atob(payloadBase64))
+
+        const walletAddress = decodedPayload.walletAddress
+
+        return { walletAddress }
+
     } catch (error) {
         console.error('Error decoding JWT:', error)
         return null
     }
 }
 
-export const getDataFromJwt = (token: string): { walletAddress: string } => {
-    const [, payloadBase64] = token.split('.') // Ignore the header and signature
-    const decodedPayload = JSON.parse(atob(payloadBase64))
-    return { walletAddress: decodedPayload.walletAddress }
+//  
+export const isLoggedInWalletAnalytics = () => {
+    const jwt = sessionStorage.getItem('jwtToken')
+    const walletAddress = getDataFromJwt(jwt)?.walletAddress
+    return ANALYTICS_WALLETS.includes(walletAddress)
 }

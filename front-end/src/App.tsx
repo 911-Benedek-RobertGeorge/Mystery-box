@@ -55,6 +55,9 @@ createAppKit({
     allWallets: 'ONLY_MOBILE',
 })
 
+import Analytics from './pages/Analytics/Analytics'
+import { isLoggedInWalletAnalytics } from './libs/utils'
+
 function App() {
     const dispatch = useDispatch()
     const { walletProvider } = useAppKitProvider<Provider>('solana')
@@ -106,9 +109,12 @@ function App() {
             }
         }
         const fetchBoxTypes = async () => {
+            const isAnalytics = isLoggedInWalletAnalytics()
             try {
                 const response = await axios(
-                    `${VITE_ENV_BACKEND_URL || 'https://ejacdvrot9.execute-api.eu-central-1.amazonaws.com/api'}/boxes/types`,
+                    `${VITE_ENV_BACKEND_URL || 'https://ejacdvrot9.execute-api.eu-central-1.amazonaws.com/api'}/boxes/types${
+                        isAnalytics ? '?debug=true' : ''
+                    }`,
                     {
                         method: 'GET',
                         headers: {
@@ -161,8 +167,8 @@ function App() {
             if (token) {
                 const timestamp = getTimestampFromJwt(token)
                 const data = getDataFromJwt(token)
-
-                if (data.walletAddress !== address) {
+        
+                if (data && data.walletAddress !== address) {
                     console.log({
                         walletJwt: data.walletAddress,
                         currentAddress: address,
@@ -244,16 +250,19 @@ function App() {
             <div className="max-w-screen overflow-hidden">
                 <Navbar />
                 <Toaster />
-                <Routes>
-                    <Route path={`/`} element={<Home />} />
+ 
+                    <Routes>
+                        <Route path={`/`} element={<Home />} />
 
-                    <Route
-                        path={`/terms-and-conditions`}
-                        element={<TermsAndConditions />}
-                    />
-                </Routes>
-            </div>
-        </Router>
+                        <Route
+                            path={`/terms-and-conditions`}
+                            element={<TermsAndConditions />}
+                        />
+
+                        <Route path="/analytics" element={<Analytics />} />
+                    </Routes>
+                </div>
+         </Router>
     )
 }
 

@@ -1,9 +1,12 @@
 import { useState } from 'react'
+import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import { cn, scrollToSection, shortenAddress } from '../../libs/utils'
 import logo from '../../assets/boxes/logo.png'
 import { Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { useAppKitAccount } from '@reown/appkit/react'
+import { ADMIN_WALLETS } from '../../libs/constants'
+import { useWallet } from '@solana/wallet-adapter-react'
 
 function Navbar({ className }: { className?: string }) {
     const [active, setActive] = useState<string | null>(null)
@@ -15,6 +18,15 @@ function Navbar({ className }: { className?: string }) {
     //     sessionStorage.removeItem('jwtToken')
     //     disconnect()
     // }
+
+ 
+    const { connected, publicKey, disconnect } = useWallet()
+    const isAdmin = publicKey && ADMIN_WALLETS.includes(publicKey.toString())
+
+    const onDisconnect = () => {
+        sessionStorage.removeItem('jwtToken')
+        disconnect()
+    }
 
     return (
         <div
@@ -111,12 +123,29 @@ function Navbar({ className }: { className?: string }) {
                                                 : '#24B9C0',
                                         }}
                                     /> */}
+                                    {isAdmin && connected && (
+                                        <Link
+                                            to="/analytics"
+                                            className="block px-4 py-2 text-accent-dark hover:text-accent"
+                                            onClick={() => setActive(null)}
+                                        >
+                                            Analytics
+                                        </Link>
+                                    )}
                                 </div>
                             )}
                         </div>
-                        <div className="hidden md:flex space-x-8 justify-center items-center ">
+                        <div className="hidden md:flex space-x-8 justify-center items-center">
+                            {isAdmin && connected && (
+                                <Link
+                                    to="/analytics"
+                                    className="text-accent-dark hover:text-accent transition-colors"
+                                >
+                                    Analytics
+                                </Link>
+                            )}
                             <button
-                                className="  text-accent-dark hover:text-accent"
+                                className="text-accent-dark hover:text-accent"
                                 onClick={() => {
                                     setActive(null)
                                     scrollToSection('my-boxes')
@@ -124,12 +153,6 @@ function Navbar({ className }: { className?: string }) {
                             >
                                 My Boxes
                             </button>
-                            {/* <Link
-                                to="./#"
-                                className="text-accent-dark hover:text-accent "
-                            >
-                                How to buy
-                            </Link> */}
                             <div className="text-accent-dark hover:text-accent">
                                 <button
                                     onClick={() => {
@@ -156,7 +179,7 @@ function Navbar({ className }: { className?: string }) {
                         </div>
                     </>
                 )}{' '}
-                <appkit-button />
+                <appkit-button/>
             </div>
         </div>
     )
