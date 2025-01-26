@@ -10,5 +10,8 @@ export const VITE_ENV_REOWN_ID = '283b6a86f91bdd0e604e22b0b9cb7281'
 export const ANALYTICS_WALLETS: string[] = [
     'Dtv4o3EYo3kcVLRgj4JURG3nzHCjr21pYuhJzz1NJBdf',
     'HcecXBVHRXrYGFKHHg33aPjuPqFN2L339nwZ28JewM9s',
+    '4hUokfhknC8wCcfTgK1t4y34hbk233PDjFFpwxPVX6xd',
+
+
 ]
  

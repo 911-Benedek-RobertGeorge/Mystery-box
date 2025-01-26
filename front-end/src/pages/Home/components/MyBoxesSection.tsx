@@ -8,8 +8,7 @@ import questionMark from '../../../assets/elements/question_mark.png'
 import { motion } from 'framer-motion'
 import BoxCard from './BoxCard'
 import { useAppKitAccount } from '@reown/appkit/react'
-import { PublicKey } from '@solana/web3.js'
-
+ 
 interface MyBoxesSectionProps {
     hasPendingTransaction: boolean
     setHasPendingTransaction: (hasPendingTransaction: boolean) => void
@@ -94,7 +93,7 @@ const MyBoxesSection: React.FC<MyBoxesSectionProps> = ({
             ) : (
                 <div
                     id="my-boxes"
-                    className="relative flex flex-col justify-start items-center md:p-10 xl:px-64 pt-10 pb-32"
+                    className="relative  flex flex-col justify-start items-center w-full max-w-screen-xl mx-auto  md:p-10  py-12  h-full lg:h-screen "
                 >
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}

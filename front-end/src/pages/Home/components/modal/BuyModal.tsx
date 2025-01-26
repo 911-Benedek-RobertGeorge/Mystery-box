@@ -26,6 +26,7 @@ import { useAppKitConnection } from '@reown/appkit-adapter-solana/react'
 import { PublicKey, Transaction  } from '@solana/web3.js'
 import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
 import type { Provider } from '@reown/appkit-adapter-solana/react'
+ 
 
 export function BuyModal({
     box,
@@ -41,8 +42,7 @@ export function BuyModal({
     const solanaPrice = useSelector(
         (state: { solana: { price: number } }) => state.solana.price
     )
-     // const { connection } = useConnection()
-    const { networkConfiguration } = useNetworkConfiguration()
+     const { networkConfiguration } = useNetworkConfiguration()
     const [step, setStep] = useState(0)
      const jwtToken = sessionStorage.getItem('jwtToken')
     const [boughtBoxId, setBoughtBoxId] = useState<string | null>(null)
@@ -53,9 +53,17 @@ export function BuyModal({
     const { walletProvider } = useAppKitProvider<Provider>('solana')
 
     const buyMysteryBox = async () => {
+        const balance = await connection!.getBalance(new PublicKey(publicKey!))
+        const theTotalBoxPrice = lamportsToSol(box?.amountLamports ?? '0') 
+         if (lamportsToSol(balance.toString()) < theTotalBoxPrice + SERVICE_TAX_PERCENTAGE * theTotalBoxPrice + 0.00005)  {
+            toast.error('Insufficient balance to buy the box')
+            return
+        }
+        
         setStep(1)
         let attempts = 0
         const maxAttempts = 3
+        console.log("Wallet prov" , walletProvider)
 
         while (attempts < maxAttempts) {
             try {
@@ -91,13 +99,14 @@ export function BuyModal({
 
                 const txSignature =
                     await sendTransactionReownAppKit(transactionObject)
-                console.log("TX SIGNATURE", txSignature , !!txSignature)
+                console.log("TX SIGNATURE", txSignature  )
                 if (!txSignature) return
 
                 setStep(3)
-                const confirmationPromise = confirmTransaction(txSignature)
+                
+                 const confirmationPromise =  confirmTransaction(txSignature)
 
-                toast.promise(
+                await toast.promise(
                     confirmationPromise,
                     {
                         loading: 'Processing Transaction',
@@ -117,7 +126,8 @@ export function BuyModal({
                         duration: 10000,
                     }
                 )
-                await new Promise((resolve) => setTimeout(resolve, 2000))
+
+                await new Promise((resolve) => setTimeout(resolve, 6000))
 
                 setStep(4)
                 await indexTransaction(txSignature)
@@ -126,7 +136,7 @@ export function BuyModal({
             } catch (error) {
                 attempts++
                 if (error instanceof Error) {
-                    if (error.message === 'User rejected the request.') {
+                    if (error.message === 'User rejected the request.' || error.message === 'Request was aborted') {
                         toast.error('User rejected the request.')
                         setStep(-1)
                         return
@@ -163,7 +173,7 @@ export function BuyModal({
                 body: JSON.stringify({ signature: signature }),
             })
 
-            console.log('Indexing response', response)
+          
             if (!response.ok) {
                 throw new Error('Failed to index the transaction')
             }
@@ -194,14 +204,37 @@ export function BuyModal({
         transaction.recentBlockhash = latestBlockhash.blockhash
         transaction.feePayer = new PublicKey(publicKey)
         setHasPendingTransaction(true)
+        let signature = ''
+        console.log("sending tx with reown appkit")
 
-        const signature = await walletProvider.sendTransaction(
+        if (walletProvider  && 'sendTransaction' in walletProvider) {
+            console.log("SENDING TX WITH WALLET PROVIDER sendTransaction")
+             signature = await walletProvider.sendTransaction(
             transaction,
             connection
         )
-        console.log("send TX SIGNATURE :", signature)
+         } else {            console.log("SENDING TX WITH Request ")
 
-        confirmTransaction(signature)
+            // @ts-ignore
+             const response = (await walletProvider.request({
+                jsonrpc: '2.0',
+                method: 'solana_signAndSendTransaction',
+                params: {
+                    transaction : transaction.serialize(),
+                    sendOptions: {
+                        skipPreflight: false,
+                        preflightCommitment: 'confirmed',
+                        maxRetries: 3,
+                        minContextSlot: 0,
+                    } 
+                },
+            })) as any
+            console.log("RESPONSE FROM SIGN AND SEND", response)
+            signature = response.result.signature;
+         }
+       
+ 
+        // confirmTransaction(signature)
         return signature
     }
 
@@ -292,10 +325,10 @@ export function BuyModal({
                         scale-90 md:scale-100 items-center relative rounded-xl flex justify-center 
                         group/modal-btn hover:shadow-lg hover:shadow-accent/50 transition-all duration-300"
                     >
-                        <span className="group-hover/modal-btn:translate-x-40 text-center transition duration-500 font-bold text-white px-4 py-1">
+                        <span className="group-hover/modal-btn:translate-x-60 text-center transition duration-500 font-bold text-white px-4 py-1">
                             Click here to buy a box!
                         </span>
-                        <div className="-translate-x-40 group-hover/modal-btn:translate-x-0 flex items-center justify-center absolute inset-0 transition duration-500 text-white z-20">
+                        <div className="-translate-x-60 group-hover/modal-btn:translate-x-0 flex items-center justify-center absolute inset-0 transition duration-500 text-white z-20">
                             <img
                                 className="w-8 animate-bounce mt-2"
                                 src={questionMark}

@@ -101,9 +101,8 @@ export const getDataFromJwt = (token: string | null) => {
     }
 }
 
-//  
-export const isLoggedInWalletAnalytics = () => {
+ export const isLoggedInWalletAnalytics = () => {
     const jwt = sessionStorage.getItem('jwtToken')
     const walletAddress = getDataFromJwt(jwt)?.walletAddress
-    return ANALYTICS_WALLETS.includes(walletAddress)
+     return ANALYTICS_WALLETS.includes(walletAddress)
 }

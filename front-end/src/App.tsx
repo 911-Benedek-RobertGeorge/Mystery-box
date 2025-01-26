@@ -110,7 +110,7 @@ function App() {
         }
         const fetchBoxTypes = async () => {
             const isAnalytics = isLoggedInWalletAnalytics()
-            try {
+             try {
                 const response = await axios(
                     `${VITE_ENV_BACKEND_URL || 'https://ejacdvrot9.execute-api.eu-central-1.amazonaws.com/api'}/boxes/types${
                         isAnalytics ? '?debug=true' : ''

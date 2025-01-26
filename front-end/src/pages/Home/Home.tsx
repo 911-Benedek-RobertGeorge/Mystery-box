@@ -11,7 +11,7 @@ import mow from '../../assets/coins/mow.png'
 import pnut from '../../assets/coins/pnut.png'
 import popcat from '../../assets/coins/popcat.png'
 import wif from '../../assets/coins/wif.png'
-
+import introBox from '../../assets/boxes/introBox.gif'
 import chillGuy from '../../assets/coins/chill-guy.png'
 import bonk from '../../assets/coins/bonk.png'
 
@@ -142,12 +142,11 @@ const Home: React.FC = () => {
                             </div>
                         </div>
                         <MemeImagesFloating memesImage={memesImage ?? []} />
-                        <div className=" scale-75 md:scale-90 md:-top-24 relative z-[102] flex flex-col justify-center items-center">
+                        <div className=" scale-75 md:scale-80 md:-top-24 relative z-[102] flex flex-col justify-center items-center">
                             <img
                                 src={questionMark}
                                 className="w-[250px] z-[50] absolute -top-48 floating-object transition-transform duration-200 ease-out "
-                                style={{ transformStyle: 'preserve-3d' }}
-                            ></img>{' '}
+                             ></img>{' '}
                             <div className=" bg-transparent absolute top-24 left-1/2 transform -translate-x-1/2 w-32 h-32 md:w-60 md:h-64 rounded-3xl shadow-cone"></div>
                             <img
                                 src={simpleBox}
@@ -195,9 +194,8 @@ const Home: React.FC = () => {
             <WhatAreWeSection hasPendingTransaction={hasPendingTransaction} />
             <img
                 src={vectorShape}
-                className="w-screen top-[23.5rem] rotate-12 md:rotate-6 h-[900px] absolute  animate-pulse"
-                style={{ transformStyle: 'preserve-3d' }}
-                loading="eager"
+                className="w-screen top-[15.5rem] rotate-12 md:rotate-6 h-[900px] absolute "
+                 loading="eager"
             ></img>{' '}
             <div
                 id="boxes-section"
@@ -216,7 +214,7 @@ const Home: React.FC = () => {
                         <img src={fluidTape} alt="Fluid Tape" loading="lazy" />
                     </div>
                     <motion.div
-                        className="absolute w-80"
+                        className="absolute w-80 z-[50]"
                         initial={{
                             x: 0,
                             y: 0,
@@ -254,6 +252,7 @@ const Home: React.FC = () => {
                     loading="lazy"
                 />
             </div>
+         
             {/* <img
                 className=" z-[50] absolut transition-all duration-1000 ease-out "
                 src={key}
@@ -263,6 +262,7 @@ const Home: React.FC = () => {
             /> */}
             <FAQ />
             <AboutUsSection />
+            
         </div>
     )
 }

@@ -39,7 +39,7 @@ export const BoxesLayout: React.FC<BoxesLayoutProps> = ({
     }
 
     const handleDotClick = (index: number) => {
-        if (index === currentIndex) return
+         if (index === currentIndex) return
         const newDirection = index > currentIndex ? 1 : -1
         setDirection(newDirection)
         setCurrentIndex(index)
@@ -74,14 +74,14 @@ export const BoxesLayout: React.FC<BoxesLayoutProps> = ({
     }
 
     return (
-        <div className="relative w-full lg:pb-32">
+        <div className="relative w-full lg:pb-32 lg:pt-20">
             <div className="absolute inset-0 w-full h-full z-0">
                 <div className="absolute inset-0 bg-gradient-to-r from-black via-accent/80 to-black opacity-10 animate-gradient-x"></div>
                 <div className="absolute inset-0 bg-gradient-to-b from-black to-background-dark opacity-40"></div>
                 <div className="absolute top-56 left-52 inset-0 bg-[url('src/assets/shapes/lines.png')] opacity-5"></div>
             </div>
 
-            <div className="relative flex items-center justify-center min-h-[800px]">
+            <div className="relative flex items-center justify-center h-[800px] ">
                 <button
                     hidden={isChevronHidden}
                     onClick={handlePrevious}
@@ -108,7 +108,7 @@ export const BoxesLayout: React.FC<BoxesLayoutProps> = ({
                                 dragConstraints={{ left: 0, right: 0 }}
                                 onDragEnd={handleDragEnd}
                                 transition={{
-                                    duration: 0.2,
+                                    duration: 0.4,
                                     ease: 'easeInOut',
                                 }}
                                 className="flex justify-center items-center touch-pan-y"
@@ -136,7 +136,7 @@ export const BoxesLayout: React.FC<BoxesLayoutProps> = ({
                         className={`w-4 h-4 rounded-full transition-all duration-200 ${
                             currentIndex === index
                                 ? 'bg-accent scale-110 ring-2 ring-accent/30 ring-offset-2 ring-offset-background-dark'
-                                : 'bg-accent/30 hover:bg-accent/50 hover:scale-105'
+                                : 'bg-accent/30 hover:bg-accent/50 hover:scale-105 scale-110'
                         }`}
                     />
                 ))}
