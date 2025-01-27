@@ -22,31 +22,19 @@ import {
     VITE_ENV_BACKEND_URL,
     VITE_ENV_SOLANA_NETWORK_RPC,
 } from '../../libs/config'
+import toast from 'react-hot-toast'
+
+import { getTimestampFromJwt } from '../../libs/utils'
 
 const SolWalletContextProvider: FC<{ children: ReactNode }> = ({
     children,
 }) => {
-    const getTimestampFromJwt = (token: string) => {
-        try {
-            // Split the token into parts
-            const [, payloadBase64] = token.split('.') // Ignore the header and signature
-
-            // Decode the Base64 payload
-            const decodedPayload = JSON.parse(atob(payloadBase64))
-
-            const issuedAt = decodedPayload.iat // Issued at timestamp
-            const expiration = decodedPayload.exp // Expiration timestamp
-
-            return { issuedAt, expiration }
-        } catch (error) {
-            console.error('Error decoding JWT:', error)
-            return null
-        }
-    }
-
     const autoSignIn = useCallback(async (adapter: Adapter) => {
         // If the signIn feature is not available, return true
-        if (!('signIn' in adapter)) return true
+        if (!('signIn' in adapter)) {
+            toast.error('Sign In feature is not available!')
+            return true
+        }
 
         const token = sessionStorage.getItem('jwtToken')
 
@@ -65,8 +53,9 @@ const SolWalletContextProvider: FC<{ children: ReactNode }> = ({
         const createResponse = await fetch(
             `${VITE_ENV_BACKEND_URL}/auth/sign-in`
         )
-
+        console.log('createResponse', createResponse)
         const input: SolanaSignInInput = await createResponse.json()
+
         const output = await adapter.signIn(input)
 
         const payload = {
@@ -80,7 +69,7 @@ const SolWalletContextProvider: FC<{ children: ReactNode }> = ({
                 signedMessage: Array.from(output.signedMessage),
             },
         }
-
+        console.log('payload', payload)
         const verifyResponse = await fetch(
             `${VITE_ENV_BACKEND_URL}/auth/verify-sign-in`,
             {

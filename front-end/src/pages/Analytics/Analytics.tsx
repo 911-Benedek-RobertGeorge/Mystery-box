@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from 'react'
-import { useWallet } from '@solana/wallet-adapter-react'
-import { ADMIN_WALLETS } from '../../libs/constants'
+ import { ADMIN_WALLETS } from '../../libs/constants'
 import { motion } from 'framer-motion'
 import { BoxContent, MysteryBox } from '../../libs/interfaces'
 import { VITE_ENV_BACKEND_URL } from '../../libs/config'
 import { FaExternalLinkAlt } from 'react-icons/fa'
 import { lamportsToSol, shortenAddress } from '../../libs/utils'
 import { useSelector } from 'react-redux'
+import { useAppKitAccount } from '@reown/appkit/react'
 
 const Analytics: React.FC = () => {
     const [boxes, setBoxes] = useState<MysteryBox[]>([])
     const [isLoading, setIsLoading] = useState(true)
-    const { publicKey } = useWallet()
-    const isAdmin = publicKey && ADMIN_WALLETS.includes(publicKey.toString())
+    const { address : publicKey } = useAppKitAccount()
+    
+     const isAdmin = publicKey && ADMIN_WALLETS.includes(publicKey.toString())
     const solanaPrice = useSelector(
         (state: { solana: { price: number } }) => state.solana.price
     )

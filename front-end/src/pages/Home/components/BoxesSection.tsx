@@ -26,8 +26,7 @@ const BoxesSection: React.FC<BoxesSectionProps> = ({
     const testBox = boxTypes?.find(
         (box) => box._id === '678eb04437c646670f5a3109'
     )
-
-    const introBox = boxTypes?.find(
+     const introBox = boxTypes?.find(
         (box) => box._id === '6793785f1e6acd3043be74ae'
     )
 

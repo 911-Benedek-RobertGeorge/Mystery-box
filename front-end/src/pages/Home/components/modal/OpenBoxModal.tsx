@@ -7,17 +7,17 @@ import {
     ModalTrigger,
 } from '../../../../components/ui/AnimatedModal'
 import questionMark from '../../../../assets/elements/question_mark.png'
-import { useWallet } from '@solana/wallet-adapter-react'
-
+ 
 import toast from 'react-hot-toast'
 import { useNetworkConfiguration } from '../../../../context/Solana/SolNetworkConfigurationProvider'
 import { VITE_ENV_BACKEND_URL } from '../../../../libs/config'
 import { cn, shortenAddress } from '../../../../libs/utils'
 
 import { confetti } from '@tsparticles/confetti'
-import { BoxContent, MysteryBox } from '../../../../libs/interfaces'
+ import { FaExternalLinkAlt } from 'react-icons/fa'
+import { useAppKitAccount } from '@reown/appkit/react'
 import { SOLANA_EXPLORER_URL } from '../../../../libs/constants'
-import { FaExternalLinkAlt } from 'react-icons/fa'
+import { BoxContent, MysteryBox } from '../../../../libs/interfaces'
 
 export function OpenBoxModal({
     boxId,
@@ -28,14 +28,12 @@ export function OpenBoxModal({
     hiddenTrigger?: boolean
     setHasPendingTransaction?: (value: boolean) => void
 }) {
-    const { publicKey } = useWallet()
-    const { networkConfiguration } = useNetworkConfiguration()
-
+     const { networkConfiguration } = useNetworkConfiguration()
+    const {address: publicKey} = useAppKitAccount()
     const jwtToken = sessionStorage.getItem('jwtToken')
     const [mysteryBox, setMysteryBox] = useState<MysteryBox>()
     const [closeModal, setCloseModal] = useState(false)
-
-    async function openBoughtBox(boxId: string) {
+     async function openBoughtBox(boxId: string) {
         try {
             setCloseModal(false)
 
@@ -163,8 +161,8 @@ export function OpenBoxModal({
                                 </div>
                             ) : (
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4  max-h-80 md:max-h-96 overflow-y-auto mb-4 p-4">
-                                    {mysteryBox?.boxContents.map(
-                                        (content, index) => (
+                                    {mysteryBox?.boxContents?.map(
+                                        (content:any, index : number) => (
                                             <MemeCoinDetailsCard
                                                 key={index}
                                                 content={content}

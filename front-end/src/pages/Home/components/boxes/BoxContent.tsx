@@ -42,7 +42,7 @@ export const BoxContent: React.FC<BoxContentProps> = ({
     features,
     showPrice = true,
 }) => {
-    console.log({ box })
+   
     const areBoxesAvailable =
         box?.availableBoxes && box?.availableBoxes > 0 ? true : false
     const boxesAvailableStyle = areBoxesAvailable

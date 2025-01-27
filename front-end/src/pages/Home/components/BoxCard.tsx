@@ -1,6 +1,7 @@
 import React from 'react'
 import { FaExternalLinkAlt } from 'react-icons/fa'
 import cyanBox from '../../../assets/boxes/cyan_box.png'
+import  introBox   from '../../../assets/boxes/introBox.png'
 import questionMark from '../../../assets/elements/question_mark.png'
 import key from '../../../assets/boxes/key.png'
 import { AnimatedTooltip } from '../../../components/ui/AnimatedTooltip'
@@ -22,12 +23,21 @@ const BoxCard: React.FC<BoxCardProps> = ({
     setSelectedBoxId,
     handleOpenBoxModal,
 }) => {
+    const getBoxImage = ( ) => {
+        const boxImageMap: { [key: string]: string } = {
+            '6793785f1e6acd3043be74ae': introBox,
+            '676135d9687f17a1771ba2f6': cyanBox,
+        }
+        return boxImageMap[box.boxType._id] || cyanBox
+    }
+    console.log(box)
+     
     return (
         <div className="mb-3 flex w-[80%] self-center md:w-full max-w-screen transform flex-col justify-between items-center md:items-start rounded-md bg-background-dark border border-accent/50 hover:border-accent bg-opacity-75 p-2 text-accent transition duration-500 ease-in-out hover:-translate-y-1 hover:shadow-lg hover:shadow-accent-dark/50 md:flex-row md:p-4">
             <div className="flex flex-col md:flex-row  justify-center md:justify-start">
                 <div className="flex flex-row items-center justify-center">
                     <img
-                        src={cyanBox}
+                        src={getBoxImage()}
                         alt="Box"
                         className="mr-4 h-14 w-14 rounded-full object-cover"
                     />
@@ -163,7 +173,7 @@ const BoxCard: React.FC<BoxCardProps> = ({
                                 setSelectedBoxId(box._id)
                                 handleOpenBoxModal()
                             }}
-                            className="bg-muted w-24 mt-4 shadow-inner px-4 shadow-accent  text-accent items-center relative rounded-full flex justify-center group/modal-btn overflow-hidden p-2"
+                            className="bg-muted w-24 shadow-inner px-4 shadow-accent  text-accent items-center relative rounded-full flex justify-center group/modal-btn overflow-hidden p-2"
                         >
                             <span className="group-hover/modal-btn:translate-x-40 text-center transition duration-500">
                                 Open
