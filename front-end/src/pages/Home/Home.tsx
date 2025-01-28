@@ -11,7 +11,7 @@ import mow from '../../assets/coins/mow.png'
 import pnut from '../../assets/coins/pnut.png'
 import popcat from '../../assets/coins/popcat.png'
 import wif from '../../assets/coins/wif.png'
-
+import introBox from '../../assets/boxes/introBox.gif'
 import chillGuy from '../../assets/coins/chill-guy.png'
 import bonk from '../../assets/coins/bonk.png'
 
@@ -31,8 +31,7 @@ import WhatAreWeSection from './components/WhatAreWeSection'
 import AboutUsSection from './components/AboutUsSection'
 import FAQ from '../FAQ/FAQ'
 
-const memeCoinImages = [chillGuy, bonk, boom, mow, pnut, popcat, wif]
-
+ 
 const Home: React.FC = () => {
     const containerRef = useRef<HTMLDivElement | null>(null)
     const [scrollPosition, setScrollPosition] = useState(0)
@@ -40,21 +39,14 @@ const Home: React.FC = () => {
     const [hasPendingTransaction, setHasPendingTransaction] = useState(false)
 
     useEffect(() => {
-        let memeImages = memeCoinImages.map((meme) => {
-            return {
-                src: meme,
-                top: `${Math.random() * 50 + 10}%`,
-                left: `${Math.random() * 80 + 10}%`,
-            }
-        })
+ 
         const fetchMemeImages = async () => {
             try {
                 const response = await fetch(`${VITE_ENV_BACKEND_URL}/tokens`)
                 const data = await response.json()
 
-                memeImages = [
-                    // ...memeImages,
-                    ...data.map((meme: Token) => ({
+                const memeImages = [
+                     ...data.map((meme: Token) => ({
                         src: meme?.image ?? '',
                         top: `${Math.random() * 50 + 10}%`,
                         left: `${Math.random() * 80 + 10}%`,
@@ -62,7 +54,7 @@ const Home: React.FC = () => {
                     })),
                 ]
 
-                setMemesImage(memeImages.slice(0, 10))
+                setMemesImage(memeImages.reverse().slice(0, 15))
             } catch (error) {
                 console.error('Error fetching tokens:', error)
             }
@@ -70,7 +62,7 @@ const Home: React.FC = () => {
 
         fetchMemeImages()
 
-        setMemesImage(memeImages)
+       
     }, [])
 
     // make the memecoins float while moving the mouse
@@ -150,12 +142,11 @@ const Home: React.FC = () => {
                             </div>
                         </div>
                         <MemeImagesFloating memesImage={memesImage ?? []} />
-                        <div className=" scale-75 md:scale-90 md:-top-24 relative z-[102] flex flex-col justify-center items-center">
+                        <div className=" scale-75 md:scale-80 md:-top-24 relative z-[102] flex flex-col justify-center items-center">
                             <img
                                 src={questionMark}
                                 className="w-[250px] z-[50] absolute -top-48 floating-object transition-transform duration-200 ease-out "
-                                style={{ transformStyle: 'preserve-3d' }}
-                            ></img>{' '}
+                             ></img>{' '}
                             <div className=" bg-transparent absolute top-24 left-1/2 transform -translate-x-1/2 w-32 h-32 md:w-60 md:h-64 rounded-3xl shadow-cone"></div>
                             <img
                                 src={simpleBox}
@@ -203,15 +194,13 @@ const Home: React.FC = () => {
             <WhatAreWeSection hasPendingTransaction={hasPendingTransaction} />
             <img
                 src={vectorShape}
-                className="w-screen top-[23.5rem] rotate-12 md:rotate-6 h-[900px] absolute  animate-pulse"
-                style={{ transformStyle: 'preserve-3d' }}
-                loading="lazy"
+                className="w-screen top-[15.5rem] rotate-12 md:rotate-6 h-[900px] absolute "
+                 loading="eager"
             ></img>{' '}
             <div
                 id="boxes-section"
                 className="relative flex flex-col justify-center items-center w-full"
             >
-                {' '}
                 <div className="relative ">
                     <div
                         className="absolute -rotate-12 w-96 z-[2]"
@@ -222,10 +211,10 @@ const Home: React.FC = () => {
                                 'transform 0.2s ease-out, filter 0.2s ease-out',
                         }}
                     >
-                        <img src={fluidTape} alt="Fluid Tape" />
+                        <img src={fluidTape} alt="Fluid Tape" loading="lazy" />
                     </div>
                     <motion.div
-                        className="absolute w-80"
+                        className="absolute w-80 z-[50]"
                         initial={{
                             x: 0,
                             y: 0,
@@ -243,7 +232,7 @@ const Home: React.FC = () => {
                         }}
                         transition={{ ease: 'easeOut', duration: 0.2 }}
                     >
-                        <img src={waveTape} alt="Fluid Tape" />
+                        <img src={waveTape} alt="Fluid Tape" loading="lazy" />
                     </motion.div>
                 </div>
                 <BoxesSection
@@ -260,9 +249,10 @@ const Home: React.FC = () => {
                 <img
                     className=" absolute z-[1] -left-24 -top-32  rotate-12 -hue-rotate-90 w-96 h-96 hidden md:block"
                     src={ribbons}
-                    style={{}}
+                    loading="lazy"
                 />
             </div>
+         
             {/* <img
                 className=" z-[50] absolut transition-all duration-1000 ease-out "
                 src={key}
@@ -272,6 +262,7 @@ const Home: React.FC = () => {
             /> */}
             <FAQ />
             <AboutUsSection />
+            
         </div>
     )
 }

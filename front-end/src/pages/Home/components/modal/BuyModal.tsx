@@ -9,9 +9,7 @@ import {
 } from '../../../../components/ui/AnimatedModal'
 import questionMark from '../../../../assets/elements/question_mark.png'
 import cyanBox from '../../../../assets/boxes/cyan_box.png'
-import { useConnection, useWallet } from '@solana/wallet-adapter-react'
-import { Transaction } from '@solana/web3.js'
-import toast, { LoaderIcon } from 'react-hot-toast'
+  import toast, { LoaderIcon } from 'react-hot-toast'
 import { Buffer } from 'buffer'
 import { useNetworkConfiguration } from '../../../../context/Solana/SolNetworkConfigurationProvider'
 import { VITE_ENV_BACKEND_URL } from '../../../../libs/config'
@@ -20,9 +18,15 @@ import {
     SOLANA_EXPLORER_URL,
 } from '../../../../libs/constants'
 import { BoxType } from '../../../../libs/interfaces'
-import { lamportsToSol, scrollToSection } from '../../../../libs/utils'
+import { getBoxImage, lamportsToSol, scrollToSection } from '../../../../libs/utils'
 import { FaCheckCircle } from 'react-icons/fa'
 import { useSelector } from 'react-redux'
+
+import { useAppKitConnection } from '@reown/appkit-adapter-solana/react'
+import { PublicKey, Transaction  } from '@solana/web3.js'
+import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
+import type { Provider } from '@reown/appkit-adapter-solana/react'
+ 
 
 export function BuyModal({
     box,
@@ -33,23 +37,33 @@ export function BuyModal({
     setHasPendingTransaction: (value: boolean) => void
     setIsChevronHidden: (value: boolean) => void
 }) {
-    const images = [cyanBox]
+    const images = [getBoxImage(box?._id ?? '') ]
 
     const solanaPrice = useSelector(
         (state: { solana: { price: number } }) => state.solana.price
     )
-    const { publicKey, sendTransaction } = useWallet()
-    const { connection } = useConnection()
-    const { networkConfiguration } = useNetworkConfiguration()
+     const { networkConfiguration } = useNetworkConfiguration()
     const [step, setStep] = useState(0)
-    const [latestTxSignature, setLatestTxSignature] = useState<string>('')
-    const jwtToken = sessionStorage.getItem('jwtToken')
+     const jwtToken = sessionStorage.getItem('jwtToken')
     const [boughtBoxId, setBoughtBoxId] = useState<string | null>(null)
 
+    // reown appkit
+    const { address : publicKey } = useAppKitAccount()
+    const { connection } = useAppKitConnection()
+    const { walletProvider } = useAppKitProvider<Provider>('solana')
+
     const buyMysteryBox = async () => {
+        const balance = await connection!.getBalance(new PublicKey(publicKey!))
+        const theTotalBoxPrice = lamportsToSol(box?.amountLamports ?? '0') 
+         if (lamportsToSol(balance.toString()) < theTotalBoxPrice + SERVICE_TAX_PERCENTAGE * theTotalBoxPrice + 0.00005)  {
+            toast.error('Insufficient balance to buy the box')
+            return
+        }
+        
         setStep(1)
         let attempts = 0
         const maxAttempts = 3
+        console.log("Wallet prov" , walletProvider)
 
         while (attempts < maxAttempts) {
             try {
@@ -83,10 +97,40 @@ export function BuyModal({
                 )
                 const transactionObject = Transaction.from(transactionBuffer)
 
-                const txSignature = await sendAndConfirmTransaction({
-                    transaction: transactionObject,
-                })
+                const txSignature =
+                    await sendTransactionReownAppKit(transactionObject)
+                console.log("Send finalized TX SIGNATURE", txSignature  )
                 if (!txSignature) return
+
+                setStep(3)
+                
+                 const confirmationPromise =  confirmTransaction(txSignature)
+
+                await toast.promise(
+                    confirmationPromise,
+                    {
+                        loading: 'Processing Transaction',
+                        success: () => (
+                            <a
+                                href={`${SOLANA_EXPLORER_URL}/tx/${txSignature}?cluster=${networkConfiguration}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                style={{ textDecoration: 'underline' }}
+                            >
+                                View on Solana explorer
+                            </a>
+                        ),
+                        error: (err) => `Transaction failed: ${err.message}`,
+                    },
+                    {
+                        duration: 10000,
+                    }
+                )
+
+                setStep(4)
+                await new Promise((resolve) => setTimeout(resolve, 4000))
+
+            
 
                 await indexTransaction(txSignature)
                 setStep(6)
@@ -94,7 +138,7 @@ export function BuyModal({
             } catch (error) {
                 attempts++
                 if (error instanceof Error) {
-                    if (error.message === 'User rejected the request.') {
+                    if (error.message === 'User rejected the request.' || error.message === 'Request was aborted') {
                         toast.error('User rejected the request.')
                         setStep(-1)
                         return
@@ -103,20 +147,23 @@ export function BuyModal({
                     console.error(`Attempt ${attempts} failed:`, error)
                 } else {
                     toast.error(`Attempt ${attempts} failed: ${String(error)}`)
-                    console.error(`Attempt ${attempts} failed:`, String(error))
-                }
+                 }
                 if (attempts >= maxAttempts) {
                     setStep(-1)
                     toast.error(
                         'Error buying mystery box after multiple attempts'
                     )
+                    return 
                 }
+                console.error(`Attempt ${attempts} failed:`, error)
+
             }
         }
     }
 
-    async function indexTransaction(signature: string) {
+    async function indexTransaction(signature: string, retries = 0) {
         try {
+            console.log('Indexing ', "sg",signature, "JWT", jwtToken)
             if (!jwtToken) throw new Error('JWT token not found ')
 
             const response = await fetch(`${VITE_ENV_BACKEND_URL}/index`, {
@@ -128,19 +175,26 @@ export function BuyModal({
                 body: JSON.stringify({ signature: signature }),
             })
 
+          
             if (!response.ok) {
                 throw new Error('Failed to index the transaction')
             }
             setStep(5)
 
             const result = await response.json()
-            if (result.message) {
-                console.error(result.message)
-                return
+            console.log('Indexing res', result)
+
+            if (result.message) { // means there was an error
+                 throw new Error(result.message)
             }
             setBoughtBoxId(result.box._id)
         } catch (error) {
             if (error instanceof Error) {
+                if (retries < 3) {
+                    console.log('Retrying indexing transaction ', retries)
+                    await indexTransaction(signature, retries + 1)
+                    return
+                }
                 toast.error('Error indexing transaction' + error.message)
             } else {
                 toast.error('Error indexing transaction')
@@ -148,75 +202,116 @@ export function BuyModal({
             console.error('Error indexing transaction:', error)
         }
     }
-    async function sendAndConfirmTransaction({
-        transaction,
-    }: {
-        transaction: Transaction
-    }): Promise<string | false> {
-        try {
-            if (!publicKey) {
-                throw new Error('Wallet not connected')
-            }
 
-            const latestBlockhash = await connection.getLatestBlockhash()
-            transaction.recentBlockhash = latestBlockhash.blockhash
-            transaction.feePayer = publicKey
-            setHasPendingTransaction(true)
+    // reown appkit
+    async function sendTransactionReownAppKit(transaction: Transaction) {
+        if (!connection || !publicKey) return
+        // const latestBlockhash = await connection.getLatestBlockhash()
+        // transaction.recentBlockhash = latestBlockhash.blockhash
+        transaction.feePayer = new PublicKey(publicKey)
+        setHasPendingTransaction(true)
+        let signature = ''
+        console.log("sending tx with reown appkit")
 
-            const txSignature = await sendTransaction(transaction, connection)
-            setLatestTxSignature(txSignature)
+        if (walletProvider  && 'sendTransaction' in walletProvider) {
+            console.log("SENDING TX WITH WALLET PROVIDER sendTransaction")
+             signature = await walletProvider.sendTransaction(
+            transaction,
+            connection
+        )
+         } else {            console.log("SENDING TX WITH Request ")
 
-            setStep(3)
-
-            const confirmationPromise = confirmTransaction(txSignature)
-
-            toast.promise(
-                confirmationPromise,
-                {
-                    loading: 'Processing Transaction',
-                    success: () => (
-                        <a
-                            href={`${SOLANA_EXPLORER_URL}/tx/${txSignature}?cluster=${networkConfiguration}`}
-                            target="_blank"
-                            rel="noreferrer"
-                            style={{ textDecoration: 'underline' }}
-                        >
-                            View on Solana explorer
-                        </a>
-                    ),
-                    error: (err) => `Transaction failed: ${err.message}`,
+            // @ts-ignore
+             const response = (await walletProvider.request({
+                jsonrpc: '2.0',
+                method: 'solana_signAndSendTransaction',
+                params: {
+                    transaction : transaction.serialize(),
+                    sendOptions: {
+                        skipPreflight: false,
+                        preflightCommitment: 'confirmed',
+                        maxRetries: 3,
+                        minContextSlot: 0,
+                    } 
                 },
-                {
-                    duration: 10000,
-                }
-            )
-
-            setStep(4)
-            const result = await confirmationPromise
-            setHasPendingTransaction(false)
-
-            if (!result) {
-                throw new Error('Transaction not confirmed' + result)
-            }
-
-            return txSignature
-        } catch (error) {
-            setHasPendingTransaction(false)
-            console.error('Error sending and confirming transaction:', error)
-
-            throw error
-        }
+            })) as any
+            console.log("RESPONSE FROM SIGN AND SEND", response)
+            signature = response.result.signature;
+         }
+       
+ 
+        // confirmTransaction(signature)
+        return signature
     }
+
+    // async function sendAndConfirmTransaction(
+    //     transaction: Transaction
+    // ): Promise<string | false> {
+    //     try {
+    //         if (!publicKey) {
+    //             throw new Error('Wallet not connected')
+    //         }
+
+    //         const latestBlockhash = await connection.getLatestBlockhash()
+    //         transaction.recentBlockhash = latestBlockhash.blockhash
+    //         transaction.feePayer = publicKey
+    //         setHasPendingTransaction(true)
+
+    //         const txSignature = await sendTransaction(transaction, connection)
+    //         setLatestTxSignature(txSignature)
+
+    //         setStep(3)
+
+    //         const confirmationPromise = confirmTransaction(txSignature)
+
+    //         toast.promise(
+    //             confirmationPromise,
+    //             {
+    //                 loading: 'Processing Transaction',
+    //                 success: () => (
+    //                     <a
+    //                         href={`${SOLANA_EXPLORER_URL}/tx/${txSignature}?cluster=${networkConfiguration}`}
+    //                         target="_blank"
+    //                         rel="noreferrer"
+    //                         style={{ textDecoration: 'underline' }}
+    //                     >
+    //                         View on Solana explorer
+    //                     </a>
+    //                 ),
+    //                 error: (err) => `Transaction failed: ${err.message}`,
+    //             },
+    //             {
+    //                 duration: 10000,
+    //             }
+    //         )
+
+    //         setStep(4)
+    //         const result = await confirmationPromise
+    //         setHasPendingTransaction(false)
+
+    //         if (!result) {
+    //             throw new Error('Transaction not confirmed' + result)
+    //         }
+
+    //         return txSignature
+    //     } catch (error) {
+    //         setHasPendingTransaction(false)
+    //         console.error('Error sending and confirming transaction:', error)
+
+    //         throw error
+    //     }
+    // }
 
     async function confirmTransaction(signature: string) {
         const maxRetries = 20
         let retryCount = 0
 
         while (retryCount < maxRetries) {
-            const tx = await connection.getTransaction(signature, {
+            const tx = await connection!.getTransaction(signature, {
                 commitment: 'confirmed',
                 maxSupportedTransactionVersion: 0,
             })
+            console.log('TX HAS BEEN FOUND AND CONFIRMED', tx)
             if (tx) {
                 return tx
             }
@@ -236,10 +331,10 @@ export function BuyModal({
                         scale-90 md:scale-100 items-center relative rounded-xl flex justify-center 
                         group/modal-btn hover:shadow-lg hover:shadow-accent/50 transition-all duration-300"
                     >
-                        <span className="group-hover/modal-btn:translate-x-40 text-center transition duration-500 font-bold text-white px-4 py-1">
+                        <span className="group-hover/modal-btn:translate-x-60 text-center transition duration-500 font-bold text-white px-4 py-1">
                             Click here to buy a box!
                         </span>
-                        <div className="-translate-x-40 group-hover/modal-btn:translate-x-0 flex items-center justify-center absolute inset-0 transition duration-500 text-white z-20">
+                        <div className="-translate-x-60 group-hover/modal-btn:translate-x-0 flex items-center justify-center absolute inset-0 transition duration-500 text-white z-20">
                             <img
                                 className="w-8 animate-bounce mt-2"
                                 src={questionMark}
@@ -247,23 +342,23 @@ export function BuyModal({
                         </div>
                     </ModalTrigger>
                     <ModalBody
-                        className="bg-background-dark w-full rounded-t-xl border-t border-accent/20"
+                        className="bg-background-dark w-full rounded-t-xl border-t border-accent/20 overflow-auto"
                         setIsChevronHidden={setIsChevronHidden}
                     >
                         <ModalContent>
-                            <div>
-                                <div className="text-center mb-8">
+                            <div className=''>
+                                <div className="text-center mb-6 -mt-4 ">
                                     <h4 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-accent via-purple-500 to-emerald-500 text-transparent bg-clip-text">
                                         {!boughtBoxId
                                             ? 'Memebox Time!'
                                             : '🎉 Box Secured!'}
                                     </h4>
-                                    <p className="text-gray-400 mt-2">
+                                    <p className="text-gray-400 mt-1">
                                         Get ready to secure some juicy memes!
                                     </p>
                                 </div>
 
-                                <div className="flex justify-center items-center mb-8">
+                                <div className="flex justify-center items-center mb-6">
                                     {images.map((image, idx) => (
                                         <motion.div
                                             key={idx}
@@ -305,7 +400,7 @@ export function BuyModal({
                                 </div>
 
                                 {!boughtBoxId && step <= 0 ? (
-                                    <div className="space-y-6">
+                                    <div className="space-y-4">
                                         <div className="bg-background-light/10 rounded-xl p-4 border border-accent/20">
                                             <div className="flex justify-between items-center mb-2">
                                                 <span className="text-gray-400">
@@ -407,7 +502,7 @@ export function BuyModal({
                                             <p className="text-accent font-bold mb-2">
                                                 🦍 Degen Notes:
                                             </p>
-                                            <ul className="space-y-2 text-sm text-gray-400">
+                                            <ul className="text-sm text-gray-400">
                                                 <li className="flex items-center">
                                                     <span className="mr-2">
                                                         🎲
@@ -427,6 +522,21 @@ export function BuyModal({
                                                     </span>
                                                     No refunds (diamond hands
                                                     only)
+                                                </li>
+                                             
+                                                <li className="flex items-center">
+                                                    <span className="mr-1">
+                                                        📜 
+                                                    </span>By signing you accept the
+                                                    {" "}<a
+                                                        href="/terms-and-conditions"
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="underline text-accent ml-1"
+                                                    >
+                                                         terms  
+                                                    </a>
+                                                   
                                                 </li>
                                             </ul>
                                         </div>
@@ -468,7 +578,7 @@ export function BuyModal({
 
                         <ModalFooter
                             shouldClose={boughtBoxId ? true : false}
-                            className="border-t border-accent/20 bg-background-dark/80 backdrop-blur-sm p-4 flex justify-center items-center "
+                            className="border-t border-accent/20 bg-background-dark/80 backdrop-blur-sm p-2 flex justify-center items-center "
                         >
                             {boughtBoxId ? (
                                 <motion.button

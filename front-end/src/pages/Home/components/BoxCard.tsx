@@ -1,11 +1,12 @@
 import React from 'react'
 import { FaExternalLinkAlt } from 'react-icons/fa'
-import cyanBox from '../../../assets/boxes/cyan_box.png'
+
 import questionMark from '../../../assets/elements/question_mark.png'
 import key from '../../../assets/boxes/key.png'
 import { AnimatedTooltip } from '../../../components/ui/AnimatedTooltip'
 import { BoxContent, BoxStatus } from '../../../libs/interfaces'
 import {
+    getBoxImage,
     lamportsToSol,
     shortenAddress,
     timeDifferenceFromNow,
@@ -22,17 +23,22 @@ const BoxCard: React.FC<BoxCardProps> = ({
     setSelectedBoxId,
     handleOpenBoxModal,
 }) => {
+
+     
     return (
         <div className="mb-3 flex w-[80%] self-center md:w-full max-w-screen transform flex-col justify-between items-center md:items-start rounded-md bg-background-dark border border-accent/50 hover:border-accent bg-opacity-75 p-2 text-accent transition duration-500 ease-in-out hover:-translate-y-1 hover:shadow-lg hover:shadow-accent-dark/50 md:flex-row md:p-4">
             <div className="flex flex-col md:flex-row  justify-center md:justify-start">
-                <div className="flex flex-row items-center justify-center">
+                <div className="flex flex-col md:flex-row items-center justify-center">
+                <div className="md:hidden  w-full truncate text-xl font-extrabold leading-5 tracking-tight text-center">
+                    {box.boxType.name}
+                </div>
                     <img
-                        src={cyanBox}
+                        src={getBoxImage(box.boxType._id)}
                         alt="Box"
-                        className="mr-4 h-14 w-14 rounded-full object-cover"
+                        className="h-32 smd:mr-4 md:h-16 md:w-16 rounded-full object-cover"
                     />
-                    <div className="flex flex-col items-start justify-center space-y-2">
-                        <div className="w-full truncate text-xl font-extrabold leading-5 tracking-tight">
+                    <div className="flex flex-col items-center md:items-start justify-center space-y-2">
+                        <div className=" hidden md:block w-full truncate text-xl font-extrabold leading-5 tracking-tight">
                             {box.boxType.name}
                         </div>
                         <div
@@ -163,7 +169,7 @@ const BoxCard: React.FC<BoxCardProps> = ({
                                 setSelectedBoxId(box._id)
                                 handleOpenBoxModal()
                             }}
-                            className="bg-muted w-24 mt-4 shadow-inner px-4 shadow-accent  text-accent items-center relative rounded-full flex justify-center group/modal-btn overflow-hidden p-2"
+                            className="bg-muted w-24 shadow-inner px-4 shadow-accent  text-accent items-center relative rounded-full flex justify-center group/modal-btn overflow-hidden p-2"
                         >
                             <span className="group-hover/modal-btn:translate-x-40 text-center transition duration-500">
                                 Open

@@ -1,6 +1,7 @@
 import React from 'react'
 import { BoxType } from '../../../../libs/interfaces'
 import { BoxContent } from './BoxContent'
+import { getBoxImage } from '../../../../libs/utils'
 
 interface TestBoxProps {
     box: BoxType
@@ -19,6 +20,7 @@ export const TestBox: React.FC<TestBoxProps> = ({
         <div className="relative max-w-md items-center justify-center md:p-0 z-[101]">
             <BoxContent
                 box={box}
+                image={ <img src={getBoxImage(box._id)} alt="Main Box" width={288} className="mt-8" /> } 
                 solanaPrice={solanaPrice}
                 setHasPendingTransaction={setHasPendingTransaction}
                 variant="box"

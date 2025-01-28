@@ -19,7 +19,7 @@ const FAQItem: React.FC<FAQItemProps> = ({
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-background-light bg-opacity-75 rounded-lg border border-accent/20"
+            className="bg-background-light bg-opacity-75 rounded-lg border border-accent/20 mt-10"
         >
             <button
                 onClick={onToggle}

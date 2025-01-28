@@ -1,23 +1,16 @@
 import { useState } from 'react'
-import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
-import { cn, scrollToSection, shortenAddress } from '../../libs/utils'
+ import { cn, scrollToSection } from '../../libs/utils'
 import logo from '../../assets/boxes/logo.png'
-import { useWallet } from '@solana/wallet-adapter-react'
 import { Link } from 'react-router-dom'
-import { WalletDisconnectButton } from '@solana/wallet-adapter-react-ui'
-import toast from 'react-hot-toast'
+ import { useAppKitAccount } from '@reown/appkit/react'
 import { ADMIN_WALLETS } from '../../libs/constants'
-
+ 
 function Navbar({ className }: { className?: string }) {
     const [active, setActive] = useState<string | null>(null)
-    const { connected, publicKey, disconnect } = useWallet()
-    const isAdmin = publicKey && ADMIN_WALLETS.includes(publicKey.toString())
-
-    const onDisconnect = () => {
-        sessionStorage.removeItem('jwtToken')
-        disconnect()
-    }
-
+     const { address : publicKey, isConnected } = useAppKitAccount()
+  
+     const isAdmin = publicKey && ADMIN_WALLETS.includes(publicKey )
+ 
     return (
         <div
             className={cn(
@@ -32,16 +25,13 @@ function Navbar({ className }: { className?: string }) {
                 ></img>
             </Link>
             <div
-                className={`transform-all duration-500 transition ease-in-out h-16 items-center relative rounded-full border border-r-accent border-l-accent border-transparent bg-muted shadow-input flex justify-center space-x-8 px-8 shadow-inner shadow-accent-dark scale-75 md:scale-100 `}
+                className={cn(`transform-all duration-500 transition ease-in-out h-10 items-center relative rounded-full border border-transparent border-r-accent border-l-accent bg-muted shadow-input flex justify-center space-x-8 shadow-inner shadow-accent-dark scale-75 md:scale-100 `,   isConnected ? "h-16 px-4" : " " )}
             >
-                {!connected ? (
-                    <WalletMultiButton
-                        style={{
-                            padding: '0',
-                            backgroundColor: 'transparent',
-                            color: connected ? '#0E7490' : '#24B9C0',
-                        }}
-                    />
+                {' '}
+                {!isConnected ? (
+                    <>
+                    
+                    </>
                 ) : (
                     <>
                         <div className="md:hidden ">
@@ -77,54 +67,8 @@ function Navbar({ className }: { className?: string }) {
                                     >
                                         My Boxes
                                     </button>
-                                    {/* <Link
-                                        to="./#"
-                                        className="block px-4 py-2  text-accent-dark hover:text-accent"
-                                        onClick={() => setActive(null)}
-                                    >
-                                        How to buy
-                                    </Link> */}
-                                    <div className="text-accent-dark hover:text-accent">
-                                        <button
-                                            onClick={() => {
-                                                navigator.clipboard.writeText(
-                                                    publicKey?.toBase58() ?? ''
-                                                )
-                                                toast.success(
-                                                    'Address copied to clipboard'
-                                                )
-                                            }}
-                                            className="text-accent-dark hover:text-accent"
-                                        >
-                                            {shortenAddress(
-                                                publicKey?.toBase58() ?? '',
-                                                3
-                                            )}
-                                        </button>
-                                    </div>
-                                    <WalletDisconnectButton
-                                        onClick={onDisconnect}
-                                        style={{
-                                            padding: '0',
-                                            backgroundColor: 'transparent',
-                                            color: connected
-                                                ? '#0E7490'
-                                                : '#24B9C0',
-                                        }}
-                                    />
-                                    {/* <WalletMultiButton
-                                        style={{
-                                            padding: '0',
-                                            backgroundColor: 'transparent',
-                                            color: connected
-                                                ? '#0E7490'
-                                                : '#24B9C0',
-                                        }}
-                                        onClick={
-                                            connected ? onDisconnect : undefined
-                                        }
-                                    /> */}
-                                    {isAdmin && connected && (
+                                   
+                                    {isAdmin && isConnected && (
                                         <Link
                                             to="/analytics"
                                             className="block px-4 py-2 text-accent-dark hover:text-accent"
@@ -132,12 +76,14 @@ function Navbar({ className }: { className?: string }) {
                                         >
                                             Analytics
                                         </Link>
-                                    )}
+                                    )}               
+                                     <appkit-button/>
+
                                 </div>
                             )}
                         </div>
                         <div className="hidden md:flex space-x-8 justify-center items-center">
-                            {isAdmin && connected && (
+                            {isAdmin && isConnected && (
                                 <Link
                                     to="/analytics"
                                     className="text-accent-dark hover:text-accent transition-colors"
@@ -154,96 +100,12 @@ function Navbar({ className }: { className?: string }) {
                             >
                                 My Boxes
                             </button>
-                            <div className="text-accent-dark hover:text-accent">
-                                <button
-                                    onClick={() => {
-                                        navigator.clipboard.writeText(
-                                            publicKey?.toBase58() ?? ''
-                                        )
-                                        toast.success(
-                                            'Address copied to clipboard'
-                                        )
-                                    }}
-                                    className="text-accent-dark hover:text-accent"
-                                >
-                                    {shortenAddress(
-                                        publicKey?.toBase58() ?? '',
-                                        3
-                                    )}
-                                </button>
-                            </div>
-                            <WalletDisconnectButton
-                                onClick={onDisconnect}
-                                style={{
-                                    padding: '0',
-                                    backgroundColor: 'transparent',
-                                    color: connected ? '#0E7490' : '#24B9C0',
-                                }}
-                            />
+                      
                         </div>
                     </>
-                )}
+                )} 
+               <div className={cn('md:flex ', publicKey ? "hidden" : "")} >  <appkit-button /></div>
             </div>
-            {/* // <Menu setActive={setActive}>
-                //     <MenuItem
-                //         setActive={setActive}
-                //         active={active}
-                //         item="My Boxes"
-                //     >
-                //         <div className="text-sm grid grid-cols-2 gap-10 p-4">
-                //             <ProductItem
-                //                 title="Algochurn"
-                //                 href="https://algochurn.com"
-                //                 src="https://assets.aceternity.com/demos/algochurn.webp"
-                //                 description="Prepare for tech interviews like never before."
-                //             />
-                //             <ProductItem
-                //                 title="Tailwind Master Kit"
-                //                 href="https://tailwindmasterkit.com"
-                //                 src="https://assets.aceternity.com/demos/tailwindmasterkit.webp"
-                //                 description="Production ready Tailwind css components for your next project"
-                //             />
-                //         </div>
-                //     </MenuItem>
-                //     <MenuItem
-                //         setActive={setActive}
-                //         active={active}
-                //         item="Pricing"
-                //     >
-                //         <div className="flex flex-col space-y-4 text-sm">
-                //             <HoveredLink href="/hobby">Hobby</HoveredLink>
-                //             <HoveredLink href="/individual">
-                //                 Individual
-                //             </HoveredLink>
-                //             <HoveredLink href="/team">Team</HoveredLink>
-                //             <HoveredLink href="/enterprise">
-                //                 Enterprise
-                //             </HoveredLink>
-                //         </div>
-                //     </MenuItem>
-
-                //     <WalletMultiButton
-                //         style={{
-                //             backgroundColor: 'transparent',
-                //             color: '#0E7490',
-                //         }}
-                //     />
-                // </Menu> */}
-
-            {/* {!connected && (
-                <WalletMultiButton
-                    style={{
-                        backgroundColor: '#0E7490',
-
-                        borderRadius: '0.5rem',
-
-                        boxShadow:
-                            '0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06)',
-
-                        color: '#121717',
-                    }} 
-                />
-            )}*/}
         </div>
     )
 }
