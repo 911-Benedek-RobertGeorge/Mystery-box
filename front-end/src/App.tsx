@@ -49,9 +49,14 @@ createAppKit({
     metadata: metadata,
     projectId,
     features: {
-        analytics: true,
-        socials: ['google', 'apple', 'x', 'discord'],
+        analytics: false,
+        socials: ['google', 'apple', 'x'],
     },
+    // phantom wallet
+    featuredWalletIds: [
+        'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393',
+        '4119a5b3e5ebc809b6a3680a280ae517b92fead02e4c07b7cec0d3385c87aee2',
+    ],
     allWallets: 'ONLY_MOBILE',
 })
 
@@ -110,7 +115,7 @@ function App() {
         }
         const fetchBoxTypes = async () => {
             const isAnalytics = isLoggedInWalletAnalytics()
-             try {
+            try {
                 const response = await axios(
                     `${VITE_ENV_BACKEND_URL || 'https://ejacdvrot9.execute-api.eu-central-1.amazonaws.com/api'}/boxes/types${
                         isAnalytics ? '?debug=true' : ''
@@ -167,7 +172,7 @@ function App() {
             if (token) {
                 const timestamp = getTimestampFromJwt(token)
                 const data = getDataFromJwt(token)
-        
+
                 if (data && data.walletAddress !== address) {
                     // console.log({
                     //     walletJwt: data.walletAddress,
@@ -241,10 +246,10 @@ function App() {
             '--w3m-color-mix': '#011717',
             '--w3m-color-mix-strength': 60,
             '--w3m-accent': '#171919',
-            '--w3m-qr-color' : '#0CC4D3',
-            '--w3m-z-index' : 1000,
-             //'--wcm-accent-fill-color'   : '#0CC4D3',
-          })
+            '--w3m-qr-color': '#0CC4D3',
+            '--w3m-z-index': 1000,
+            //'--wcm-accent-fill-color'   : '#0CC4D3',
+        })
     }, [])
 
     return (
@@ -253,19 +258,19 @@ function App() {
             <div className="max-w-screen overflow-hidden">
                 <Navbar />
                 <Toaster />
- 
-                    <Routes>
-                        <Route path={`/`} element={<Home />} />
 
-                        <Route
-                            path={`/terms-and-conditions`}
-                            element={<TermsAndConditions />}
-                        />
+                <Routes>
+                    <Route path={`/`} element={<Home />} />
 
-                        <Route path="/analytics" element={<Analytics />} />
-                    </Routes>
-                </div>
-         </Router>
+                    <Route
+                        path={`/terms-and-conditions`}
+                        element={<TermsAndConditions />}
+                    />
+
+                    <Route path="/analytics" element={<Analytics />} />
+                </Routes>
+            </div>
+        </Router>
     )
 }
 

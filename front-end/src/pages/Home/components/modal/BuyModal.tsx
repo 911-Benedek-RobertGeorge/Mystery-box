@@ -8,25 +8,32 @@ import {
     ModalTrigger,
 } from '../../../../components/ui/AnimatedModal'
 import questionMark from '../../../../assets/elements/question_mark.png'
-import cyanBox from '../../../../assets/boxes/cyan_box.png'
-  import toast, { LoaderIcon } from 'react-hot-toast'
+import toast, { LoaderIcon } from 'react-hot-toast'
 import { Buffer } from 'buffer'
 import { useNetworkConfiguration } from '../../../../context/Solana/SolNetworkConfigurationProvider'
-import { VITE_ENV_BACKEND_URL } from '../../../../libs/config'
+import {
+    VITE_ENV_BACKEND_URL,
+    VITE_ENV_SOLANA_NETWORK_RPC,
+} from '../../../../libs/config'
 import {
     SERVICE_TAX_PERCENTAGE,
     SOLANA_EXPLORER_URL,
 } from '../../../../libs/constants'
 import { BoxType } from '../../../../libs/interfaces'
-import { getBoxImage, lamportsToSol, scrollToSection } from '../../../../libs/utils'
+import {
+    getBoxImage,
+    lamportsToSol,
+    scrollToSection,
+} from '../../../../libs/utils'
 import { FaCheckCircle } from 'react-icons/fa'
 import { useSelector } from 'react-redux'
 
-import { useAppKitConnection } from '@reown/appkit-adapter-solana/react'
-import { PublicKey, Transaction  } from '@solana/web3.js'
+import { Connection, PublicKey, Transaction } from '@solana/web3.js'
 import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
-import type { Provider } from '@reown/appkit-adapter-solana/react'
- 
+import {
+    useAppKitConnection,
+    type Provider,
+} from '@reown/appkit-adapter-solana/react'
 
 export function BuyModal({
     box,
@@ -37,33 +44,39 @@ export function BuyModal({
     setHasPendingTransaction: (value: boolean) => void
     setIsChevronHidden: (value: boolean) => void
 }) {
-    const images = [getBoxImage(box?._id ?? '') ]
+    const images = [getBoxImage(box?._id ?? '')]
 
     const solanaPrice = useSelector(
         (state: { solana: { price: number } }) => state.solana.price
     )
-     const { networkConfiguration } = useNetworkConfiguration()
+    const { networkConfiguration } = useNetworkConfiguration()
     const [step, setStep] = useState(0)
-     const jwtToken = sessionStorage.getItem('jwtToken')
+    const jwtToken = sessionStorage.getItem('jwtToken')
     const [boughtBoxId, setBoughtBoxId] = useState<string | null>(null)
 
     // reown appkit
-    const { address : publicKey } = useAppKitAccount()
-    const { connection } = useAppKitConnection()
+    const { address: publicKey } = useAppKitAccount()
+    const connection = new Connection(VITE_ENV_SOLANA_NETWORK_RPC, 'confirmed')
+    const { connection: connectionReown } = useAppKitConnection()
     const { walletProvider } = useAppKitProvider<Provider>('solana')
 
     const buyMysteryBox = async () => {
         const balance = await connection!.getBalance(new PublicKey(publicKey!))
-        const theTotalBoxPrice = lamportsToSol(box?.amountLamports ?? '0') 
-         if (lamportsToSol(balance.toString()) < theTotalBoxPrice + SERVICE_TAX_PERCENTAGE * theTotalBoxPrice + 0.00005)  {
+        const theTotalBoxPrice = lamportsToSol(box?.amountLamports ?? '0')
+        if (
+            lamportsToSol(balance.toString()) <
+            theTotalBoxPrice +
+                SERVICE_TAX_PERCENTAGE * theTotalBoxPrice +
+                0.00005
+        ) {
             toast.error('Insufficient balance to buy the box')
             return
         }
-        
+
         setStep(1)
         let attempts = 0
         const maxAttempts = 3
-        console.log("Wallet prov" , walletProvider)
+        console.log('Wallet prov', walletProvider)
 
         while (attempts < maxAttempts) {
             try {
@@ -99,12 +112,12 @@ export function BuyModal({
 
                 const txSignature =
                     await sendTransactionReownAppKit(transactionObject)
-                console.log("Send finalized TX SIGNATURE", txSignature  )
+                console.log('Send finalized TX SIGNATURE', txSignature)
                 if (!txSignature) return
 
                 setStep(3)
-                
-                 const confirmationPromise =  confirmTransaction(txSignature)
+
+                const confirmationPromise = confirmTransaction(txSignature)
 
                 await toast.promise(
                     confirmationPromise,
@@ -130,15 +143,16 @@ export function BuyModal({
                 setStep(4)
                 await new Promise((resolve) => setTimeout(resolve, 4000))
 
-            
-
                 await indexTransaction(txSignature)
                 setStep(6)
                 return
             } catch (error) {
                 attempts++
                 if (error instanceof Error) {
-                    if (error.message === 'User rejected the request.' || error.message === 'Request was aborted') {
+                    if (
+                        error.message === 'User rejected the request.' ||
+                        error.message === 'Request was aborted'
+                    ) {
                         toast.error('User rejected the request.')
                         setStep(-1)
                         return
@@ -147,23 +161,22 @@ export function BuyModal({
                     console.error(`Attempt ${attempts} failed:`, error)
                 } else {
                     toast.error(`Attempt ${attempts} failed: ${String(error)}`)
-                 }
+                }
                 if (attempts >= maxAttempts) {
                     setStep(-1)
                     toast.error(
                         'Error buying mystery box after multiple attempts'
                     )
-                    return 
+                    return
                 }
                 console.error(`Attempt ${attempts} failed:`, error)
-
             }
         }
     }
 
     async function indexTransaction(signature: string, retries = 0) {
         try {
-            console.log('Indexing ', "sg",signature, "JWT", jwtToken)
+            console.log('Indexing ', 'sg', signature, 'JWT', jwtToken)
             if (!jwtToken) throw new Error('JWT token not found ')
 
             const response = await fetch(`${VITE_ENV_BACKEND_URL}/index`, {
@@ -175,7 +188,6 @@ export function BuyModal({
                 body: JSON.stringify({ signature: signature }),
             })
 
-          
             if (!response.ok) {
                 throw new Error('Failed to index the transaction')
             }
@@ -184,8 +196,9 @@ export function BuyModal({
             const result = await response.json()
             console.log('Indexing res', result)
 
-            if (result.message) { // means there was an error
-                 throw new Error(result.message)
+            if (result.message) {
+                // means there was an error
+                throw new Error(result.message)
             }
             setBoughtBoxId(result.box._id)
         } catch (error) {
@@ -205,41 +218,45 @@ export function BuyModal({
 
     // reown appkit
     async function sendTransactionReownAppKit(transaction: Transaction) {
-        if (!connection || !publicKey) return
+        if (!connectionReown || !publicKey) return
         // const latestBlockhash = await connection.getLatestBlockhash()
         // transaction.recentBlockhash = latestBlockhash.blockhash
         transaction.feePayer = new PublicKey(publicKey)
         setHasPendingTransaction(true)
         let signature = ''
-        console.log("sending tx with reown appkit")
+        console.log('sending tx with reown appkit')
 
-        if (walletProvider  && 'sendTransaction' in walletProvider) {
-            console.log("SENDING TX WITH WALLET PROVIDER sendTransaction")
-             signature = await walletProvider.sendTransaction(
-            transaction,
-            connection
-        )
-         } else {            console.log("SENDING TX WITH Request ")
+        if (walletProvider && 'sendTransaction' in walletProvider) {
+            console.log('SENDING TX WITH WALLET PROVIDER sendTransaction')
+            signature = await walletProvider.sendTransaction(
+                transaction,
+                connectionReown,
+                {
+                    skipPreflight: false,
+                    preflightCommitment: 'confirmed',
+                }
+            )
+        } else {
+            console.log('SENDING TX WITH Request ')
 
             // @ts-ignore
-             const response = (await walletProvider.request({
+            const response = (await walletProvider.request({
                 jsonrpc: '2.0',
                 method: 'solana_signAndSendTransaction',
                 params: {
-                    transaction : transaction.serialize(),
+                    transaction: transaction.serialize(),
                     sendOptions: {
                         skipPreflight: false,
                         preflightCommitment: 'confirmed',
-                        maxRetries: 3,
+                        maxRetries: 5,
                         minContextSlot: 0,
-                    } 
+                    },
                 },
             })) as any
-            console.log("RESPONSE FROM SIGN AND SEND", response)
-            signature = response.result.signature;
-         }
-       
- 
+            console.log('RESPONSE FROM SIGN AND SEND', response)
+            signature = response.result.signature
+        }
+
         // confirmTransaction(signature)
         return signature
     }
@@ -304,6 +321,7 @@ export function BuyModal({
 
     async function confirmTransaction(signature: string) {
         const maxRetries = 20
+        const timeout = 3000
         let retryCount = 0
 
         while (retryCount < maxRetries) {
@@ -316,7 +334,7 @@ export function BuyModal({
                 return tx
             }
             retryCount++
-            await new Promise((resolve) => setTimeout(resolve, 2000))
+            await new Promise((resolve) => setTimeout(resolve, timeout))
         }
         throw new Error('Transaction not confirmed')
     }
@@ -346,7 +364,7 @@ export function BuyModal({
                         setIsChevronHidden={setIsChevronHidden}
                     >
                         <ModalContent>
-                            <div className=''>
+                            <div className="">
                                 <div className="text-center mb-6 -mt-4 ">
                                     <h4 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-accent via-purple-500 to-emerald-500 text-transparent bg-clip-text">
                                         {!boughtBoxId
@@ -523,20 +541,20 @@ export function BuyModal({
                                                     No refunds (diamond hands
                                                     only)
                                                 </li>
-                                             
+
                                                 <li className="flex items-center">
                                                     <span className="mr-1">
-                                                        📜 
-                                                    </span>By signing you accept the
-                                                    {" "}<a
+                                                        📜
+                                                    </span>
+                                                    By signing you accept the{' '}
+                                                    <a
                                                         href="/terms-and-conditions"
                                                         target="_blank"
                                                         rel="noopener noreferrer"
                                                         className="underline text-accent ml-1"
                                                     >
-                                                         terms  
+                                                        terms
                                                     </a>
-                                                   
                                                 </li>
                                             </ul>
                                         </div>
