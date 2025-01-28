@@ -52,12 +52,12 @@ createAppKit({
         analytics: false,
         socials: ['google', 'apple', 'x'],
     },
-    // phantom wallet
     featuredWalletIds: [
+        // phantom
         'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393',
-        '4119a5b3e5ebc809b6a3680a280ae517b92fead02e4c07b7cec0d3385c87aee2',
+        // solflare
+        '1ca0bdd4747578705b1939af023d120677c64fe6ca76add81fda36e350605e79',
     ],
-    allWallets: 'ONLY_MOBILE',
 })
 
 import Analytics from './pages/Analytics/Analytics'
