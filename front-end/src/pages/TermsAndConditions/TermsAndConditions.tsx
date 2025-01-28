@@ -5,8 +5,8 @@ const TermsAndConditions: React.FC = () => {
     return (
         <div className="bg-background-dark  w-screen h-screen">
             <SectionContainer>
-                <div className="text-accent-dark p-8 flex items-center justify-center flex-col max-w-4xl mx-auto">
-                    <h1 className="text-3xl font-bold mt-16  text-center">
+                <div className="text-accent-dark   flex items-center justify-center flex-col max-w-4xl mx-auto">
+                    <h1 className="text-3xl font-bold mt-8  text-center">
                         Terms and Conditions
                     </h1>
                     <p className="mb-6 text-justify">

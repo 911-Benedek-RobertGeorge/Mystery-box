@@ -239,9 +239,11 @@ function App() {
         setThemeMode('dark')
         setThemeVariables({
             '--w3m-color-mix': '#011717',
-            '--w3m-color-mix-strength': 40,
-            '--w3m-accent': '#0CC4D3',
+            '--w3m-color-mix-strength': 60,
+            '--w3m-accent': '#171919',
             '--w3m-qr-color' : '#0CC4D3',
+            '--w3m-z-index' : 1000,
+             //'--wcm-accent-fill-color'   : '#0CC4D3',
           })
     }, [])
 
