@@ -58,6 +58,7 @@ createAppKit({
         // solflare
         '1ca0bdd4747578705b1939af023d120677c64fe6ca76add81fda36e350605e79',
     ],
+    allWallets: 'ONLY_MOBILE',
 })
 
 import Analytics from './pages/Analytics/Analytics'
