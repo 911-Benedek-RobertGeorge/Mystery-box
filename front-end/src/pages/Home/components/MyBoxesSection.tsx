@@ -93,7 +93,7 @@ const MyBoxesSection: React.FC<MyBoxesSectionProps> = ({
             ) : (
                 <div
                     id="my-boxes"
-                    className="relative  flex flex-col justify-start items-center w-full max-w-screen-xl mx-auto  md:p-10  py-12  h-full lg:h-screen "
+                    className="relative  flex flex-col justify-start items-center w-full max-w-screen-xl mx-auto  md:p-10  py-12  h-full"
                 >
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}

@@ -99,7 +99,7 @@ export function BuyModal({
 
                 const txSignature =
                     await sendTransactionReownAppKit(transactionObject)
-                console.log("TX SIGNATURE", txSignature  )
+                console.log("Send finalized TX SIGNATURE", txSignature  )
                 if (!txSignature) return
 
                 setStep(3)
@@ -127,9 +127,11 @@ export function BuyModal({
                     }
                 )
 
-                await new Promise((resolve) => setTimeout(resolve, 6000))
-
                 setStep(4)
+                await new Promise((resolve) => setTimeout(resolve, 4000))
+
+            
+
                 await indexTransaction(txSignature)
                 setStep(6)
                 return
@@ -159,7 +161,7 @@ export function BuyModal({
         }
     }
 
-    async function indexTransaction(signature: string) {
+    async function indexTransaction(signature: string, retries = 0) {
         try {
             console.log('Indexing ', "sg",signature, "JWT", jwtToken)
             if (!jwtToken) throw new Error('JWT token not found ')
@@ -182,13 +184,17 @@ export function BuyModal({
             const result = await response.json()
             console.log('Indexing res', result)
 
-            if (result.message) {
-                console.error(result.message)
-                return
+            if (result.message) { // means there was an error
+                 throw new Error(result.message)
             }
             setBoughtBoxId(result.box._id)
         } catch (error) {
             if (error instanceof Error) {
+                if (retries < 3) {
+                    console.log('Retrying indexing transaction ', retries)
+                    await indexTransaction(signature, retries + 1)
+                    return
+                }
                 toast.error('Error indexing transaction' + error.message)
             } else {
                 toast.error('Error indexing transaction')
@@ -200,8 +206,8 @@ export function BuyModal({
     // reown appkit
     async function sendTransactionReownAppKit(transaction: Transaction) {
         if (!connection || !publicKey) return
-        const latestBlockhash = await connection.getLatestBlockhash()
-        transaction.recentBlockhash = latestBlockhash.blockhash
+        // const latestBlockhash = await connection.getLatestBlockhash()
+        // transaction.recentBlockhash = latestBlockhash.blockhash
         transaction.feePayer = new PublicKey(publicKey)
         setHasPendingTransaction(true)
         let signature = ''
@@ -336,23 +342,23 @@ export function BuyModal({
                         </div>
                     </ModalTrigger>
                     <ModalBody
-                        className="bg-background-dark w-full rounded-t-xl border-t border-accent/20  "
+                        className="bg-background-dark w-full rounded-t-xl border-t border-accent/20 overflow-auto"
                         setIsChevronHidden={setIsChevronHidden}
                     >
                         <ModalContent>
-                            <div className='max-h-[30rem]  overflow-auto'>
-                                <div className="text-center mb-8">
+                            <div className=''>
+                                <div className="text-center mb-6 -mt-4 ">
                                     <h4 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-accent via-purple-500 to-emerald-500 text-transparent bg-clip-text">
                                         {!boughtBoxId
                                             ? 'Memebox Time!'
                                             : '🎉 Box Secured!'}
                                     </h4>
-                                    <p className="text-gray-400 mt-2">
+                                    <p className="text-gray-400 mt-1">
                                         Get ready to secure some juicy memes!
                                     </p>
                                 </div>
 
-                                <div className="flex justify-center items-center mb-8">
+                                <div className="flex justify-center items-center mb-6">
                                     {images.map((image, idx) => (
                                         <motion.div
                                             key={idx}
@@ -394,7 +400,7 @@ export function BuyModal({
                                 </div>
 
                                 {!boughtBoxId && step <= 0 ? (
-                                    <div className="space-y-6">
+                                    <div className="space-y-4">
                                         <div className="bg-background-light/10 rounded-xl p-4 border border-accent/20">
                                             <div className="flex justify-between items-center mb-2">
                                                 <span className="text-gray-400">
@@ -496,7 +502,7 @@ export function BuyModal({
                                             <p className="text-accent font-bold mb-2">
                                                 🦍 Degen Notes:
                                             </p>
-                                            <ul className="space-y-2 text-sm text-gray-400">
+                                            <ul className="text-sm text-gray-400">
                                                 <li className="flex items-center">
                                                     <span className="mr-2">
                                                         🎲
@@ -516,6 +522,21 @@ export function BuyModal({
                                                     </span>
                                                     No refunds (diamond hands
                                                     only)
+                                                </li>
+                                             
+                                                <li className="flex items-center">
+                                                    <span className="mr-1">
+                                                        📜 
+                                                    </span>By signing you accept the
+                                                    {" "}<a
+                                                        href="/terms-and-conditions"
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="underline text-accent ml-1"
+                                                    >
+                                                         terms  
+                                                    </a>
+                                                   
                                                 </li>
                                             </ul>
                                         </div>
@@ -557,7 +578,7 @@ export function BuyModal({
 
                         <ModalFooter
                             shouldClose={boughtBoxId ? true : false}
-                            className="border-t border-accent/20 bg-background-dark/80 backdrop-blur-sm p-4 flex justify-center items-center "
+                            className="border-t border-accent/20 bg-background-dark/80 backdrop-blur-sm p-2 flex justify-center items-center "
                         >
                             {boughtBoxId ? (
                                 <motion.button

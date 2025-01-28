@@ -25,7 +25,7 @@ function Navbar({ className }: { className?: string }) {
                 ></img>
             </Link>
             <div
-                className={cn(`transform-all duration-500 transition ease-in-out h-10 items-center relative rounded-full border border-transparent border-r-accent border-l-accent bg-muted shadow-input flex justify-center space-x-8 px-1 shadow-inner shadow-accent-dark scale-75 md:scale-100 `,   isConnected ? "h-16 px-4" : " " )}
+                className={cn(`transform-all duration-500 transition ease-in-out h-10 items-center relative rounded-full border border-transparent border-r-accent border-l-accent bg-muted shadow-input flex justify-center space-x-8 shadow-inner shadow-accent-dark scale-75 md:scale-100 `,   isConnected ? "h-16 px-4" : " " )}
             >
                 {' '}
                 {!isConnected ? (
@@ -76,7 +76,9 @@ function Navbar({ className }: { className?: string }) {
                                         >
                                             Analytics
                                         </Link>
-                                    )}
+                                    )}               
+                                     <appkit-button/>
+
                                 </div>
                             )}
                         </div>
@@ -102,7 +104,7 @@ function Navbar({ className }: { className?: string }) {
                         </div>
                     </>
                 )} 
-                <appkit-button/>
+               <div className={cn('md:flex ', publicKey ? "hidden" : "")} >  <appkit-button /></div>
             </div>
         </div>
     )
