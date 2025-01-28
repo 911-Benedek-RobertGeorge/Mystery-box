@@ -1,6 +1,10 @@
 import { ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import { ANALYTICS_WALLETS } from './config'
+import cyanBox from '../assets/boxes/cyan_box-noBG.png'
+import  introBox   from '../assets/boxes/introBox.png'
+import testBox  from '../assets/boxes/testbox.png'
+import questionMark from '../assets/elements/question_mark.png'
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))
@@ -20,6 +24,14 @@ export function cn(...inputs: ClassValue[]) {
 //         return false
 //     })
 // }
+export const getBoxImage = ( boxTypeId: string ) => {
+    const boxImageMap: { [key: string]: string } = {
+        '6793785f1e6acd3043be74ae': introBox,
+        '676135d9687f17a1771ba2f6': cyanBox,
+        '678eb04437c646670f5a3109': testBox,
+    }
+    return boxImageMap[ boxTypeId] || questionMark
+}
 
 export function shortenAddress(address: string, visibleChars: number): string {
     if (address.length <= visibleChars) {

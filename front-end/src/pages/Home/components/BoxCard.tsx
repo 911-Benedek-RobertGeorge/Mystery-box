@@ -1,12 +1,12 @@
 import React from 'react'
 import { FaExternalLinkAlt } from 'react-icons/fa'
-import cyanBox from '../../../assets/boxes/cyan_box.png'
-import  introBox   from '../../../assets/boxes/introBox.png'
+
 import questionMark from '../../../assets/elements/question_mark.png'
 import key from '../../../assets/boxes/key.png'
 import { AnimatedTooltip } from '../../../components/ui/AnimatedTooltip'
 import { BoxContent, BoxStatus } from '../../../libs/interfaces'
 import {
+    getBoxImage,
     lamportsToSol,
     shortenAddress,
     timeDifferenceFromNow,
@@ -23,26 +23,22 @@ const BoxCard: React.FC<BoxCardProps> = ({
     setSelectedBoxId,
     handleOpenBoxModal,
 }) => {
-    const getBoxImage = ( ) => {
-        const boxImageMap: { [key: string]: string } = {
-            '6793785f1e6acd3043be74ae': introBox,
-            '676135d9687f17a1771ba2f6': cyanBox,
-        }
-        return boxImageMap[box.boxType._id] || cyanBox
-    }
-    console.log(box)
+
      
     return (
         <div className="mb-3 flex w-[80%] self-center md:w-full max-w-screen transform flex-col justify-between items-center md:items-start rounded-md bg-background-dark border border-accent/50 hover:border-accent bg-opacity-75 p-2 text-accent transition duration-500 ease-in-out hover:-translate-y-1 hover:shadow-lg hover:shadow-accent-dark/50 md:flex-row md:p-4">
             <div className="flex flex-col md:flex-row  justify-center md:justify-start">
-                <div className="flex flex-row items-center justify-center">
+                <div className="flex flex-col md:flex-row items-center justify-center">
+                <div className="md:hidden  w-full truncate text-xl font-extrabold leading-5 tracking-tight text-center">
+                    {box.boxType.name}
+                </div>
                     <img
-                        src={getBoxImage()}
+                        src={getBoxImage(box.boxType._id)}
                         alt="Box"
-                        className="mr-4 h-14 w-14 rounded-full object-cover"
+                        className="h-32 smd:mr-4 md:h-16 md:w-16 rounded-full object-cover"
                     />
-                    <div className="flex flex-col items-start justify-center space-y-2">
-                        <div className="w-full truncate text-xl font-extrabold leading-5 tracking-tight">
+                    <div className="flex flex-col items-center md:items-start justify-center space-y-2">
+                        <div className=" hidden md:block w-full truncate text-xl font-extrabold leading-5 tracking-tight">
                             {box.boxType.name}
                         </div>
                         <div

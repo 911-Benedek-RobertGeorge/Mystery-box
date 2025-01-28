@@ -12,6 +12,5 @@ export const ANALYTICS_WALLETS: string[] = [
     'HcecXBVHRXrYGFKHHg33aPjuPqFN2L339nwZ28JewM9s',
     '4hUokfhknC8wCcfTgK1t4y34hbk233PDjFFpwxPVX6xd',
 
-
 ]
  

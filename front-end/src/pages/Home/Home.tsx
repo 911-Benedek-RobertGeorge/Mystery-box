@@ -54,7 +54,7 @@ const Home: React.FC = () => {
                     })),
                 ]
 
-                setMemesImage(memeImages.slice(0, 10))
+                setMemesImage(memeImages.reverse().slice(0, 15))
             } catch (error) {
                 console.error('Error fetching tokens:', error)
             }

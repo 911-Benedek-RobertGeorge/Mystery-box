@@ -169,10 +169,10 @@ function App() {
                 const data = getDataFromJwt(token)
         
                 if (data && data.walletAddress !== address) {
-                    console.log({
-                        walletJwt: data.walletAddress,
-                        currentAddress: address,
-                    })
+                    // console.log({
+                    //     walletJwt: data.walletAddress,
+                    //     currentAddress: address,
+                    // })
                     sessionStorage.removeItem('jwtToken')
                     return false
                 }

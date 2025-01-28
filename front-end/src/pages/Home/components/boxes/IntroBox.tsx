@@ -1,6 +1,6 @@
 import React from 'react'
 import { BoxType } from '../../../../libs/interfaces'
-import introBox from '../../../../assets/boxes/introBox.gif'
+import introBox from '../../../../assets/boxes/introBox.png'
 import { BoxContent } from './BoxContent'
 
 interface IntroBoxProps {
@@ -24,30 +24,30 @@ export const IntroBox: React.FC<IntroBoxProps> = ({
             setHasPendingTransaction={setHasPendingTransaction}
             variant="intro"
             image={
-                <div className="relative" style={{ clipPath: 'inset(0% 10% 0% 5%)'}}>
-                {/* Imaginea blurată pentru margini */}
-                <img
-                  src={introBox}
-                  alt="Intro Box"
-                  className="w-full h-full object-cover"
-                  style={{
-                    maskImage: "radial-gradient(circle, rgba(0, 0, 0, 1) 100%, rgba(0, 0, 0, 0) 100%)",
-                    WebkitMaskImage: "radial-gradient(circle, rgba(0, 0, 0, 1) 100%, rgba(0, 0, 0, 0) 100%)",
-                    filter: "blur(200px)", // Blur mai intens pentru margini
-                    clipPath: 'inset(0% 20% 0% 15%)' 
-                  }}
-                />
-                {/* Imaginea clară din centru */}
-                <img
-                  src={introBox}
-                  alt="Intro Box"
-                  className="absolute top-0 left-0 w-full h-full object-cover"
-                  style={{
-                    maskImage: "radial-gradient(circle, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%)",
-                    WebkitMaskImage: "radial-gradient(circle, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%)" 
-                  }}
-                />
-              </div>
+                <img src={introBox} alt="Intro Box"  />
+            //     <div className="relative mt-4 rounded-full"  >
+            //      <img
+            //       src={introBox}
+            //       alt="Intro Box"
+            //       className="w-full h-full object-cover rounded-full"
+            //       style={{
+            //         maskImage: "radial-gradient(circle, #2298ca 0%, rgba(0, 0, 0, 0)  100%)",
+            //         WebkitMaskImage: "radial-gradient(circle, #2298ca 0%, rgba(0, 0, 0, 0) 100%)",
+            //         filter: "blur(200px)",  
+            //         clipPath: 'inset(0% 20% 0% 15%)' 
+            //       }}
+            //     />
+            
+            //     <img
+            //       src={introBox}
+            //       alt="Intro Box"
+            //       className="absolute top-0 left-0 w-full h-full object-cover rounded-full"
+            //       style={{
+            //         maskImage: "radial-gradient(circle, #24c6c6 50%, rgba(0, 0, 0, 0) 100%)",
+            //         WebkitMaskImage: "radial-gradient(circle, #24c6c6  50%, rgba(0, 0, 0, 0) 70%)" 
+            //       }}
+            //     />
+            //   </div>
             }
             setIsChevronHidden={setIsChevronHidden}
             title={

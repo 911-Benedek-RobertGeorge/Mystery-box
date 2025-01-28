@@ -18,7 +18,7 @@ import {
     SOLANA_EXPLORER_URL,
 } from '../../../../libs/constants'
 import { BoxType } from '../../../../libs/interfaces'
-import { lamportsToSol, scrollToSection } from '../../../../libs/utils'
+import { getBoxImage, lamportsToSol, scrollToSection } from '../../../../libs/utils'
 import { FaCheckCircle } from 'react-icons/fa'
 import { useSelector } from 'react-redux'
 
@@ -37,7 +37,7 @@ export function BuyModal({
     setHasPendingTransaction: (value: boolean) => void
     setIsChevronHidden: (value: boolean) => void
 }) {
-    const images = [cyanBox]
+    const images = [getBoxImage(box?._id ?? '') ]
 
     const solanaPrice = useSelector(
         (state: { solana: { price: number } }) => state.solana.price
@@ -336,11 +336,11 @@ export function BuyModal({
                         </div>
                     </ModalTrigger>
                     <ModalBody
-                        className="bg-background-dark w-full rounded-t-xl border-t border-accent/20"
+                        className="bg-background-dark w-full rounded-t-xl border-t border-accent/20  "
                         setIsChevronHidden={setIsChevronHidden}
                     >
                         <ModalContent>
-                            <div>
+                            <div className='max-h-[30rem]  overflow-auto'>
                                 <div className="text-center mb-8">
                                     <h4 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-accent via-purple-500 to-emerald-500 text-transparent bg-clip-text">
                                         {!boughtBoxId
