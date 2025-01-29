@@ -15,10 +15,7 @@ import {
     VITE_ENV_BACKEND_URL,
     VITE_ENV_SOLANA_NETWORK_RPC,
 } from '../../../../libs/config'
-import {
-    SERVICE_TAX_PERCENTAGE,
-    SOLANA_EXPLORER_URL,
-} from '../../../../libs/constants'
+import { SERVICE_TAX_PERCENTAGE } from '../../../../libs/constants'
 import { BoxType } from '../../../../libs/interfaces'
 import {
     getBoxImage,
@@ -101,49 +98,60 @@ export function BuyModal({
                     )
                 }
 
-                const transactionEncoded = (await response.json())
-                    .transactionEncoded
+                const responseJson = await response.json()
+                const transactionEncoded = responseJson.transactionEncoded
+                const boxId = responseJson.boxId
                 setStep(2)
                 const transactionBuffer = Buffer.from(
                     transactionEncoded,
                     'base64'
                 )
                 const transactionObject = Transaction.from(transactionBuffer)
+                const signedTransaction =
+                    await walletProvider?.signTransaction(transactionObject)
 
-                const txSignature =
-                    await sendTransactionReownAppKit(transactionObject)
-                console.log('Send finalized TX SIGNATURE', txSignature)
-                if (!txSignature) return
+                if (!signedTransaction) {
+                    throw new Error('Failed to sign transaction')
+                }
 
                 setStep(3)
 
-                const confirmationPromise = confirmTransaction(txSignature)
-
-                await toast.promise(
-                    confirmationPromise,
-                    {
-                        loading: 'Processing Transaction',
-                        success: () => (
-                            <a
-                                href={`${SOLANA_EXPLORER_URL}/tx/${txSignature}?cluster=${networkConfiguration}`}
-                                target="_blank"
-                                rel="noreferrer"
-                                style={{ textDecoration: 'underline' }}
-                            >
-                                View on Solana explorer
-                            </a>
-                        ),
-                        error: (err) => `Transaction failed: ${err.message}`,
-                    },
-                    {
-                        duration: 10000,
-                    }
+                const claimBoxResponse = await claimBox(
+                    boxId,
+                    signedTransaction
                 )
+                console.log('CLAIM BOX RESPONSE', claimBoxResponse)
+
+                // const confirmationPromise = confirmTransaction(txSignature)
+
+                // await toast.promise(
+                //     confirmationPromise,
+                //     {
+                //         loading: 'Processing Transaction',
+                //         success: () => (
+                //             <a
+                //                 href={`${SOLANA_EXPLORER_URL}/tx/${txSignature}?cluster=${networkConfiguration}`}
+                //                 target="_blank"
+                //                 rel="noreferrer"
+                //                 style={{ textDecoration: 'underline' }}
+                //             >
+                //                 View on Solana explorer
+                //             </a>
+                //         ),
+                //         error: (err) => `Transaction failed: ${err.message}`,
+                //     },
+                //     {
+                //         duration: 10000,
+                //     }
+                // )
 
                 setStep(4)
-                await new Promise((resolve) => setTimeout(resolve, 4000))
+                await new Promise((resolve) => setTimeout(resolve, 2000))
 
-                await indexTransaction(txSignature)
+                await Promise.all([
+                    indexTransaction(claimBoxResponse.buySignature),
+                    indexTransaction(claimBoxResponse.claimSignature),
+                ])
                 setStep(6)
                 return
             } catch (error) {
@@ -216,51 +224,6 @@ export function BuyModal({
         }
     }
 
-    // reown appkit
-    async function sendTransactionReownAppKit(transaction: Transaction) {
-        if (!connectionReown || !publicKey) return
-        // const latestBlockhash = await connection.getLatestBlockhash()
-        // transaction.recentBlockhash = latestBlockhash.blockhash
-        transaction.feePayer = new PublicKey(publicKey)
-        setHasPendingTransaction(true)
-        let signature = ''
-        console.log('sending tx with reown appkit')
-
-        if (walletProvider && 'sendTransaction' in walletProvider) {
-            console.log('SENDING TX WITH WALLET PROVIDER sendTransaction')
-            signature = await walletProvider.sendTransaction(
-                transaction,
-                connectionReown,
-                {
-                    skipPreflight: false,
-                    preflightCommitment: 'confirmed',
-                }
-            )
-        } else {
-            console.log('SENDING TX WITH Request ')
-
-            // @ts-ignore
-            const response = (await walletProvider.request({
-                jsonrpc: '2.0',
-                method: 'solana_signAndSendTransaction',
-                params: {
-                    transaction: transaction.serialize(),
-                    sendOptions: {
-                        skipPreflight: false,
-                        preflightCommitment: 'confirmed',
-                        maxRetries: 5,
-                        minContextSlot: 0,
-                    },
-                },
-            })) as any
-            console.log('RESPONSE FROM SIGN AND SEND', response)
-            signature = response.result.signature
-        }
-
-        // confirmTransaction(signature)
-        return signature
-    }
-
     // async function sendAndConfirmTransaction(
     //     transaction: Transaction
     // ): Promise<string | false> {
@@ -319,24 +282,27 @@ export function BuyModal({
     //     }
     // }
 
-    async function confirmTransaction(signature: string) {
-        const maxRetries = 20
-        const timeout = 3000
-        let retryCount = 0
+    async function claimBox(boxId: string, buyTransactionSigned: Transaction) {
+        const base64Transaction = Buffer.from(
+            buyTransactionSigned.serialize()
+        ).toString('base64')
 
-        while (retryCount < maxRetries) {
-            const tx = await connection!.getTransaction(signature, {
-                commitment: 'confirmed',
-                maxSupportedTransactionVersion: 0,
-            })
-            console.log('TX HAS BEEN FOUND AND CONFIRMED', tx)
-            if (tx) {
-                return tx
+        const response = await fetch(
+            `${VITE_ENV_BACKEND_URL}/boxes/box/${boxId}/claim`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${jwtToken}`,
+                },
+                body: JSON.stringify({
+                    encodedTransaction: base64Transaction,
+                }),
             }
-            retryCount++
-            await new Promise((resolve) => setTimeout(resolve, timeout))
-        }
-        throw new Error('Transaction not confirmed')
+        )
+        const responseJson = await response.json()
+        console.log('CLAIM BOX RESPONSE', responseJson)
+        return responseJson
     }
 
     return (
@@ -563,11 +529,11 @@ export function BuyModal({
                                     <div className="bg-background-light/5 rounded-xl p-4 border border-accent/20">
                                         <ol className="md:space-y-2">
                                             {[
-                                                'Formatting transaction',
-                                                'Waiting for signature',
+                                                'Building transaction',
+                                                'Waiting for signature ',
                                                 'Transaction sent',
                                                 'Transaction confirmed',
-                                                'Box successfully bought! 🎉',
+                                                'Box successfully bought!',
                                             ].map((text, index) => (
                                                 <li
                                                     key={index}
