@@ -26,11 +26,9 @@ const HeroSectionBox: React.FC = () => {
     }, []);
 
     if (loading) {
-        return      <div className="flex justify-center items-center h-full">
-        <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full" role="status">
-            <span className="visually-hidden">Loading...</span>
+        return <div className="flex justify-center items-center h-full">
+            <div className="animate-spin rounded-full h-32 w-32 border-t-4 border-b-4 border-accent"></div>
         </div>
-    </div>
     
     }
         return (
