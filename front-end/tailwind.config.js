@@ -3,12 +3,14 @@ export default {
     content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
     darkMode: 'class',
     theme: {
-        extend: {
+        extend: {           
             animation: {
                 'spin-slow': 'spin 3s linear infinite',
                 wiggle: 'wiggle 1s ease-in-out infinite',
                 'ping-slow': 'ping 3s linear infinite',
                 glossy: 'glossy 6s ease infinite',
+                'fade-in': 'fadeIn 0.5s ease-in-out',
+                'fade-in-up': 'fadeInUp 0.5s ease-in-out',
             },
             keyframes: {
                 wiggle: {
@@ -19,6 +21,14 @@ export default {
                     '0%': { backgroundPosition: '0% 50%' },
                     '50%': { backgroundPosition: '100% 50%' },
                     '100%': { backgroundPosition: '0% 50%' },
+                }, 
+                   fadeIn: {
+                    '0%': { opacity: '0' },
+                    '100%': { opacity: '1' },
+                },
+                fadeInUp: {
+                    '0%': { opacity: '0', transform: 'translateY(20px)' },
+                    '100%': { opacity: '1', transform: 'translateY(0)' },
                 },
             },
             colors: {

@@ -28,6 +28,7 @@ const Home: React.FC = () => {
     const [memesImage, setMemesImage] = useState<MemeImage[]>()
     const [hasPendingTransaction, setHasPendingTransaction] = useState(false)
 
+
     useEffect(() => {
  
         const fetchMemeImages = async () => {
@@ -94,17 +95,17 @@ const Home: React.FC = () => {
         }
     }, [])
 
-    useEffect(() => {
-        const handleScroll = () => {
-            setScrollPosition(window.scrollY)
-        }
+    // useEffect(() => {
+    //     const handleScroll = () => {
+    //         setScrollPosition(window.scrollY)
+    //     }
 
-        window.addEventListener('scroll', handleScroll)
+    //     window.addEventListener('scroll', handleScroll)
 
-        return () => {
-            window.removeEventListener('scroll', handleScroll)
-        }
-    }, [])
+    //     return () => {
+    //         window.removeEventListener('scroll', handleScroll)
+    //     }
+    // }, [])
 
     return (
         <div className="flex flex-col relative w-screen max-w-screen select-none bg-background-dark overflow-hidden">
