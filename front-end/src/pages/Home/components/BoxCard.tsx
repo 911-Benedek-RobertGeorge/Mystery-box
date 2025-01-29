@@ -11,6 +11,7 @@ import {
     shortenAddress,
     timeDifferenceFromNow,
 } from '../../../libs/utils'
+import { SOLANA_EXPLORER_URL } from 'src/libs/constants'
 
 interface BoxCardProps {
     box: any
@@ -45,7 +46,7 @@ const BoxCard: React.FC<BoxCardProps> = ({
                             className="flex flex-row space-x-2 cursor-pointer"
                             onClick={() =>
                                 window.open(
-                                    `https://explorer.solana.com/tx/${box.claimSignature ? box.claimSignature : box.buySignature}`
+                                    `${SOLANA_EXPLORER_URL}/tx/${box.claimSignature ? box.claimSignature : box.buySignature}`
                                 )
                             }
                         >
@@ -56,7 +57,7 @@ const BoxCard: React.FC<BoxCardProps> = ({
                                         onClick={(e) => {
                                             e.stopPropagation()
                                             window.open(
-                                                `https://explorer.solana.com/tx/${box.buySignature}`
+                                                `${SOLANA_EXPLORER_URL}/tx/${box.buySignature}`
                                             )
                                         }}
                                     >
@@ -71,7 +72,7 @@ const BoxCard: React.FC<BoxCardProps> = ({
                                             onClick={(e) => {
                                                 e.stopPropagation()
                                                 window.open(
-                                                    `https://explorer.solana.com/tx/${box.claimSignature}`
+                                                    `${SOLANA_EXPLORER_URL}/tx/${box.claimSignature}`
                                                 )
                                             }}
                                         >
@@ -161,7 +162,7 @@ const BoxCard: React.FC<BoxCardProps> = ({
                     </div>
                 )}
             </div>
-            {setSelectedBoxId && handleOpenBoxModal && (
+            {/* {setSelectedBoxId && handleOpenBoxModal && (
                 <div className="w-24 items-center justify-center flex self-center">
                     {box.status === BoxStatus.BOUGHT ? (
                         <button
@@ -185,7 +186,7 @@ const BoxCard: React.FC<BoxCardProps> = ({
                         />
                     )}
                 </div>
-            )}
+            )} */}
         </div>
     )
 }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
- import { ADMIN_WALLETS } from '../../libs/constants'
+ import { ADMIN_WALLETS, SOLANA_EXPLORER_URL } from '../../libs/constants'
 import { motion } from 'framer-motion'
 import { BoxContent, MysteryBox } from '../../libs/interfaces'
 import { VITE_ENV_BACKEND_URL } from '../../libs/config'
@@ -435,7 +435,7 @@ const TransactionLink: React.FC<{ signature: string; label: string }> = ({
     label,
 }) => (
     <a
-        href={`https://explorer.solana.com/tx/${signature}`}
+        href={`${SOLANA_EXPLORER_URL}/tx/${signature}`}
         target="_blank"
         rel="noopener noreferrer"
         className="flex items-center space-x-2 text-accent hover:text-accent-light transition-colors text-sm"
@@ -447,7 +447,7 @@ const TransactionLink: React.FC<{ signature: string; label: string }> = ({
 
 const AddressLink: React.FC<{ address: string }> = ({ address }) => (
     <a
-        href={`https://explorer.solana.com/address/${address}`}
+        href={`${SOLANA_EXPLORER_URL}/address/${address}`}
         target="_blank"
         rel="noopener noreferrer"
         className="flex items-center space-x-2 text-accent hover:text-accent-light transition-colors text-sm"
