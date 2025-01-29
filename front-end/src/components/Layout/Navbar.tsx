@@ -14,7 +14,7 @@ function Navbar({ className }: { className?: string }) {
     return (
         <div
             className={cn(
-                'select-none absolute flex top-10 inset-x-0 p-6 md:p-10  md:px-24 justify-between z-[101] font-semibold text-lg',
+                'select-none absolute flex top-10 mr-2 inset-x-0 p-6 md:p-10  md:px-24 justify-between z-[101] font-semibold text-lg',
                 className
             )}
         >
@@ -34,7 +34,7 @@ function Navbar({ className }: { className?: string }) {
                     </>
                 ) : (
                     <>
-                        <div className="md:hidden ">
+                        <div className="md:hidden  ">
                             <button
                                 className=" text-accent focus:outline-none"
                                 onClick={() =>
@@ -57,7 +57,7 @@ function Navbar({ className }: { className?: string }) {
                                 </svg>
                             </button>
                             {active === 'menu' && (
-                                <div className="absolute flex flex-col items-center justify-center rounded-3xl p-2 top-16 -left-12 w-[10rem] bg-muted shadow-lg">
+                                <div className="absolute flex flex-col items-center justify-center rounded-3xl p-2 top-16 -left-16 w-[10rem] bg-muted shadow-lg">
                                     <button
                                         className="block px-4 py-2  text-accent-dark hover:text-accent"
                                         onClick={() => {
@@ -68,7 +68,7 @@ function Navbar({ className }: { className?: string }) {
                                         My Boxes
                                     </button>
                                    
-                                    {isAdmin && isConnected && (
+                                    {isAdmin  && (
                                         <Link
                                             to="/analytics"
                                             className="block px-4 py-2 text-accent-dark hover:text-accent"
@@ -83,7 +83,7 @@ function Navbar({ className }: { className?: string }) {
                             )}
                         </div>
                         <div className="hidden md:flex space-x-8 justify-center items-center">
-                            {isAdmin && isConnected && (
+                            {isAdmin  && (
                                 <Link
                                     to="/analytics"
                                     className="text-accent-dark hover:text-accent transition-colors"

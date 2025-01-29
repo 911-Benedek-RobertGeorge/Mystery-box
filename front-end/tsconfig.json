@@ -23,9 +23,9 @@
         "jsx": "react-jsx",
         "baseUrl": ".",
         "paths": {
-            "@libs/*": ["src/libs/*"], // Example alias for your libs folder
-            "@assets/*": ["src/assets/*"], // Alias for assets folder
-            "@src/*": ["src/*"] // Alias for the src folder
+            "@libs/*": ["src/libs/*"],  
+            "@assets/*": ["src/assets/*"],  
+            "@src/*": ["src/*"]  
         }
     }
 }

@@ -2,18 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { BackgroundGradientAnimation } from '../../components/ui/BackgroundGradientAnimation'
 import SectionContainer from './components/SectionContainer'
 import { motion } from 'framer-motion'
-import prism from '../../assets/shapes/prism.png'
-import simpleBox from '../../assets/elements/simple_box.png'
-import stand from '../../assets/shapes/stand.png'
-import questionMark from '../../assets/elements/question_mark.png'
-import boom from '../../assets/coins/boom.png'
-import mow from '../../assets/coins/mow.png'
-import pnut from '../../assets/coins/pnut.png'
-import popcat from '../../assets/coins/popcat.png'
-import wif from '../../assets/coins/wif.png'
-import introBox from '../../assets/boxes/introBox.gif'
-import chillGuy from '../../assets/coins/chill-guy.png'
-import bonk from '../../assets/coins/bonk.png'
+
 
 import fluidTape from '../../assets/elements/fluid_tape.png'
 import waveTape from '../../assets/shapes/wave_tape.png'
@@ -30,6 +19,7 @@ import vectorShape from '../../assets/elements/vector-shape.png'
 import WhatAreWeSection from './components/WhatAreWeSection'
 import AboutUsSection from './components/AboutUsSection'
 import FAQ from '../FAQ/FAQ'
+import HeroSectionBox from './components/HeroSectionBox'
 
  
 const Home: React.FC = () => {
@@ -142,52 +132,7 @@ const Home: React.FC = () => {
                             </div>
                         </div>
                         <MemeImagesFloating memesImage={memesImage ?? []} />
-                        <div className=" scale-75 md:scale-80 md:-top-24 relative z-[102] flex flex-col justify-center items-center">
-                            <img
-                                src={questionMark}
-                                className="w-[250px] z-[50] absolute -top-48 floating-object transition-transform duration-200 ease-out "
-                             ></img>{' '}
-                            <div className=" bg-transparent absolute top-24 left-1/2 transform -translate-x-1/2 w-32 h-32 md:w-60 md:h-64 rounded-3xl shadow-cone"></div>
-                            <img
-                                src={simpleBox}
-                                className="w-[450px]  z-[40] hover:scale-110 transition-transform duration-[3000ms] ease-out"
-                                style={{ transformStyle: 'preserve-3d' }}
-                            ></img>{' '}
-                            <img
-                                src={stand}
-                                className="scale-[1] absolute top-24 z-[30]"
-                                style={{ transformStyle: 'preserve-3d' }}
-                            ></img>
-                            <img
-                                src={wif}
-                                className=" scale-[0.5] absolute top-[22rem] left-12 z-[30]  rotate-45  "
-                                style={{ transformStyle: 'preserve-3d' }}
-                            ></img>{' '}
-                            <img
-                                src={boom}
-                                className="scale-[0.5] absolute top-[19rem] left-64 z-[30] -rotate-12  "
-                                style={{ transformStyle: 'preserve-3d' }}
-                            ></img>{' '}
-                            <img
-                                src={mow}
-                                className=" w-24 absolute top-96 -left-16 z-[30] rotate-12"
-                            ></img>{' '}
-                            <img
-                                src={stand}
-                                className="scale-[1.2] absolute top-40 z-[20]"
-                                style={{ transformStyle: 'preserve-3d' }}
-                            ></img>
-                            <img
-                                src={stand}
-                                className="scale-[1.5] absolute top-60 z-[10]"
-                                style={{ transformStyle: 'preserve-3d' }}
-                            ></img>{' '}
-                            <img
-                                src={prism}
-                                className="scale-[0.3] absolute top-72 left-64 z-[10] rotate-12 "
-                                style={{ transformStyle: 'preserve-3d' }}
-                            ></img>
-                        </div>{' '}
+                        <HeroSectionBox /> 
                     </div>
                 </SectionContainer>
             </BackgroundGradientAnimation>
@@ -196,12 +141,12 @@ const Home: React.FC = () => {
                 src={vectorShape}
                 className="w-screen top-[15.5rem] rotate-12 md:rotate-6 h-[900px] absolute "
                  loading="eager"
-            ></img>{' '}
+            ></img> 
             <div
                 id="boxes-section"
                 className="relative flex flex-col justify-center items-center w-full"
             >
-                <div className="relative ">
+                {/* <div className="relative ">
                     <div
                         className="absolute -rotate-12 w-96 z-[2]"
                         style={{
@@ -234,7 +179,7 @@ const Home: React.FC = () => {
                     >
                         <img src={waveTape} alt="Fluid Tape" loading="lazy" />
                     </motion.div>
-                </div>
+                </div> */}
                 <BoxesSection
                     setHasPendingTransaction={setHasPendingTransaction}
                 />{' '}
