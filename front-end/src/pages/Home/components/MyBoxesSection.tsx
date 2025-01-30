@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react'
-import { MysteryBox } from '../../../libs/interfaces'
-import { VITE_ENV_BACKEND_URL } from '../../../libs/config'
-import { OpenBoxModal } from './modal/OpenBoxModal'
+import { MysteryBox } from '@libs/interfaces'
+import { VITE_ENV_BACKEND_URL } from '@libs/config'
+// import { OpenBoxModal } from './modal/OpenBoxModal'
 
-import { scrollToSection } from '../../../libs/utils'
-import questionMark from '../../../assets/elements/question_mark.png'
+import { scrollToSection } from '@libs/utils'
+import questionMark from '@assets/elements/question_mark.png'
 import { motion } from 'framer-motion'
 import BoxCard from './BoxCard'
 import { useAppKitAccount } from '@reown/appkit/react'
@@ -223,11 +223,11 @@ const MyBoxesSection: React.FC<MyBoxesSectionProps> = ({
                             </motion.div>
                         )}
                     </div>
-                    <OpenBoxModal
+                    {/* <OpenBoxModal
                         setHasPendingTransaction={setHasPendingTransaction}
                         hiddenTrigger={true}
                         boxId={selectedBoxId}
-                    />
+                    /> */}
                 </div>
             )}
         </>

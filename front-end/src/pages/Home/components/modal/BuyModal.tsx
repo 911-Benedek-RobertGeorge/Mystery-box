@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import {
     Modal,
@@ -7,21 +7,21 @@ import {
     ModalFooter,
     ModalTrigger,
 } from '../../../../components/ui/AnimatedModal'
-import questionMark from '../../../../assets/elements/question_mark.png'
+import questionMark from '@assets/elements/question_mark.png'
 import toast, { LoaderIcon } from 'react-hot-toast'
 import { Buffer } from 'buffer'
 import { useNetworkConfiguration } from '../../../../context/Solana/SolNetworkConfigurationProvider'
 import {
     VITE_ENV_BACKEND_URL,
     VITE_ENV_SOLANA_NETWORK_RPC,
-} from '../../../../libs/config'
-import { SERVICE_TAX_PERCENTAGE } from '../../../../libs/constants'
-import { BoxType } from '../../../../libs/interfaces'
+} from '@libs/config'
+import { SERVICE_TAX_PERCENTAGE } from '@libs/constants'
+import { BoxContent, BoxType, MysteryBox } from '@libs/interfaces'
 import {
     getBoxImage,
     lamportsToSol,
     scrollToSection,
-} from '../../../../libs/utils'
+} from '@libs/utils'
 import { FaCheckCircle } from 'react-icons/fa'
 import { useSelector } from 'react-redux'
 
@@ -31,6 +31,8 @@ import {
     useAppKitConnection,
     type Provider,
 } from '@reown/appkit-adapter-solana/react'
+import { confetti } from '@tsparticles/confetti'
+import OpenBoxDisplay from './OpenBoxDisplay'
 
 export function BuyModal({
     box,
@@ -56,18 +58,66 @@ export function BuyModal({
     const connection = new Connection(VITE_ENV_SOLANA_NETWORK_RPC, 'confirmed')
     const { connection: connectionReown } = useAppKitConnection()
     const { walletProvider } = useAppKitProvider<Provider>('solana')
+    const [mysteryBox, setMysteryBox] = useState<MysteryBox>()
+
+
+    useEffect(() => {
+        async function triggerConfetti() {
+            if (!mysteryBox) return;
+
+            const images = mysteryBox.boxContents.map((memeCoin: BoxContent) => ({
+                src: memeCoin.token.image,
+                width: 32,
+                height: 32,
+            }));
+
+            await confetti({
+                zIndex: 1100,
+                spread: 360,
+                ticks: 200,
+                gravity: 0.8,
+                decay: 0.8,
+                startVelocity: 30,
+                particleCount: 100,
+                scalar: 3,
+                shapes: ['image'],
+                shapeOptions: {
+                    image: images,
+                },
+            });
+        }
+
+        triggerConfetti();
+    } , [mysteryBox])
+
+
+    const checkIfBalanceIsEnough = async () => {
+        try {
+            const balance = await connection!.getBalance(new PublicKey(publicKey!))
+            const theTotalBoxPrice = lamportsToSol(box?.amountLamports ?? '0')
+            if (
+                lamportsToSol(balance.toString()) <
+                theTotalBoxPrice +
+                    SERVICE_TAX_PERCENTAGE * theTotalBoxPrice +
+                    0.00005
+            ) {
+                toast.error('Insufficient balance to buy the box')
+                return false 
+            }
+            return true
+        }
+        catch (error) {
+            console.error('Error checking balance:', error)
+        }   
+    }
 
     const buyMysteryBox = async () => {
-        const balance = await connection!.getBalance(new PublicKey(publicKey!))
-        const theTotalBoxPrice = lamportsToSol(box?.amountLamports ?? '0')
-        if (
-            lamportsToSol(balance.toString()) <
-            theTotalBoxPrice +
-                SERVICE_TAX_PERCENTAGE * theTotalBoxPrice +
-                0.00005
-        ) {
-            toast.error('Insufficient balance to buy the box')
-            return
+        setHasPendingTransaction(true)
+        const hasEnoughBalance = await checkIfBalanceIsEnough()
+      
+        if(!hasEnoughBalance) 
+        {
+            return;
         }
 
         setStep(1)
@@ -120,7 +170,8 @@ export function BuyModal({
                     boxId,
                     signedTransaction
                 )
-                console.log('CLAIM BOX RESPONSE', claimBoxResponse)
+ 
+                console.log('CLAIM BOX RESPONSE', claimBoxResponse , box)
 
                 // const confirmationPromise = confirmTransaction(txSignature)
 
@@ -153,6 +204,10 @@ export function BuyModal({
                     indexTransaction(claimBoxResponse.claimSignature),
                 ])
                 setStep(6)
+                
+                setMysteryBox(claimBoxResponse.box)
+
+                setHasPendingTransaction(false)
                 return
             } catch (error) {
                 attempts++
@@ -184,7 +239,7 @@ export function BuyModal({
 
     async function indexTransaction(signature: string, retries = 0) {
         try {
-            console.log('Indexing ', 'sg', signature, 'JWT', jwtToken)
+            console.log('Indexing ', 'tx', signature )
             if (!jwtToken) throw new Error('JWT token not found ')
 
             const response = await fetch(`${VITE_ENV_BACKEND_URL}/index`, {
@@ -330,6 +385,7 @@ export function BuyModal({
                         setIsChevronHidden={setIsChevronHidden}
                     >
                         <ModalContent>
+                            {!mysteryBox ? (
                             <div className="">
                                 <div className="text-center mb-6 -mt-4 ">
                                     <h4 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-accent via-purple-500 to-emerald-500 text-transparent bg-clip-text">
@@ -557,7 +613,10 @@ export function BuyModal({
                                         </ol>
                                     </div>
                                 )}
-                            </div>
+                            </div> ) : (
+                                <OpenBoxDisplay mysteryBox={mysteryBox} />
+                            ) }
+
                         </ModalContent>
 
                         <ModalFooter

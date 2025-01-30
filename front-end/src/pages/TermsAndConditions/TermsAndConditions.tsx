@@ -1,206 +1,84 @@
-import React from 'react'
-import SectionContainer from '../Home/components/SectionContainer'
+import React from 'react';
 
 const TermsAndConditions: React.FC = () => {
     return (
-        <div className="bg-background-dark  w-screen h-screen">
-            <SectionContainer>
-                <div className="text-accent-dark   flex items-center justify-center flex-col max-w-4xl mx-auto">
-                    <h1 className="text-3xl font-bold mt-8  text-center">
-                        Terms and Conditions
-                    </h1>
-                    <p className="mb-6 text-justify">
-                        By using this website and purchasing our mystery boxes,
-                        you agree to the following terms:
+        <div className="bg-gradient-to-b from-background-dark to-gray-900 w-screen min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-4xl mx-auto">
+                <h1 className="mt-[12%] text-5xl font-extrabold text-center text-transparent bg-clip-text bg-gradient-to-r from-accent-dark to-purple-500 mb-8 animate-fade-in">
+                    Terms of Service
+                </h1>
+
+                <div className="bg-red-900/20 p-6 rounded-lg mb-12 border border-red-500 animate-pulse">
+                    <h2 className="text-2xl font-bold text-red-400 mb-4">⚠️ Important Disclaimers</h2>
+                    <p className="text-red-200">
+                        This is not a financial services platform. All transactions represent non-refundable 
+                        entertainment purchases with no guaranteed value. Cryptocurrency values fluctuate 
+                        dramatically - you may lose 100% of your purchase value. Consult a financial advisor 
+                        before participating.
                     </p>
+                </div>
 
-                    <ul className="list-disc pl-5 overflow-auto scrollbar h-[30rem]">
-                        <li className="mb-6">
-                            <h2 className="text-2xl font-semibold">
-                                No Financial Advice
-                            </h2>
-                            <p className="text-justify">
-                                The content and services provided on this
-                                platform are for entertainment purposes only and
-                                do not constitute financial advice.
-                            </p>
-                            <p className="text-justify">
-                                Always conduct your own research before engaging
-                                in cryptocurrency-related activities.
-                            </p>
-                        </li>
-                        <li className="text-justify">
-                            We do not guarantee the value or profitability of
-                            the items contained within the mystery box. You may
-                            receive coins or items of minimal or no value.
-                        </li>
-                        <li className="text-justify">
-                            Purchasing mystery boxes is a high-risk activity.
-                            The market value of crypto assets is volatile and
-                            may lose value at any time.
-                        </li>
-                        <li className="text-justify">
-                            All purchases are final and non-refundable. By
-                            proceeding, you agree to this policy.
-                        </li>
-                        <li className="text-justify">
-                            This product does not constitute financial advice.
-                            Make decisions at your own risk and consult a
-                            financial professional if needed.
-                        </li>
-                        <li className="text-justify">
-                            It is your responsibility to ensure compliance with
-                            local laws regarding crypto transactions and
-                            ownership.
-                        </li>
-                        <li className="text-justify">
-                            We are not responsible for any issues arising from
-                            wallet integration, transaction delays, or errors
-                            caused by third-party services or blockchains.
-                        </li>
-                        <li className="text-justify">
-                            You must be at least 18 years old to use this
-                            platform and purchase mystery boxes.
-                        </li>
-                        <li className="text-justify">
-                            We do not guarantee uninterrupted access to the
-                            platform due to potential downtime, maintenance, or
-                            blockchain congestion.
-                        </li>
-                        <li className="text-justify">
-                            By purchasing, you acknowledge that you have read
-                            and understood all the risks and terms outlined
-                            here.
-                        </li>
-                        <li className="text-justify">
-                            We do not guarantee the value or profitability of
-                            the items contained within the mystery box. You may
-                            receive coins or items of minimal or no value.
-                        </li>
-                        <li className="text-justify">
-                            Purchasing mystery boxes is a high-risk activity.
-                            The market value of crypto assets is volatile and
-                            may lose value at any time.
-                        </li>
-                        <li className="text-justify">
-                            All purchases are final and non-refundable. By
-                            proceeding, you agree to this policy.
-                        </li>
-                        <li className="text-justify">
-                            This product does not constitute financial advice.
-                            Make decisions at your own risk and consult a
-                            financial professional if needed.
-                        </li>
-                        <li className="text-justify">
-                            It is your responsibility to ensure compliance with
-                            local laws regarding crypto transactions and
-                            ownership.
-                        </li>
-                        <li className="text-justify">
-                            We are not responsible for any issues arising from
-                            wallet integration, transaction delays, or errors
-                            caused by third-party services or blockchains.
-                        </li>
-                        <li className="text-justify">
-                            You must be at least 18 years old to use this
-                            platform and purchase mystery boxes.
-                        </li>
-                        <li className="text-justify">
-                            We do not guarantee uninterrupted access to the
-                            platform due to potential downtime, maintenance, or
-                            blockchain congestion.
-                        </li>
-                        <li className="text-justify">
-                            By purchasing, you acknowledge that you have read
-                            and understood all the risks and terms outlined
-                            here.
-                        </li>
-                        <li className="mb-6 mt-12 ">
-                            <h2 className="text-2xl font-semibold">
-                                No Guarantees
-                            </h2>
-                            <p className="text-justify">
-                                Purchasing mystery boxes does not guarantee any
-                                financial gain or specific outcome.
-                            </p>
-                            <p className="text-justify">
-                                The value of the items revealed in the mystery
-                                boxes is speculative and may fluctuate
-                                significantly.
-                            </p>
-                        </li>
-                        <li className="mb-6">
-                            <h2 className="text-2xl font-semibold">
-                                Risk Acknowledgment
-                            </h2>
-                            <p className="text-justify">
-                                Cryptocurrency transactions are highly volatile
-                                and involve significant risk.
-                            </p>
-                            <p className="text-justify">
-                                By participating, you acknowledge and accept all
-                                associated risks, including potential loss of
-                                your initial purchase.
-                            </p>
-                        </li>
-                        <li className="mb-6">
-                            <h2 className="text-2xl font-semibold">
-                                Limitation of Liability
-                            </h2>
-                            <p className="text-justify">
-                                We are not liable for any losses, damages, or
-                                claims arising from your use of this platform or
-                                purchases made.
-                            </p>
-                            <p className="text-justify">
-                                All transactions are final, and refunds will not
-                                be issued.
-                            </p>
-                        </li>
-                        <li className="mb-6">
-                            <h2 className="text-2xl font-semibold">
-                                Compliance
-                            </h2>
-                            <p className="text-justify">
-                                By using this platform, you confirm that you
-                                comply with your local laws and regulations
-                                regarding cryptocurrency usage.
-                            </p>
-                            <p className="text-justify">
-                                If you do not agree to these terms, do not use
-                                this platform or purchase any mystery boxes.
-                            </p>
-                        </li>
-                        <li className="mb-6">
-                            <h2 className="text-2xl font-semibold">
-                                Indemnification
-                            </h2>
-                            <p className="text-justify">
-                                You agree to indemnify, defend, and hold
-                                harmless our company, its affiliates, and their
-                                respective officers, directors, employees, and
-                                agents from and against any and all claims,
-                                liabilities, damages, losses, or expenses
-                                arising out of or in any way connected with your
-                                access to or use of the platform.
-                            </p>
-                        </li>
-                        <li className="mb-6">
-                            <h2 className="text-2xl font-semibold">
-                                Changes to Terms
-                            </h2>
-                            <p className="text-justify">
-                                We reserve the right to modify these terms at
-                                any time. Your continued use of the platform
-                                following the posting of changes will mean that
-                                you accept and agree to the changes.
-                            </p>
-                        </li>
-                    </ul>
-                </div>{' '}
-            </SectionContainer>
+                <div className="space-y-8">
+                    {[
+                        {
+                            title: "1. Binding Agreement",
+                            content: "By accessing this platform, you enter a legally binding agreement and affirm you are at least 18 years old, legally competent to contract, and acting in compliance with all applicable laws in your jurisdiction."
+                        },
+                        {
+                            title: "2. No Warranties",
+                            content: "We expressly disclaim all warranties of any kind, whether express or implied, including but not limited to merchantability, fitness for purpose, and non-infringement. Services are provided 'as is' and 'as available' without any guarantee of functionality, accuracy, or reliability."
+                        },
+                        {
+                            title: "3. Risk Acceptance",
+                            content: "You expressly acknowledge and agree that: (a) cryptocurrency markets are volatile and unpredictable (b) digital assets may have no inherent value (c) you may lose entire purchase value (d) outcomes are randomly generated with no promised return."
+                        },
+                        {
+                            title: "4. Limitation of Liability",
+                            content: "Under no circumstances shall Company or its affiliates be liable for any direct, indirect, incidental, special, consequential, or exemplary damages (including but not limited to loss of profits, cryptocurrency, data, or goodwill) arising from platform use, even if advised of potential damages."
+                        },
+                        {
+                            title: "5. Third-Party Services",
+                            content: "We disclaim all responsibility for blockchain network operations, wallet providers, or external service interruptions. You are solely responsible for managing private keys and transaction validation."
+                        },
+                        {
+                            title: "6. Prohibited Jurisdictions",
+                            content: "Access is void where prohibited. You confirm you are not: (a) subject to OFAC sanctions (b) resident in restricted territories (c) using VPNs to circumvent geo-blocks. We reserve right to freeze suspicious accounts."
+                        },
+                        {
+                            title: "7. No Refunds",
+                            content: "All purchases are final. Digital assets are immediately consumed upon purchase - no cancellations, refunds, or exchanges permitted under any circumstances."
+                        },
+                        {
+                            title: "8. Intellectual Property",
+                            content: "All platform content, including smart contract code and interface designs, remain our exclusive property. No license is granted beyond personal, non-commercial access."
+                        },
+                        {
+                            title: "9. Dispute Resolution",
+                            content: "Any disputes shall be resolved through binding arbitration in [Your Jurisdiction] under [Governing Law]. Class action waivers apply. Legal actions must be initiated within 1 year of claim accrual."
+                        },
+                        {
+                            title: "10. Amendments",
+                            content: "We reserve unilateral right to modify these terms without notice. Continued use after changes constitutes acceptance. You must regularly review terms for updates."
+                        }
+                    ].map((term, index) => (
+                        <div key={index} className="bg-gray-800/50 p-6 rounded-lg border border-gray-700 hover:border-accent-dark transition-all duration-300">
+                            <h2 className="text-xl font-bold text-accent-dark mb-3">{term.title}</h2>
+                            <p className="text-gray-300 leading-relaxed">{term.content}</p>
+                        </div>
+                    ))}
+                </div>
+
+                <div className="mt-12 text-center border-t border-gray-700 pt-8">
+                    <p className="text-gray-400 text-sm">
+                        Last Updated: 29th January 2025 <br />
+                        By continuing, you certify under penalty of perjury that you have read, 
+                        understood, and voluntarily accept all terms herein. If you do not 
+                        understand any provision, consult legal counsel before proceeding.
+                    </p>
+                </div>
+            </div>
         </div>
-    )
-}
+    );
+};
 
-export default TermsAndConditions
+export default TermsAndConditions;
